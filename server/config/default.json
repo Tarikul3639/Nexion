@@ -1,0 +1,32 @@
+{
+  "app": {
+    "name": "ChatFly",
+    "version": "1.0.0",
+    "port": 5000,
+    "host": "localhost",
+    "useHttps": false
+  },
+  "db": {
+    "url": "mongodb+srv://tarikulislam3639:TarikulislaM2002@cluster0.lb7vp.mongodb.net/ChatFly?retryWrites=true&w=majority&appName=Cluster0",
+    "options": {
+      "useNewUrlParser": true,
+      "useUnifiedTopology": true
+    }
+  },
+  "jwt": {
+    "secret": "your-super-secret-jwt-key-change-this-in-production",
+    "expiresIn": "24h"
+  },
+  "cors": {
+    "origin": ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173", "https://localhost:3000", "https://localhost:3001"],
+    "credentials": true
+  },
+  "chat": {
+    "maxMessageLength": 1000,
+    "maxRoomMembers": 50
+  },
+  "upload": {
+    "maxFileSize": "10MB",
+    "allowedTypes": ["image/jpeg", "image/png", "image/gif"]
+  }
+}

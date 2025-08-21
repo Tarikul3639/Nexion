@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
+  <defs>
+    <!-- Gradient for background -->
+    <linearGradient id="grad512" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#8e4ae8ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded background -->
+  <rect x="0" y="0" width="512" height="512" rx="96" ry="96" fill="url(#grad512)"/>
+
+  <!-- BotMessageSquare icon (white) -->
+  <g transform="translate(64,64)" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M192 96V31.9872H127.87200000000001"/>
+    <path d="M240 175.872v31.872"/>
+    <path d="M31.872 192h31.872"/>
+    <path d="M319.87199999999996 192h31.872"/>
+    <path d="M319.87199999999996 256.12800000000004a31.872 31.872 0 0 1-31.872 31.872H141.312a31.872 31.872 0 0 0-22.656 9.216000000000001l-35.328 35.328A11.3664 11.3664 0 0 1 64.128 324.48V127.87200000000001a31.872 31.872 0 0 1 31.872-31.872h192a31.872 31.872 0 0 1 31.872 31.872z"/>
+    <path d="M144 175.872v31.872"/>
+  </g>
+</svg>

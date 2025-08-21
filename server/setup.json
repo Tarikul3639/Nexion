@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "express": "npm install express"
+  },
+  "devDependencies": {
+    "typescript, ts-node-dev, @types/node, @types/express": "npm install --save-dev typescript ts-node-dev @types/node @types/express",
+    "PM2": "npm install -g pm2",
+    "config": "npm install config",
+    "TypeScript type definitions": "npm install --save-dev @types/config",
+    "selfsigned": "npm install selfsigned",
+    "generate-ssl": "node generate-ssl.js",
+    "jsonwebtoken": ["npm install jsonwebtoken","npm install @types/jsonwebtoken --save-dev"],
+    "mongoose": ["npm install mongoose","npm install @types/mongoose --save-dev"]
+  }
+}

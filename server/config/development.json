@@ -1,0 +1,14 @@
+{
+  "app": {
+    "port": 5000
+  },
+  "db": {
+    "url": "mongodb+srv://tarikulislam3639:TarikulislaM2002@cluster0.lb7vp.mongodb.net/ChatFly?retryWrites=true&w=majority&appName=Cluster0"
+  },
+  "jwt": {
+    "secret": "dev-secret-key-not-for-production"
+  },
+  "cors": {
+    "origin": ["http://localhost:3000", "http://localhost:5173", "http://localhost:8080"]
+  }
+}

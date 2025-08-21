@@ -1,0 +1,33 @@
+{
+  "ChatFly_ui_ux_libraries": {
+    "base_ui_styling": ["Next.js", "Tailwind CSS", "shadcn/ui", "TypeScript"],
+    "icon_libraries": ["lucide-react", "heroicons", "tabler-icons-react"],
+    "form_handling_validation": ["react-hook-form", "zod"],
+    "notification_toast_messages": ["shadcn/ui Toast component (sonner)"],
+    "scrolling_support": ["react-scroll-to-bottom"],
+    "emoji_picker_optional": ["emoji-mart"],
+    "avatar_profile_pictures": ["@dicebear/react", "next/image"],
+    "dark_mode_support": ["Tailwind CSS dark mode (class-based)"],
+    "animation_ui_transitions": ["framer-motion"]
+  },
+  "ChatFly_setup": {
+    "create app": "npx create-next-app@latest web --typescript",
+    "install dependencies": [
+      "√ Would you like to use ESLint? ... Yes",
+      "√ Would you like to use Tailwind CSS? ... Yes",
+      "√ Would you like your code inside a `src/` directory? ... Yes",
+      "√ Would you like to use App Router? (recommended) ... Yes",
+      "√ Would you like to use Turbopack for `next dev`? ... Yes",
+      "√ Would you like to customize the import alias (`@/*` by default)? ... No"
+    ],
+    "lucide-react": "npm install lucide-react",
+    "shadcn/ui/button": "npx shadcn@latest add button",
+    "shadcn/ui/select": "npx shadcn@latest add select",
+    "shadcn/ui/label": "npx shadcn@latest add label",
+    "shadcn/ui/card": "npx shadcn@latest add card",
+    "shadcn/ui/Badge": "npx shadcn@latest add badge",
+    "shadcn/ui/Avatar": "npx shadcn@latest add avatar",
+    "shadcn/ui/separator": "npx shadcn@latest add separator",
+    "shadcn/ui/textarea": "npx shadcn@latest add textarea"
+  }
+}
