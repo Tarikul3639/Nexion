@@ -4,6 +4,7 @@ import { metadata, viewport } from "@/components/core/metadata";
 // import AppProtection from "@/components/core/AppProtection";
 import { SocketProvider } from "@/context/SocketContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { PanelProvider } from "@/context/PanelContext";
 import { Toaster } from "sonner";
 import React from "react";
 import "./globals.css";
@@ -51,7 +52,7 @@ export default function RootLayout({
         {/* <AppProtection /> */}
         <AuthProvider>
           <SocketProvider>
-            {children}
+            <PanelProvider>{children}</PanelProvider>
           </SocketProvider>
         </AuthProvider>
       </body>
