@@ -6,7 +6,7 @@ import { useResponsive } from "@/hooks/useResponsive";
 import Link from "next/link";
 
 export function MobileSidebar() {
-  const { selectedItem } = usePanel();
+  const { activeTab, setActiveTab, selectedItem, setSelectedItem } = usePanel();
   const { isDesktop } = useResponsive();
   // Hide mobile sidebar if an item is selected
   if (!isDesktop && selectedItem) return null;
@@ -15,10 +15,10 @@ export function MobileSidebar() {
     <div className="md:hidden w-full bg-black text-white flex justify-around items-center h-16 border-t border-gray-700">
       {mobileNavigationItems.map((item) => {
         const Icon = item.icon;
-        const isActive=0
+        const isActive = activeTab === item.id;
         return (
-          <Link
-           href={item.label}
+          <button
+            onClick={() => setActiveTab(item.id as TabKey)}
             key={item.id}
             className={`flex flex-col items-center justify-center text-sm transition-colors ${
               isActive ? "text-blue-500" : "text-white"
@@ -26,7 +26,7 @@ export function MobileSidebar() {
           >
             <Icon size={20} />
             <span>{item.label}</span>
-          </Link>
+          </button>
         );
       })}
     </div>

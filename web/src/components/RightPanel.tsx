@@ -21,9 +21,9 @@ export default function RightPanel() {
   }
 
   return (
-    <div className="flex-1 bg-gray-50">
+    <div className="flex-1">
       {/* Header */}
-      <div className="p-3 flex items-center gap-2 border-b bg-white">
+      <div className="p-3 flex items-center gap-2">
         <button
           className="md:hidden px-3 py-1 bg-gray-200 rounded"
           onClick={() => setSelectedItem(null)}

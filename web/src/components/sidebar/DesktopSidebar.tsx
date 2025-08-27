@@ -1,22 +1,14 @@
-"use client"
+"use client";
 
-import React,{useState} from "react"
-import { Settings } from "lucide-react"
-import { desktopNavigationItems, TAB_KEYS, TabKey } from "./navigationItems"
+import React, { useState } from "react";
+import { Settings } from "lucide-react";
+import { desktopNavigationItems, TAB_KEYS, TabKey } from "./navigationItems";
+import { usePanel } from "@/context/PanelContext";
 
-export function DesktopSidebar({
-  activeTab,
-  setActiveTab,
-  selectedItem,
-  setSelectedItem
-}: {
-  activeTab: TabKey
-  setActiveTab: (tab: TabKey) => void
-  selectedItem: string | null
-  setSelectedItem: (id: string | null) => void
-}) {
+export function DesktopSidebar() {
+  const { activeTab, setActiveTab, selectedItem, setSelectedItem } = usePanel();
   return (
-    <div className="hidden md:flex w-16 bg-black flex-col items-center py-4">
+    <div className="hidden md:flex w-16 flex-col items-center py-4">
       <div className="mb-6">
         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
           CH
@@ -25,13 +17,15 @@ export function DesktopSidebar({
 
       <div className="flex flex-col space-y-4 flex-1">
         {desktopNavigationItems.map((item) => {
-          const Icon = item.icon
+          const Icon = item.icon;
           return (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as TabKey)}
               className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative hover:scale-105 ${
-                activeTab === item.id ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white hover:bg-gray-900"
+                activeTab === item.id
+                  ? "bg-blue-600 text-white"
+                  : "text-gray-400 hover:text-white hover:bg-gray-900"
               }`}
             >
               <Icon size={20} />
@@ -39,13 +33,15 @@ export function DesktopSidebar({
                 {item.label}
               </div>
             </button>
-          )
+          );
         })}
       </div>
 
       <button
         className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative ${
-          activeTab === TAB_KEYS.SETTINGS ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white hover:bg-gray-800"
+          activeTab === TAB_KEYS.SETTINGS
+            ? "bg-blue-600 text-white"
+            : "text-gray-400 hover:text-white hover:bg-gray-800"
         }`}
         title="Settings"
       >
@@ -55,5 +51,5 @@ export function DesktopSidebar({
         </div>
       </button>
     </div>
-  )
+  );
 }

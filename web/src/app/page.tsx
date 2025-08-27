@@ -1,6 +1,7 @@
-"use client"
-import WorkspaceLayout from "@/components/WorkspaceLayout"
+"use client";
+
+import WorkspaceLayout from "@/components/WorkspaceLayout";
 
 export default function HomePage() {
-  return <WorkspaceLayout />
+  return <WorkspaceLayout />;
 }

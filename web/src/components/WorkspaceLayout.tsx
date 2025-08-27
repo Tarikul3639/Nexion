@@ -19,10 +19,10 @@ export default function WorkspaceLayout() {
           <LeftPanel />
         )
       ) : (
-        <>
+        <div className="flex-1 flex rounded-l-2xl overflow-hidden bg-[#1E1E1E]">
           <LeftPanel />
           <RightPanel />
-        </>
+        </div>
       )}
     </SidebarWrapper>
   );
