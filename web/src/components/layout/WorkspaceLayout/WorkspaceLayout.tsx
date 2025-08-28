@@ -1,28 +1,24 @@
 "use client";
 import React from "react";
 import { SidebarWrapper } from "@/components/sidebar/Sidebar";
-import LeftPanel from "@/components/LeftPanel";
-import RightPanel from "@/components/RightPanel";
+import LeftPanel from "@/components/panels/LeftPanel/LeftPanel";
+import RightPanel from "@/components/panels/RightPanel/RightPanel";
 import { usePanel } from "@/context/PanelContext";
 import { useResponsive } from "@/hooks/useResponsive";
 
 export default function WorkspaceLayout() {
-  const { selectedItem } = usePanel();
+  const { selectedChat } = usePanel();
   const { isDesktop } = useResponsive();
 
   return (
-      <SidebarWrapper>
-        {!isDesktop ? (
-          selectedItem ? (
-          <RightPanel />
-        ) : (
-          <LeftPanel />
-        )
+    <SidebarWrapper>
+      {!isDesktop ? (
+        selectedChat ? <RightPanel /> : <LeftPanel />
       ) : (
-        <div className="flex-1 flex rounded-l-2xl overflow-hidden bg-[#1E1E1E]">
+        <>
           <LeftPanel />
           <RightPanel />
-        </div>
+        </>
       )}
     </SidebarWrapper>
   );

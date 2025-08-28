@@ -145,7 +145,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #3b82f6; /* Tailwind's blue-500 */
+  background-color: #2f3031; /* Tailwind's blue-500 */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

@@ -11,12 +11,12 @@ const items = [
 export default function RightPanel() {
   const { selectedChat, setSelectedChat } = usePanel()
   console.log(selectedChat);
-  const active = items.find((i) => i.id === selectedChat)
+  const active = items.find((i) => i.id === (typeof selectedChat === "string" ? selectedChat : selectedChat?.id))
 
   if (!selectedChat) {
     return (
       <div className="flex-1 hidden md:flex items-center justify-center text-gray-100">
-        Select an item from the left panel
+        <span>Select an item from the left panel</span>
       </div>
     )
   }

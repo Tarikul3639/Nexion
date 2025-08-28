@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chatfly-cache-v1';
+const CACHE_NAME = 'Nexion';
 const urlsToCache = [
   '/',
   '/manifest.json',

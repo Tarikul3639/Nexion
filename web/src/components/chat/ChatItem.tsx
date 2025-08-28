@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ChatTypeIcon from "./ChatTypeIcon";
-import { ChatItemProps } from "./type";
+import { ChatItemProps } from "@/types/chat.list";
 
 export default function ChatItem({
   chat,
@@ -20,14 +20,14 @@ export default function ChatItem({
         <Avatar className="w-10 md:w-12 h-10 md:h-12 rounded-lg">
           <AvatarImage src={chat.avatar} alt={chat.name} />
           <AvatarFallback className="rounded-lg">
-            <span className="text-xl font-semibold">
-              {chat.name?.slice(0, 2).toUpperCase()}
+            <span className="text-xl font-bold">
+              {(chat?.name || "NA").slice(0, 2).toUpperCase()}
             </span>
           </AvatarFallback>
         </Avatar>
         {chat.type !== "student" && (
-          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-[#23C26C] border-2 border-[#161616] rounded-full flex items-center justify-center">
-            <ChatTypeIcon type={chat.type} />
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-[#23C26C] text-center rounded-full flex items-center justify-center">
+            {chat.type ? <ChatTypeIcon type={chat.type} /> : null}
           </div>
         )}
       </div>

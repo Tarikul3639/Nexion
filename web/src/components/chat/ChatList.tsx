@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Search, Pin } from "lucide-react";
 import ChatItem from "./ChatItem";
-import { ChatListProps } from "./type";
+import { ChatListProps } from "@/types/chat.list";
 
 export default function ChatList({
   pinnedChats = [],

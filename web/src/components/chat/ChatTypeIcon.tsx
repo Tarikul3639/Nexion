@@ -1,11 +1,11 @@
-import React from "react";
+export default function ChatTypeIcon({ type }: { type?: string }) {
+  if (!type) return null;
 
-export default function ChatTypeIcon({ type }: { type: string }) {
   switch (type) {
     case "class":
-      return <span className="text-[#614BFF] text-xs font-bold">C</span>;
+      return <span className="text-white text-xs font-bold">C</span>;
     case "group":
-      return <span className="text-[#35D57F] text-xs font-bold">G</span>;
+      return <span className="text-white text-xs font-bold">G</span>;
     default:
       return null;
   }

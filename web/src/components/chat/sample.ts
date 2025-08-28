@@ -1,6 +1,6 @@
 export const pinnedChats = [
   {
-    id: 1,
+    id: '1',
     name: "Advanced Mathematics",
     type: "class",
     avatar: "https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?w=40&h=40&fit=crop",
@@ -11,7 +11,7 @@ export const pinnedChats = [
     participants: 28,
   },
   {
-    id: 2,
+    id: '2',
     name: "Physics Study Group",
     type: "group",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
@@ -25,7 +25,7 @@ export const pinnedChats = [
 
 export const allChats = [
   {
-    id: 3,
+    id: '3',
     name: "Sarah Johnson",
     type: "student",
     avatar: "https://images.unsplash.com/photo-1494790108755-2616b9d0481e?w=40&h=40&fit=crop&crop=face",
@@ -35,7 +35,7 @@ export const allChats = [
     isTyping: false,
   },
   {
-    id: 4,
+    id: '4',
     name: "Chemistry Lab B",
     type: "class",
     avatar: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=40&h=40&fit=crop",
@@ -46,7 +46,7 @@ export const allChats = [
     participants: 24,
   },
   {
-    id: 5,
+    id: '5',
     name: "Alex Chen",
     type: "student",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
@@ -56,7 +56,7 @@ export const allChats = [
     isTyping: false,
   },
   {
-    id: 6,
+    id: '6',
     name: "History Discussion",
     type: "group",
     avatar: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=40&h=40&fit=crop",
@@ -67,7 +67,7 @@ export const allChats = [
     participants: 8,
   },
   {
-    id: 7,
+    id: '7',
     name: "Literature Club",
     type: "group",
     avatar: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=40&h=40&fit=crop",
@@ -78,7 +78,7 @@ export const allChats = [
     participants: 10,
   },
   {
-    id: 8,
+    id: '8',
     name: "Art History",
     type: "class",
     avatar: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=40&h=40&fit=crop",
@@ -92,7 +92,7 @@ export const allChats = [
 
 export const initialMessages = [
   {
-    id: 1,
+    id: '1',
     sender: "Sarah Johnson",
     senderType: "student",
     timestamp: "10:30 AM",
@@ -100,7 +100,7 @@ export const initialMessages = [
     type: "text",
   },
   {
-    id: 2,
+    id: '2',
     sender: "You",
     senderType: "teacher",
     timestamp: "10:32 AM",
@@ -108,7 +108,7 @@ export const initialMessages = [
     type: "text",
   },
   {
-    id: 3,
+    id: '3',
     sender: "Sarah Johnson",
     senderType: "student",
     timestamp: "10:33 AM",
@@ -116,7 +116,7 @@ export const initialMessages = [
     type: "text",
   },
   {
-    id: 4,
+    id: '4',
     sender: "You",
     senderType: "teacher",
     timestamp: "10:35 AM",
@@ -128,7 +128,7 @@ export const initialMessages = [
     type: "file",
   },
   {
-    id: 5,
+    id: '5',
     sender: "You",
     senderType: "teacher",
     timestamp: "10:36 AM",
