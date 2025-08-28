@@ -5,8 +5,8 @@ import { pinnedChats, allChats, initialMessages } from "./chat/sample";
 import { Chat } from "./chat/type";
 
 export default function LeftPanel() {
-  const { setSelectedItem } = usePanel();
-  const [selectedChat, setSelectedChat] = useState<Chat | undefined>(undefined);
+  const { selectedChat, setSelectedChat } = usePanel();
+
   const [showChatList, setShowChatList] = useState(true);
 
   return (
@@ -14,11 +14,10 @@ export default function LeftPanel() {
       <ChatList
         pinnedChats={pinnedChats as any}
         allChats={allChats as any}
-        selectedChat={selectedChat}
+        selectedChat={selectedChat as any}
         onSelectChat={(chat: any) => {
           setSelectedChat(chat);
           setShowChatList(false);
-          setSelectedItem(chat);
         }}
       />
     </div>

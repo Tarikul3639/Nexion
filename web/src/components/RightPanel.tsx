@@ -9,12 +9,13 @@ const items = [
 ]
 
 export default function RightPanel() {
-  const { selectedItem, setSelectedItem } = usePanel()
-  const active = items.find((i) => i.id === selectedItem)
+  const { selectedChat, setSelectedChat } = usePanel()
+  console.log(selectedChat);
+  const active = items.find((i) => i.id === selectedChat)
 
-  if (!selectedItem) {
+  if (!selectedChat) {
     return (
-      <div className="flex-1 hidden md:flex items-center justify-center text-gray-500">
+      <div className="flex-1 hidden md:flex items-center justify-center text-gray-100">
         Select an item from the left panel
       </div>
     )
@@ -26,7 +27,7 @@ export default function RightPanel() {
       <div className="p-3 flex items-center gap-2">
         <button
           className="md:hidden px-3 py-1 bg-gray-200 rounded"
-          onClick={() => setSelectedItem(null)}
+          onClick={() => setSelectedChat(null)}
         >
           ← Back
         </button>

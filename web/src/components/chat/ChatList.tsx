@@ -1,75 +1,8 @@
 import React, { useState } from "react";
 import { Search, Pin } from "lucide-react";
-import { Chat, ChatListProps, ChatItemProps } from "./type";
+import ChatItem from "./ChatItem";
+import { ChatListProps } from "./type";
 
-// Chat Type Icon
-const ChatTypeIcon = ({ type }: { type: string }) => {
-  switch (type) {
-    case "class":
-      return <span className="text-[#614BFF] text-xs font-bold">C</span>; // or use BookOpen
-    case "group":
-      return <span className="text-[#35D57F] text-xs font-bold">G</span>; // or use Users
-    default:
-      return null;
-  }
-};
-
-// Single Chat Item
-export const ChatItem = ({
-  chat,
-  isActive = false,
-  onSelect,
-}: ChatItemProps) => (
-  <div
-    className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-200 rounded-xl ${
-      isActive ? "bg-[#323438]" : "hover:bg-[#323438] active:bg-[#1E1E1F]"
-    }`}
-    onClick={() => onSelect(chat)}
-  >
-    <div className="relative flex-shrink-0">
-      <img
-        src={chat.avatar}
-        alt={chat.name}
-        className="w-12 h-12 rounded-full object-cover"
-      />
-      {chat.type !== "student" && (
-        <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-[#23C26C] border-2 border-[#161616] rounded-full flex items-center justify-center">
-          <ChatTypeIcon type={chat.type} />
-        </div>
-      )}
-    </div>
-
-    <div className="flex-1 min-w-0 ml-3">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="font-semibold text-sm text-white truncate">
-          {chat.name}
-        </h3>
-        <span className="text-xs text-[#8B8B90] flex-shrink-0 ml-2">
-          {chat.timestamp}
-        </span>
-      </div>
-      <p className="text-xs text-[#8B8B90] truncate">
-        {chat.isTyping ? (
-          <span className="text-[#23C26C]">Someone is typing...</span>
-        ) : (
-          chat.lastMessage
-        )}
-      </p>
-    </div>
-
-    {(chat.unreadCount ?? 0) > 0 && (
-      <div className="flex-shrink-0 ml-3">
-        <div className="w-5 h-5 bg-[#614BFF] rounded-full flex items-center justify-center">
-          <span className="text-white text-xs font-semibold">
-            {chat.unreadCount ?? 0}
-          </span>
-        </div>
-      </div>
-    )}
-  </div>
-);
-
-// Chat List Component
 export default function ChatList({
   pinnedChats = [],
   allChats = [],
