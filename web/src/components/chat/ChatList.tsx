@@ -27,17 +27,17 @@ export default function ChatList({
     <div className="w-full h-full flex flex-col">
       {/* Search */}
       <div className="px-4 pt-4">
-        <div className="relative">
+        <div className="relative group">
           <input
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Search chats or people..."
-            className="w-full h-12 bg-[#1E1E1F] border border-[#242424] rounded-lg px-3 pr-10 text-white placeholder-[#555555] text-sm focus:outline-none focus:ring-2 focus:ring-[#614BFF] focus:ring-opacity-30 focus:border-[#614BFF] transition-all duration-200"
+            className="w-full h-12 bg-[#1E1E1F] border border-[#242424] rounded-lg px-3 pr-10 text-white placeholder-[#555555] text-sm focus:outline-none focus:ring-1 focus:ring-[#614BFF] focus:ring-opacity-30 focus:border-[#614BFF] transition-all duration-200"
           />
           <Search
             size={20}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white opacity-70 pointer-events-none"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white opacity-70 pointer-events-none group-focus-within:text-[#614BFF] group-focus-within:opacity-100 transition-all duration-200"
           />
         </div>
       </div>

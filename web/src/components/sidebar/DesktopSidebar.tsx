@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Settings } from "lucide-react";
 import { desktopNavigationItems, TAB_KEYS, TabKey } from "./navigationItems";
 import { usePanel } from "@/context/PanelContext";
 
 export function DesktopSidebar() {
-  const { activeTab, setActiveTab, selectedItem, setSelectedItem } = usePanel();
+  const { activeTab, setActiveTab } = usePanel();
   return (
     <div className="hidden md:flex w-16 flex-col items-center py-4">
       <div className="mb-6">
@@ -22,14 +22,14 @@ export function DesktopSidebar() {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as TabKey)}
-              className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative hover:scale-105 ${
+              className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative hover:scale-105 z-10 ${
                 activeTab === item.id
                   ? "bg-blue-600 text-white"
                   : "text-gray-400 hover:text-white hover:bg-gray-900"
               }`}
             >
               <Icon size={20} />
-              <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+              <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 {item.label}
               </div>
             </button>

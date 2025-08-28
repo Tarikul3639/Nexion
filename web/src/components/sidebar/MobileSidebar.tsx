@@ -1,15 +1,14 @@
 "use client";
 
-import { mobileNavigationItems, TabKey, TAB_KEYS } from "./navigationItems";
+import { mobileNavigationItems, TabKey } from "./navigationItems";
 import { usePanel } from "@/context/PanelContext";
 import { useResponsive } from "@/hooks/useResponsive";
-import Link from "next/link";
 
 export function MobileSidebar() {
-  const { activeTab, setActiveTab, selectedItem, setSelectedItem } = usePanel();
+  const { activeTab, setActiveTab, selectedChat } = usePanel();
   const { isDesktop } = useResponsive();
   // Hide mobile sidebar if an item is selected
-  if (!isDesktop && selectedItem) return null;
+  if (!isDesktop && selectedChat) return null;
 
   return (
     <div className="md:hidden w-full bg-black text-white flex justify-around items-center h-16 border-t border-gray-700">

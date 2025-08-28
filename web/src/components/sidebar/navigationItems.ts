@@ -3,12 +3,12 @@ import { MessageCircle, GraduationCap, User, Briefcase, Calendar } from "lucide-
 export interface NavigationItem {
   id: string
   label: string
-  icon: any
+  icon: React.ComponentType<{ size?: number }>
 }
 
 // Desktop sidebar items
 export const desktopNavigationItems: NavigationItem[] = [
-  { id: "chat", icon: MessageCircle, label: "All chats" },
+  { id: "chats", icon: MessageCircle, label: "All chats" },
   { id: "classroom", icon: GraduationCap, label: "Classroom" },
   { id: "work", icon: Briefcase, label: "Work" },
   { id: "calendar", icon: Calendar, label: "Calendar" },
@@ -25,6 +25,7 @@ export const mobileNavigationItems: NavigationItem[] = [
 // Tab keys for easy reference
 export const TAB_KEYS = {
   CHATS: "chats",
+  BOTS: "bots",
   CLASSROOM: "classroom",
   WORK: "work",
   CALENDAR: "calendar",

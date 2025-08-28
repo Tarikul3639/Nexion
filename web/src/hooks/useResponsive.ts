@@ -1,8 +1,15 @@
 "use client"
-
-import { useMediaQuery } from "react-responsive"
+import { useState, useEffect } from "react";
 
 export function useResponsive() {
-  const isDesktop = useMediaQuery({ minWidth: 768 }) // md breakpoint
-  return { isDesktop }
+  const [isDesktop, setIsDesktop] = useState(false); // SSR-safe default
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 768);
+    handleResize(); // initial check
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return { isDesktop };
 }

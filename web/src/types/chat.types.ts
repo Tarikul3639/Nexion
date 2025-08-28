@@ -2,8 +2,8 @@ import { User } from './user.types';
 import { Message } from './message.types';
 
 export interface Chat {
-  conversationId: any;
-  _id: any;
+  conversationId: string;
+  _id: string;
   id?: number;
   username: string;
   type?: string;

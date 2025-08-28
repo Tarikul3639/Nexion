@@ -2,20 +2,22 @@
 import React, { createContext, useContext, useState } from "react";
 import { TabKey, TAB_KEYS } from "@/components/sidebar/navigationItems";
 import { Chat } from "@/types/chat.list";
+import { Bot } from "@/types/bot";
+import { Classroom } from "@/types/classroom";
 
 interface PanelContextProps {
   activeTab: TabKey;
-  setActiveTab: (t: TabKey) => void;
-  selectedChat: Chat | null;
-  setSelectedChat: (chat: Chat | null) => void;
+  setActiveTab: (tab: TabKey) => void;
+  selectedChat: Chat | Classroom | Bot | null;
+  setSelectedChat: (chat: Chat | Classroom | Bot | null) => void;
 }
 
 const PanelContext = createContext<PanelContextProps | undefined>(undefined);
 
 export function PanelProvider({ children }: { children: React.ReactNode }) {
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.CHATS);
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
-
+  const [selectedChat, setSelectedChat] = useState<Chat | Classroom | Bot | null>(null);
+  
   return (
     <PanelContext.Provider
       value={{ activeTab, setActiveTab, selectedChat, setSelectedChat }}
