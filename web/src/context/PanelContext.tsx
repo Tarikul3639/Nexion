@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState } from "react";
 import { TabKey, TAB_KEYS } from "@/components/sidebar/navigationItems";
-import { Chat } from "@/types/chat.list";
+import { Chat } from "@/types/";
 import { Bot } from "@/types/bot";
 import { Classroom } from "@/types/classroom";
 

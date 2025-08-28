@@ -1,6 +1,6 @@
 import { usePanel } from "@/context/PanelContext";
 import ChatHeader from "./ChatHeader";
-import { Chat } from "@/types/chat.list";
+import { Chat } from "@/types/";
 
 export default function ChatWindow() {
   const { selectedChat, setSelectedChat } = usePanel();

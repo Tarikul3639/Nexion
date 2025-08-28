@@ -2,10 +2,10 @@
 
 import React from "react";
 import ChatList from "@/components/chat/ChatList";
-import { pinnedChats, allChats } from "../../chat/sample";
+import { allChats } from "@/data/sampleData";
 import ClassroomList from "@/components/classroom/ClassroomList";
 import BotList from "@/components/bot/BotList";
-import { Chat } from "@/types/chat.list";
+import { ChatItem } from "@/types/chat";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { usePanel } from "@/context/PanelContext";
@@ -18,10 +18,9 @@ export default function LeftPanel() {
       case "chats":
         return (
           <ChatList
-            pinnedChats={pinnedChats as Chat[]}
-            allChats={allChats as Chat[]}
-            selectedChat={selectedChat as Chat | undefined}
-            onSelectChat={(chat) => setSelectedChat(chat as Chat)}
+            allChats={allChats as ChatItem[]}
+            selectedChat={selectedChat as ChatItem | undefined}
+            onSelectChat={(chat) => setSelectedChat(chat as ChatItem)}
           />
         );
 

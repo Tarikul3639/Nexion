@@ -1,26 +1,25 @@
 import React, { useState } from "react";
 import { Search, Pin } from "lucide-react";
 import ChatItem from "./ChatItem";
-import { ChatListProps } from "@/types/chat.list";
+import { ChatListProps } from "@/types/chat";
 
 export default function ChatList({
-  pinnedChats = [],
   allChats = [],
   selectedChat,
   onSelectChat,
 }: ChatListProps) {
   const [searchValue, setSearchValue] = useState("");
 
-  const filteredPinnedChats = pinnedChats.filter(
+  const filteredPinnedChats = allChats.filter(
     (chat) =>
-      chat.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      chat.lastMessage.toLowerCase().includes(searchValue.toLowerCase())
+      chat.isPinned &&
+      chat.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const filteredAllChats = allChats.filter(
     (chat) =>
-      chat.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      chat.lastMessage.toLowerCase().includes(searchValue.toLowerCase())
+      !chat.isPinned &&
+      chat.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   return (
