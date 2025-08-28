@@ -7,6 +7,9 @@ export type Chat = {
   timestamp: string;
   unreadCount?: number;
   isTyping?: boolean;
+  participants?: number;
+  status?: "online" | "offline" | "away";
+  lastActivity?: string;
 };
 
 export type ChatItemProps = {

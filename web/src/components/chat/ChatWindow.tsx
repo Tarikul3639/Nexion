@@ -1,11 +1,13 @@
 import { usePanel } from "@/context/PanelContext";
+import ChatHeader from "./ChatHeader";
+import { Chat } from "@/types/chat.list";
 
 export default function ChatWindow() {
   const { selectedChat, setSelectedChat } = usePanel();
+  console.log(selectedChat);
   return (
-    <div className="flex-1 h-full flex justify-center items-center text-gray-100">
-      <h2>{selectedChat?.name}</h2>
-      {/* Render chat details here */}
+    <div className="flex-1 flex flex-col h-full">
+      <ChatHeader selectedChat={selectedChat as Chat} setSelectedChat={setSelectedChat} />
     </div>
   );
 }
