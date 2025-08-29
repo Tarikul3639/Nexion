@@ -1,4 +1,4 @@
-export { default as ChatList } from "./ChatList";
-export { default as ChatItem } from "./ChatItem";
-export { default as ChatTypeIcon } from "./ChatTypeIcon";
+export { default as ChatList } from "./ChatList/ChatList";
+export { default as ChatItem } from "./ChatList/ChatItem";
+export { default as ChatTypeIcon } from "./ChatList/ChatTypeIcon";
 export * from "../../types/";
