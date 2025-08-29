@@ -12,7 +12,7 @@ import {
 import { ArrowLeft, Phone, Video, MoreVertical } from "lucide-react";
 import { ChatItem } from "@/types/chat";
 
-export default function ChatHeader({
+export default function ConversationHeader({
   selectedChat,
   setSelectedChat,
 }: {

@@ -1,23 +1,20 @@
 "use client";
 import React from "react";
 import { usePanel } from "@/context/PanelContext";
-import ChatWindow from "@/components/chat/ChatWindow";
+import ConversationWindow from "@/components/chat/ConversationWindow";
 import ClassroomWindow from "@/components/classroom/ClassroomWindow";
+import Welcome from "./Welcome";
 
 export default function RightPanel() {
   const { activeTab, selectedChat } = usePanel();
 
   if (!selectedChat) {
-    return (
-      <div className="flex-1 hidden md:flex items-center justify-center text-gray-100">
-        <span>Select an item from the left panel</span>
-      </div>
-    );
+    return <Welcome />;
   }
 
   switch (activeTab) {
     case "chats":
-      return <ChatWindow />;
+      return <ConversationWindow />;
     case "classroom":
       return <ClassroomWindow />;
     default:
