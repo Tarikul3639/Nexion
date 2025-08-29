@@ -8,6 +8,8 @@ interface ChatContextType {
   aiSuggestions: string[];
   setAISuggestions: React.Dispatch<React.SetStateAction<string[]>>;
   onAISuggestion: (suggestion: string) => void;
+  isRecordingActive: boolean;
+  setIsRecordingActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -21,6 +23,7 @@ const suggestion = [
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [aiSuggestions, setAISuggestions] = useState<string[]>(suggestion);
+  const [isRecordingActive, setIsRecordingActive] = useState(false);
 
   const onAISuggestion = (suggestion: string) => {
     console.log("AI suggestion applied:", suggestion);
@@ -33,6 +36,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     aiSuggestions,
     setAISuggestions,
     onAISuggestion,
+    isRecordingActive,
+    setIsRecordingActive
   };
 
   return <ChatContext.Provider value={Value}>{children}</ChatContext.Provider>;
