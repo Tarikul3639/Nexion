@@ -7,7 +7,7 @@ import ChatAvatar from "./ChatAvatar";
 import ChatInfo from "./ChatInfo";
 import ActionButtons from "./ActionButtons";
 
-export default function ConversationHeader({
+export default function ChatHeader({
   selectedChat,
   setSelectedChat,
 }: {

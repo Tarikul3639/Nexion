@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import ChatList from "@/components/chat/ChatList/ChatList";
+import ChatList from "@/components/chat/ChatList";
 import { allChats } from "@/data/sampleData";
 import ClassroomList from "@/components/classroom/ClassroomList";
 import BotList from "@/components/bot/BotList";

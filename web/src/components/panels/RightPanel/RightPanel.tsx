@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { usePanel } from "@/context/PanelContext";
-import ConversationWindow from "@/components/chat/ChatWindow/index";
+import ConversationWindow from "@/components/chat/ChatContainer";
 import ClassroomWindow from "@/components/classroom/ClassroomWindow";
 import Welcome from "./Welcome";
 
