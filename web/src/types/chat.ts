@@ -80,3 +80,27 @@ export interface ChatItemProps {
   selectedChat?: ChatItem | null;   // Optional if needed
   setSelectedChat?: (chat: ChatItem | null) => void; // Optional setter
 }
+
+// Attachment types for messages
+export type AttachmentType = "image" | "video" | "file" | "audio/webm";
+
+// Local attachment interface for input messages
+export interface LocalAttachment {
+  file: File;
+  type: AttachmentType;
+  name: string;
+  size: number;
+}
+
+// Props for ChatInput component
+export interface InputMessage {
+  text: string;
+  attachments: LocalAttachment[];
+  timestamp?: string;
+}
+
+export interface ChatInputProps {
+  message: InputMessage;
+  setMessage: React.Dispatch<React.SetStateAction<InputMessage>>;
+}
+

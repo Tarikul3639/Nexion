@@ -12,6 +12,7 @@ export default function AISuggestions() {
     setShowAISuggestions,
     aiSuggestions,
     setAISuggestions,
+    onAISuggestion,
   } = useChat();
 
   // use the reusable hook
@@ -33,7 +34,7 @@ export default function AISuggestions() {
             <button
               key={index}
               onClick={() => {
-                setAISuggestions([suggestion]);
+                onAISuggestion(suggestion);
                 setShowAISuggestions(false);
               }}
               className="border border-gray-700 rounded-sm px-3 py-2 text-sm text-gray-200 hover:border-gray-500 transition-colors flex items-center space-x-2"

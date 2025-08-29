@@ -4,6 +4,7 @@ import { useChat } from "@/context/ChatContext";
 import { useState, useRef, useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
+import { LocalAttachment } from "@/types/chat";
 
 import RecordButton from "./RecordButton";
 import RecorderControls from "./RecorderControls";
@@ -12,7 +13,7 @@ import RecorderStatus from "./RecorderStatus";
 const MAX_DURATION = 120; // 2 minutes
 
 export default function VoiceRecorder() {
-  const { isRecordingActive, setIsRecordingActive } = useChat();
+  const { isRecordingActive, setIsRecordingActive, setMessage } = useChat();
   const [isRecording, setIsRecording] = useState(false);
   const [stop, setStop] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -50,6 +51,21 @@ export default function VoiceRecorder() {
         const url = URL.createObjectURL(blob);
         setAudioURL(url);
         setStop(true);
+
+        // Wrap the audio blob as a LocalAttachment
+        const audioAttachment: LocalAttachment = {
+          file: new File([blob], `audio_${Date.now()}.webm`, {
+            type: "audio/webm",
+          }),
+          type: "audio/webm",
+          name: `audio_${Date.now()}.webm`,
+          size: blob.size,
+        };
+
+        setMessage((prev) => ({
+          ...prev,
+          attachments: [...prev.attachments, audioAttachment], // now type-safe
+        }));
       };
 
       mediaRecorder.start();
@@ -71,17 +87,33 @@ export default function VoiceRecorder() {
     } else {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
     }
   };
 
-  // Cancel Recording
   const handleCancel = () => {
+    // Stop recording if in progress
     if (isRecording && mediaRecorderRef.current) {
-      mediaRecorderRef.current.onstop = null;
+      mediaRecorderRef.current.onstop = null; // prevent triggering onstop
       mediaRecorderRef.current.stop();
     }
 
+    // Stop the microphone stream
+    if (mediaRecorderRef.current?.stream) {
+      mediaRecorderRef.current.stream
+        .getTracks()
+        .forEach((track) => track.stop());
+    }
+
+    // Stop playback if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current.src = ""; // fully reset audio
+    }
+
+    // Reset states
     setIsRecordingActive(false);
     setTime(0);
     setAudioURL(null);
@@ -89,9 +121,18 @@ export default function VoiceRecorder() {
     setStop(false);
     setIsPlaying(false);
     setPlayTime(0);
+    setDuration(0);
+    setMessage((prev) => ({
+      ...prev,
+      attachments: prev.attachments.filter((att) => att.type !== "audio/webm"),
+    }));
+
+    // Clear recorded chunks
     audioChunksRef.current = [];
 
-    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    // Cancel any running animations
+    if (animationFrameRef.current)
+      cancelAnimationFrame(animationFrameRef.current);
   };
 
   const handleRecording = async () => {
@@ -106,7 +147,8 @@ export default function VoiceRecorder() {
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
     } else {
       audioRef.current.play();
       setIsPlaying(true);
@@ -139,7 +181,8 @@ export default function VoiceRecorder() {
   // cleanup
   useEffect(() => {
     return () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
     };
   }, []);
 
@@ -153,16 +196,14 @@ export default function VoiceRecorder() {
   return (
     <TooltipProvider>
       <RecordButton
-        isRecordingActive={isRecordingActive}
-        isRecording={isRecording}
         handleCancel={handleCancel}
         handleRecording={handleRecording}
       />
 
-      {(isRecordingActive || stop) && (
+      {isRecordingActive && (
         <div className="relative w-full rounded-full bg-blue-500 flex items-center justify-center px-2 py-0.5 text-sm overflow-hidden">
           {/* smooth progress background */}
-           <motion.div
+          <motion.div
             className="absolute left-0 top-0 h-full bg-blue-700"
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
