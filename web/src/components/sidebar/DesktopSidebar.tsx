@@ -24,7 +24,7 @@ export function DesktopSidebar() {
               onClick={() => setActiveTab(item.id as TabKey)}
               className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative hover:scale-105 z-10 ${
                 activeTab === item.id
-                  ? "bg-blue-600 text-white"
+                  ? "bg-gradient-to-r from-blue-500 to-indigo-800 text-white"
                   : "text-gray-400 hover:text-white hover:bg-gray-900"
               }`}
             >

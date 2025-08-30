@@ -1,7 +1,5 @@
 "use client";
 
-import { BotMessageSquare } from "lucide-react";
-
 interface WelcomeProps {
   userName?: string;
 }

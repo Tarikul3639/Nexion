@@ -1,8 +1,8 @@
 import { usePanel } from "@/context/PanelContext";
-import ChatHeader from "../ChatHeader";
+import ChatHeader from "./ChatHeader";
 import { ChatProvider } from "@/context/ChatContext";
 import { ChatItem } from "@/types/chat";
-import InputBar from "../InputBar/index";
+import InputBar from "./InputBar/index";
 
 export default function ChatContainer() {
   const { selectedChat, setSelectedChat } = usePanel();
