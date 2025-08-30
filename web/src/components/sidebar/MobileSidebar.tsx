@@ -11,7 +11,7 @@ export function MobileSidebar() {
   if (!isDesktop && selectedChat) return null;
 
   return (
-    <div className="md:hidden w-full bg-black text-white flex justify-around items-center h-16 border-t border-gray-700">
+    <div className="md:hidden w-full  text-white flex justify-around items-center h-16 ">
       {mobileNavigationItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
@@ -20,7 +20,7 @@ export function MobileSidebar() {
             onClick={() => setActiveTab(item.id as TabKey)}
             key={item.id}
             className={`flex flex-col items-center justify-center text-sm transition-colors ${
-              isActive ? "text-blue-500" : "text-white"
+              isActive ? "text-blue-500" : "text-gray-200 hover:text-white"
             }`}
           >
             <Icon size={20} />

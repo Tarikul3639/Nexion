@@ -48,7 +48,7 @@ export default function LeftPanel() {
   };
 
   return (
-    <div className="w-full h-full md:w-80 lg:w-96 flex items-center justify-center">
+    <div className="w-full h-full md:w-80 lg:w-96">
       {renderContent()}
     </div>
   );

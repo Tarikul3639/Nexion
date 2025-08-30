@@ -8,7 +8,7 @@ export default function ChatItem({ chat, isActive, onSelect }: ChatItemProps) {
   let lastMsg = chat.lastMessage;
   return (
     <div
-      className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-200 rounded-xl ${
+      className={`flex items-center md:px-2 py-3 cursor-pointer transition-colors duration-200 rounded-xl ${
         isActive ? "bg-[#323438]" : "hover:bg-[#323438] active:bg-[#1E1E1F]"
       }`}
       onClick={() => onSelect(chat)}

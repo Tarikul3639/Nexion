@@ -8,7 +8,7 @@ import { usePanel } from "@/context/PanelContext";
 export function DesktopSidebar() {
   const { activeTab, setActiveTab } = usePanel();
   return (
-    <div className="hidden md:flex w-16 flex-col items-center py-4">
+    <div className="hidden md:flex h-full w-16 flex-col items-center py-4">
       <div className="mb-6">
         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
           CH
