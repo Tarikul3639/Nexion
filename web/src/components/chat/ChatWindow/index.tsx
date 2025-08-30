@@ -1,8 +1,9 @@
 import { usePanel } from "@/context/PanelContext";
-import ChatHeader from "./ChatHeader";
+import ChatHeader from "./ChatTopBar";
 import { ChatProvider } from "@/context/ChatContext";
 import { ChatItem } from "@/types/chat";
 import InputBar from "./InputBar/index";
+import MessageList from "./MessageList";
 
 export default function ChatContainer() {
   const { selectedChat, setSelectedChat } = usePanel();
@@ -14,7 +15,7 @@ export default function ChatContainer() {
           selectedChat={selectedChat as ChatItem}
           setSelectedChat={setSelectedChat}
         />
-        <div className="flex-1 overflow-y-auto p-4 bg-white/5">HI</div>
+        <MessageList />
         <InputBar />
       </ChatProvider>
     </div>
