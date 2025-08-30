@@ -8,10 +8,10 @@ import { usePanel } from "@/context/PanelContext";
 export function DesktopSidebar() {
   const { activeTab, setActiveTab } = usePanel();
   return (
-    <div className="hidden md:flex h-full w-16 flex-col items-center py-4">
-      <div className="mb-6">
-        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-          CH
+    <div className="hidden md:flex h-full w-18 flex-col items-center py-4">
+      <div className="mb-12">
+        <div className="flex items-center justify-center text-gray-300 font-extrabold text-[28px]">
+          NX
         </div>
       </div>
 
@@ -28,7 +28,7 @@ export function DesktopSidebar() {
                   : "text-gray-400 hover:text-white hover:bg-gray-900"
               }`}
             >
-              <Icon size={20} />
+              <Icon  strokeWidth={2} />
               <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 {item.label}
               </div>

@@ -3,7 +3,7 @@ import { MessageCircle, GraduationCap, User, Briefcase, Calendar } from "lucide-
 export interface NavigationItem {
   id: string
   label: string
-  icon: React.ComponentType<{ size?: number }>
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
 // Desktop sidebar items
