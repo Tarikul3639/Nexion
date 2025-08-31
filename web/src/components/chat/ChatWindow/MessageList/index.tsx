@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import MessageItem from "./MessageItem";
+import MessageItem from "./MessageBubble";
 import { messages } from "@/data/messagesData";
 
 export default function MessageList() {
