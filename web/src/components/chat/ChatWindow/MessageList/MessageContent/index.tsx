@@ -8,7 +8,7 @@ const images = [
   "https://i.pravatar.cc/700",
 
 ];
-const audioSrc = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+const audioSrc = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3";
 
 export default function MessageContent({ message }: { message: MessageItem }) {
   return (
@@ -17,7 +17,7 @@ export default function MessageContent({ message }: { message: MessageItem }) {
       {message.content && <p>{message.content}</p>}
 
       {/* Images */}
-      {/* <ImageCard images={images} /> */}
+      <ImageCard images={images} />
 
       {/* Audio */}
       <AudioCard audioSrc={audioSrc} />
