@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme{
+  --breakpoint-xs: 400px;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -168,6 +172,5 @@
   -webkit-user-select: none; /* Chrome, Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE/Edge */
-   user-select: none; /* Standard */
+  user-select: none; /* Standard */
 }
-
