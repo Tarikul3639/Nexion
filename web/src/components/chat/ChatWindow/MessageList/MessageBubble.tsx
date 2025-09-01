@@ -70,7 +70,11 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
           {isDragging && <DragIndicator isMe={message.isMe} />}
 
           <MessageAvatar message={message} />
-          <div className={`flex items-center space-x-2 ${message.isMe ? "flex-row-reverse space-x-reverse" : ""}`}>
+          <div
+            className={`flex items-center space-x-2 ${
+              message.isMe ? "flex-row-reverse space-x-reverse" : ""
+            }`}
+          >
             <div
               className={`relative group select-none text-white rounded shadow-sm leading-6 p-4 rounded-xl ${
                 message.isMe

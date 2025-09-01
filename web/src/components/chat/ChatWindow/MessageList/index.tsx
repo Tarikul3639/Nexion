@@ -1,9 +1,10 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import MessageItem from "./MessageBubble";
-import { messages } from "@/data/messagesData";
+import { useChat } from "@/context/ChatContext";
 
 export default function MessageList() {
+  const { messages } = useChat();
   const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
   const messageRefs = useRef<{ [key: string]: HTMLDivElement }>({});
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -16,6 +17,11 @@ export default function MessageList() {
       setTimeout(() => setHighlightedMessageId(null), 2000);
     }
   };
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className="flex-1 overflow-auto p-3 md:p-4 space-y-4">

@@ -4,7 +4,7 @@
 export type ChatStatus = "online" | "offline" | "lastActive";
 
 // Message types
-export type MessageType = "text" | "image" | "video" | "file";
+export type MessageType = "text" | "image" | "file" | "audio" | "video";
 
 // Base message interface
 export interface BaseMessage {

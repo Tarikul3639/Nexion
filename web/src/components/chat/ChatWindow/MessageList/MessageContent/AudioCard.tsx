@@ -3,10 +3,7 @@
 import React, { useRef, useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-interface AudioCardProps {
-  audioSrc: string;
-}
+import { AudioMessage } from "@/types/message";
 
 // Data for the waveform bars
 const waveformBars = [
@@ -39,8 +36,8 @@ const waveformBars = [
   { x: 182, y: 17.5, height: 5 },
 ];
 
-export default function AudioCard({ audioSrc }: AudioCardProps) {
-  if (!audioSrc) return null;
+export default function AudioCard({ message }: { message: AudioMessage }) {
+  if (!message || message.type !== "audio") return null;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
@@ -114,7 +111,7 @@ export default function AudioCard({ audioSrc }: AudioCardProps) {
       {/* Hidden audio element */}
       <audio
         ref={audioRef}
-        src={audioSrc}
+        src={message.content.audio.url}
         onLoadedMetadata={handleLoadedMetadata}
         onEnded={handleEnded}
       />

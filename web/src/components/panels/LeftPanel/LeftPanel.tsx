@@ -2,7 +2,7 @@
 
 import React from "react";
 import ChatList from "@/components/chat/ChatList";
-import { allChats } from "@/data/sampleData";
+import { allChats } from "@/data/overview";
 import ClassroomList from "@/components/classroom/ClassroomList";
 import BotList from "@/components/bot/BotList";
 import { ChatItem } from "@/types/chat";
