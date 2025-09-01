@@ -45,7 +45,7 @@ export default function SendButton() {
           <Button
             size="icon"
             onClick={handleMessageSend}
-            className={`rounded-sm mr-2 flex items-center justify-center transition-all duration-200 focus:outline-none ${
+            className={`rounded-sm flex items-center justify-center transition-all duration-200 focus:outline-none ${
               draftMessage?.text || draftMessage?.attachments?.length
                 ? "bg-blue-600 hover:bg-blue-700 active:scale-95"
                 : "bg-gray-600 hover:bg-gray-700 hidden"

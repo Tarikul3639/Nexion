@@ -15,7 +15,7 @@ export default function ImageCard({ msg }: { msg: DraftMessage }) {
   else if (images.length >= 3) gridCols = "grid-cols-2";
 
   return (
-    <div className="xs:min-w-64">
+    <div className="min-w-[calc(100vw-150px)] sm:min-w-[calc(50vw-150px)] md:min-w-[calc(50vw-150px)] xl:min-w-[calc(40vw-150px)]">
       <div className={`grid ${gridCols} gap-2`}>
         {images.map((img, index) => (
           <div key={index} className="relative group w-full overflow-hidden rounded-lg aspect-square">
