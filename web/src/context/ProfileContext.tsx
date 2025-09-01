@@ -73,7 +73,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({
 
       return { success: false, message: data.message };
     } catch (error: unknown) {
-      let message = "Update failed";
+      const message = "Update failed";
 
       const err = error as {
         response?: { data?: { message: string } };

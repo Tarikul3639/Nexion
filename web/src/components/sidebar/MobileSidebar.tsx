@@ -23,7 +23,7 @@ export function MobileSidebar() {
               isActive ? "text-blue-500" : "text-gray-200 hover:text-white"
             }`}
           >
-            <Icon size={20} />
+            <Icon width={20} height={20} />
             <span>{item.label}</span>
           </button>
         );

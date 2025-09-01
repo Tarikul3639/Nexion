@@ -4,7 +4,6 @@ import { useChat } from "@/context/ChatContext";
 import { useState, useRef, useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
-import { LocalAttachment } from "@/types/chat";
 
 import RecordButton from "./RecordButton";
 import RecorderControls from "./RecorderControls";

@@ -1,31 +1,31 @@
 import { useState } from 'react';
-import { Chat } from '@/types/chat.types';
+import { ChatItem } from '@/types/chat';
 import { Message } from '@/types/message.types';
 
 export interface UseChatReturn {
-  selectedChat: Chat | null;
+  selectedChat: ChatItem | null;
   messages: Message[];
   loading: boolean;
   error: string | null;
-  selectChat: (chat: Chat) => void;
+  selectChat: (chat: ChatItem) => void;
   sendMessage: (content: string, attachments?: File[]) => Promise<void>;
   deleteMessage: (messageId: number) => Promise<void>;
   pinMessage: (messageId: number) => Promise<void>;
 }
 
 export const useChat = (): UseChatReturn => {
-  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [selectedChat, setSelectedChat] = useState<ChatItem | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectChat = (chat: Chat) => {
+  const selectChat = (chat: ChatItem) => {
     setSelectedChat(chat);
     // Load messages for selected chat
     loadMessages(chat.id);
   };
 
-  const loadMessages = async (chatId: number) => {
+  const loadMessages = async (chatId: string) => {
     setLoading(true);
     try {
       // API call to load messages

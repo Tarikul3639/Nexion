@@ -1,5 +1,5 @@
 import React from "react";
-import { MessageItem,DraftMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message";
 import ImageCard from "./ImageCard";
 import AudioCard from "./AudioCard";
 import TextCard from "./TextCard";

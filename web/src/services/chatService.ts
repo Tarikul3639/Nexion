@@ -1,11 +1,11 @@
-import { Chat } from '@/types/chat.types';
+import { ChatItem } from '@/types/chat';
 import { API_ENDPOINTS } from '@/utils/constants';
 
 export interface ChatService {
-  getChats(): Promise<Chat[]>;
-  getChatById(id: number): Promise<Chat>;
-  createChat(chat: Omit<Chat, 'id'>): Promise<Chat>;
-  updateChat(id: number, updates: Partial<Chat>): Promise<Chat>;
+  getChats(): Promise<ChatItem[]>;
+  getChatById(id: number): Promise<ChatItem>;
+  createChat(chat: Omit<ChatItem, 'id'>): Promise<ChatItem>;
+  updateChat(id: number, updates: Partial<ChatItem>): Promise<ChatItem>;
   deleteChat(id: number): Promise<void>;
   joinChat(chatId: number, userId: number): Promise<void>;
   leaveChat(chatId: number, userId: number): Promise<void>;
@@ -14,7 +14,7 @@ export interface ChatService {
 class ChatServiceImpl implements ChatService {
   private baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
 
-  async getChats(): Promise<Chat[]> {
+  async getChats(): Promise<ChatItem[]> {
     try {
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.CHATS}`);
       if (!response.ok) {
@@ -27,7 +27,7 @@ class ChatServiceImpl implements ChatService {
     }
   }
 
-  async getChatById(id: number): Promise<Chat> {
+  async getChatById(id: number): Promise<ChatItem> {
     try {
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.CHATS}/${id}`);
       if (!response.ok) {
@@ -40,7 +40,7 @@ class ChatServiceImpl implements ChatService {
     }
   }
 
-  async createChat(chat: Omit<Chat, 'id'>): Promise<Chat> {
+  async createChat(chat: Omit<ChatItem, 'id'>): Promise<ChatItem> {
     try {
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.CHATS}`, {
         method: 'POST',
@@ -59,7 +59,7 @@ class ChatServiceImpl implements ChatService {
     }
   }
 
-  async updateChat(id: number, updates: Partial<Chat>): Promise<Chat> {
+  async updateChat(id: number, updates: Partial<ChatItem>): Promise<ChatItem> {
     try {
       const response = await fetch(`${this.baseUrl}${API_ENDPOINTS.CHATS}/${id}`, {
         method: 'PATCH',

@@ -11,7 +11,6 @@ export default function AISuggestions() {
     showAISuggestions,
     setShowAISuggestions,
     aiSuggestions,
-    setAISuggestions,
     onAISuggestion,
   } = useChat();
 

@@ -16,7 +16,7 @@ interface Props {
 }
 
 const MessageBubble = forwardRef<HTMLDivElement, Props>(
-  ({ message, highlighted, scrollToMessage, onReply }, ref) => {
+  ({ message, highlighted, onReply }, ref) => {
     const [isDragging, setIsDragging] = useState(false);
     const controls = useAnimation();
     const dragStarted = useRef(false);
@@ -80,7 +80,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
                 message.isMe
                   ? "rounded-br-none bg-blue-950"
                   : "rounded-bl-none rounded-br-xl bg-[#323438]"
-              } ${message.isPinned ? "ring-2 ring-yellow-400" : ""}`}
+              } ${`message.isPinned ? "ring-2 ring-yellow-400" : ""`}`}
             >
               <MessageHeader message={message} />
               <MessageContent msg={message.content} />
@@ -92,5 +92,8 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
+
+// Add display name to fix the eslint error
+MessageBubble.displayName = "MessageBubble";
 
 export default MessageBubble;

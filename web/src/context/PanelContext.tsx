@@ -1,22 +1,22 @@
 "use client";
 import React, { createContext, useContext, useState } from "react";
 import { TabKey, TAB_KEYS } from "@/components/sidebar/navigationItems";
-import { Chat } from "@/types/";
+import { ChatItem } from "@/types/chat";
 import { Bot } from "@/types/bot";
 import { Classroom } from "@/types/classroom";
 
 interface PanelContextProps {
   activeTab: TabKey;
   setActiveTab: (tab: TabKey) => void;
-  selectedChat: Chat | Classroom | Bot | null;
-  setSelectedChat: (chat: Chat | Classroom | Bot | null) => void;
+  selectedChat: ChatItem | Classroom | Bot | null;
+  setSelectedChat: (chat: ChatItem | Classroom | Bot | null) => void;
 }
 
 const PanelContext = createContext<PanelContextProps | undefined>(undefined);
 
 export function PanelProvider({ children }: { children: React.ReactNode }) {
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.CHATS);
-  const [selectedChat, setSelectedChat] = useState<Chat | Classroom | Bot | null>(null);
+  const [selectedChat, setSelectedChat] = useState<ChatItem | Classroom | Bot | null>(null);
   
   return (
     <PanelContext.Provider

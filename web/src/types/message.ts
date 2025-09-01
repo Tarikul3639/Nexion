@@ -24,4 +24,6 @@ export type MessageItem = {
   timestamp: string;
   status: "sending" | "sent" | "delivered" | "seen";
   isMe: boolean;
+  role?: "teacher" | "assistant" | "admin" | "student";
+  isEdited?: boolean;
 };

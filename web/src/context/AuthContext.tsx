@@ -181,7 +181,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       return { success: false, message: data.message };
     } catch (error: unknown) {
-      let message = "Login failed";
+      const message = "Login failed";
       const err = error as {
         response?: { data?: { message: string } };
         message?: string;
@@ -217,7 +217,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       return { success: false, message: data.message };
     } catch (error: unknown) {
-      let message = "Signup failed";
+      const message = "Signup failed";
 
       const err = error as {
         response?: { data?: { message: string } };

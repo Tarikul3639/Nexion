@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useChat } from "@/context/ChatContext";
-import { DraftMessage } from "@/types/message";
 
 // Attachment types for messages
 export type AttachmentType = "image" | "video" | "file" | "audio";
@@ -17,7 +16,7 @@ export type AttachmentType = "image" | "video" | "file" | "audio";
 interface AttachmentConfig {
   type: AttachmentType;
   label: string;
-  icon: React.FC<any>;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
   accept?: string;
 }
 

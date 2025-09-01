@@ -38,13 +38,15 @@ const waveformBars = [
 
 export default function AudioCard({ msg }: { msg: DraftMessage }) {
   const audio = msg.attachments?.find(att => att.type === "audio/webm");
-  if (!audio) return null;
-
+  // Initialize hooks unconditionally
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState("00:00");
   const [isSeeking, setIsSeeking] = useState(false);
+  
+  // Return null after all hooks are defined
+  if (!audio) return null;
 
   // Format time to mm:ss
   const formatTime = (time: number) => {
