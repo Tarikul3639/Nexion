@@ -13,7 +13,8 @@ import RecorderStatus from "./RecorderStatus";
 const MAX_DURATION = 120; // 2 minutes
 
 export default function VoiceRecorder() {
-  const { isRecordingActive, setIsRecordingActive, setMessage } = useChat();
+  const { isRecordingActive, setIsRecordingActive, setDraftMessage } =
+    useChat();
   const [isRecording, setIsRecording] = useState(false);
   const [stop, setStop] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -53,18 +54,17 @@ export default function VoiceRecorder() {
         setStop(true);
 
         // Wrap the audio blob as a LocalAttachment
-        const audioAttachment: LocalAttachment = {
-          file: new File([blob], `audio_${Date.now()}.webm`, {
-            type: "audio/webm",
-          }),
-          type: "audio/webm",
+        const audioAttachment = {
+          type: "audio/webm" as const,
+          url,
           name: `audio_${Date.now()}.webm`,
           size: blob.size,
+          duration: time,
         };
 
-        setMessage((prev) => ({
+        setDraftMessage((prev) => ({
           ...prev,
-          attachments: [...prev.attachments, audioAttachment], // now type-safe
+          attachments: [...(prev?.attachments || []), audioAttachment],
         }));
       };
 
@@ -122,9 +122,10 @@ export default function VoiceRecorder() {
     setIsPlaying(false);
     setPlayTime(0);
     setDuration(0);
-    setMessage((prev) => ({
-      ...prev,
-      attachments: prev.attachments.filter((att) => att.type !== "audio/webm"),
+    setDraftMessage((prev) => ({
+      ...(prev ?? {}),
+      attachments:
+        prev?.attachments?.filter((att) => att.type !== "audio/webm") || [],
     }));
 
     // Clear recorded chunks

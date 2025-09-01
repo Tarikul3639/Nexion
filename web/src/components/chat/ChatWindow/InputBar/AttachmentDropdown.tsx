@@ -1,15 +1,19 @@
 import { useRef } from "react";
-import { useChat } from "@/context/ChatContext";
 import { Button } from "@/components/ui/button";
 import { Paperclip, Image, Clapperboard, Folder } from "lucide-react";
-import { AttachmentType, LocalAttachment } from "@/types/chat";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useChat } from "@/context/ChatContext";
+import { DraftMessage } from "@/types/message";
 
+// Attachment types for messages
+export type AttachmentType = "image" | "video" | "file" | "audio";
+
+// Configuration for each attachment type
 interface AttachmentConfig {
   type: AttachmentType;
   label: string;
@@ -24,38 +28,60 @@ const attachmentConfig: AttachmentConfig[] = [
 ];
 
 export default function AttachmentDropdown() {
-  const { setMessage } = useChat();
+  const { draftMessage, setDraftMessage } = useChat();
 
-  const inputRefs = {
-    image: useRef<HTMLInputElement>(null),
-    video: useRef<HTMLInputElement>(null),
-    file: useRef<HTMLInputElement>(null),
-  };
+  const imageRef = useRef<HTMLInputElement | null>(null);
+  const videoRef = useRef<HTMLInputElement | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   const handleClick = (type: AttachmentType) => {
-    inputRefs[type].current?.click();
+    if (type === "image") imageRef.current?.click();
+    if (type === "video") videoRef.current?.click();
+    if (type === "file") fileRef.current?.click();
   };
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     type: AttachmentType
   ) => {
-    const files = e.target.files;
-    if (!files) return;
+    if (!e.target.files || e.target.files.length === 0) return;
 
-    const filesArray: LocalAttachment[] = Array.from(files).map((file) => ({
-      file,
-      type,
-      name: file.name,
-      size: file.size,
-    }));
+    const newAttachments = Array.from(e.target.files).map((file) => {
+      if (type === "image") {
+        return {
+          type: "image" as const,
+          url: URL.createObjectURL(file),
+          alt: file.name,
+        };
+      } else if (type === "file") {
+        return {
+          type: "file" as const,
+          url: URL.createObjectURL(file),
+          name: file.name,
+          size: file.size,
+          extension: file.name.split(".").pop() || "",
+        };
+      } else if (type === "video") {
+        return {
+          type: "video" as const,
+          url: URL.createObjectURL(file),
+        };
+      } else if (type === "audio") {
+        return {
+          type: "audio/webm" as const,
+          url: URL.createObjectURL(file),
+        };
+      }
+      // If none match, return undefined instead of null
+      throw new Error("Invalid attachment type");
+    });
 
-    setMessage((prev) => ({
-      ...prev,
-      attachments: [...prev.attachments, ...filesArray],
-    }));
+    setDraftMessage({
+      text: draftMessage?.text || "",
+      attachments: [...(draftMessage?.attachments || []), ...newAttachments],
+    });
 
-    e.target.value = ""; // reset input
+    e.target.value = "";
   };
 
   return (
@@ -80,13 +106,15 @@ export default function AttachmentDropdown() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Hidden inputs */}
       {attachmentConfig.map(({ type, accept }) => (
         <input
           key={type}
           type="file"
           accept={accept}
-          ref={inputRefs[type]}
+          multiple
+          ref={
+            type === "image" ? imageRef : type === "video" ? videoRef : fileRef
+          }
           onChange={(e) => handleFileChange(e, type)}
           className="hidden"
         />

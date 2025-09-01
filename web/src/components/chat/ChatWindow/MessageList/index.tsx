@@ -4,7 +4,7 @@ import MessageItem from "./MessageBubble";
 import { useChat } from "@/context/ChatContext";
 
 export default function MessageList() {
-  const { messages } = useChat();
+  const { allMessages } = useChat();
   const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
   const messageRefs = useRef<{ [key: string]: HTMLDivElement }>({});
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -21,11 +21,11 @@ export default function MessageList() {
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [allMessages]);
 
   return (
     <div className="flex-1 overflow-auto p-3 md:p-4 space-y-4">
-      {messages.map((msg) => (
+      {allMessages.map((msg) => (
         <MessageItem
           key={msg.id}
           message={msg}

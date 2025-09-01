@@ -14,7 +14,7 @@ export default function RecordButton({
   handleCancel,
   handleRecording,
 }: RecordButtonProps) {
-  const { isRecordingActive, message } = useChat();
+  const { isRecordingActive, draftMessage } = useChat();
 
   return (
     <Tooltip>
@@ -31,7 +31,7 @@ export default function RecordButton({
           <Button
             size="icon"
             onClick={handleRecording}
-            className={`rounded-sm flex items-center justify-center transition-all duration-200 active:scale-95 focus:outline-none bg-blue-600 hover:bg-blue-700 ${message.text || message.attachments.length > 0 ? "hidden" : ""}`}
+            className={`rounded-sm flex items-center justify-center transition-all duration-200 active:scale-95 focus:outline-none bg-blue-600 hover:bg-blue-700 ${ draftMessage?.attachments?.length || draftMessage?.text ? "hidden" : ""}`}
           >
             <Mic className="w-4 h-4" />
           </Button>

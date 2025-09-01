@@ -1,11 +1,11 @@
-import { TextMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message";
 
-export default function TextCard({ message }: { message: TextMessage }) {
-  if (message.type !== "text") return null;
+export default function TextCard({ msg }: { msg: DraftMessage }) {
+  if (!msg.text) return null;
 
   return (
     <div className="relative text-base text-gray-50 space-y-2.5 leading-relaxed whitespace-pre-wrap break-words">
-      {message.content.text && <p>{message.content.text}</p>}
+      {msg.text && <p>{msg.text}</p>}
     </div>
   );
 }

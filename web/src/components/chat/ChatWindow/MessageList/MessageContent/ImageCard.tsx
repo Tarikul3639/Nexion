@@ -1,13 +1,13 @@
 import { Download } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import Image from "next/image";
-import { ImageMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message";
 
-export default function ImageCard({ message }: { message: ImageMessage }) {
+export default function ImageCard({ msg }: { msg: DraftMessage }) {
   // Check inside the card
-  if (message.type !== "image" || !message.content.images?.length) return null;
+  if (!msg.attachments?.some(att => att.type === "image")) return null;
 
-  const images = message.content.images;
+  const images = msg.attachments.filter(att => att.type === "image");
 
   // Responsive grid
   let gridCols = "grid-cols-1";

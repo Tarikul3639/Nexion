@@ -1,9 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState } from "react";
-import { InputMessage } from "@/types/chat";
 import { MessageItem } from "@/types/message";
-import { messages as initialMessages } from "@/data/messages"; // initial dummy messages
+import { messages as initialMessages } from "@/data/messages";
+import { DraftMessage } from "@/types/message";
 
 interface ChatContextType {
   showAISuggestions: boolean;
@@ -13,10 +13,10 @@ interface ChatContextType {
   onAISuggestion: (suggestion: string) => void;
   isRecordingActive: boolean;
   setIsRecordingActive: React.Dispatch<React.SetStateAction<boolean>>;
-  message: InputMessage;
-  setMessage: React.Dispatch<React.SetStateAction<InputMessage>>;
-  messages: MessageItem[]; // ✅ full chat messages
-  setMessages: React.Dispatch<React.SetStateAction<MessageItem[]>>; // ✅ updater
+  draftMessage: DraftMessage | null;
+  setDraftMessage: React.Dispatch<React.SetStateAction<DraftMessage | null>>;
+  allMessages: MessageItem[];
+  setAllMessages: React.Dispatch<React.SetStateAction<MessageItem[]>>;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -27,19 +27,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [aiSuggestions, setAISuggestions] = useState<string[]>(suggestion);
   const [isRecordingActive, setIsRecordingActive] = useState(false);
-
-  // Input box state
-  const [message, setMessage] = useState<InputMessage>({
-    text: "",
-    attachments: [],
-  });
-
-  // ✅ Full messages state
-  const [messages, setMessages] = useState<MessageItem[]>(initialMessages);
+  const [allMessages, setAllMessages] = useState<MessageItem[]>(initialMessages);
+  const [draftMessage, setDraftMessage] = useState<DraftMessage | null>({
+  text: "",
+  attachments: [],
+});
 
   // AI Suggestion selection
   const onAISuggestion = (suggestion: string) => {
-    setMessage((prev) => ({
+    setDraftMessage((prev) => ({
       ...prev,
       text: suggestion,
     }));
@@ -54,10 +50,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     onAISuggestion,
     isRecordingActive,
     setIsRecordingActive,
-    message,
-    setMessage,
-    messages,     // ✅ add here
-    setMessages,  // ✅ add here
+    draftMessage,
+    setDraftMessage,
+    allMessages,
+    setAllMessages,
   };
 
   return <ChatContext.Provider value={Value}>{children}</ChatContext.Provider>;

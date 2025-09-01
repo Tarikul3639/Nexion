@@ -1,27 +1,20 @@
 import React from "react";
-import {
-  MessageItem,
-  TextMessage,
-  ImageMessage,
-  FileMessage,
-  AudioMessage,
-  VideoMessage,
-} from "@/types/message";
+import { MessageItem,DraftMessage } from "@/types/message";
 import ImageCard from "./ImageCard";
 import AudioCard from "./AudioCard";
 import TextCard from "./TextCard";
 
-export default function MessageContent({ message }: { message: MessageItem }) {
+export default function MessageContent({ msg }: { msg: DraftMessage }) {
   return (
     <div className="relative text-base text-gray-50 space-y-2.5 leading-relaxed whitespace-pre-wrap break-words">
       {/* Message content */}
-      <TextCard message={message as TextMessage} />
+      {msg.text && <TextCard msg={msg} />}
 
       {/* Images */}
-      <ImageCard message={message as ImageMessage} />
+      <ImageCard msg={msg} />
 
       {/* Audio */}
-      <AudioCard message={message as AudioMessage} />
+      <AudioCard msg={msg} />
     </div>
   );
 }

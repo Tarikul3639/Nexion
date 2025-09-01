@@ -83,7 +83,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
               } ${message.isPinned ? "ring-2 ring-yellow-400" : ""}`}
             >
               <MessageHeader message={message} />
-              <MessageContent message={message} />
+              <MessageContent msg={message.content} />
             </div>
             <MessageDropdown />
           </div>
