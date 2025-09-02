@@ -9,6 +9,7 @@ import {
   AudioLines,
 } from "lucide-react";
 import { useChat } from "@/context/ChatContext";
+import { DraftMessage } from "@/types/message";
 
 export default function ReplyPreview() {
   const { replyToId, setReplyToId, allMessages } = useChat();
@@ -22,31 +23,28 @@ export default function ReplyPreview() {
   // -----------------------------
   // Identify attachment types
   // -----------------------------
-  const getAttachmentTypes = (attachments: any[]) => {
-    const types = {
-      images: attachments.filter((f) => f.type?.startsWith("image")),
-      videos: attachments.filter((f) => f.type?.startsWith("video")),
-      audios: attachments.filter((f) => f.type?.startsWith("audio")),
-      file: attachments.filter((f) => f.type?.startsWith("file")),
+  const getAttachmentTypes = (
+    attachments: DraftMessage["attachments"] = []
+  ) => {
+    return {
+      images: attachments.filter((f) => f.type.startsWith("image")),
+      videos: attachments.filter((f) => f.type.startsWith("video")),
+      audios: attachments.filter((f) => f.type.startsWith("audio")),
+      files: attachments.filter((f) => f.type.startsWith("file")),
     };
-    return types;
   };
 
-  const { images, videos, audios, file } = getAttachmentTypes(attachments);
+  const { images, videos, audios, files } = getAttachmentTypes(attachments);
 
   // -----------------------------
   // Get attachment summary
   // -----------------------------
   const getAttachmentSummary = () => {
     const parts: string[] = [];
-    if (images.length)
-      parts.push(`${images.length} image${images.length > 1 ? "s" : ""}`);
-    if (videos.length)
-      parts.push(`${videos.length} video${videos.length > 1 ? "s" : ""}`);
-    if (audios.length)
-      parts.push(`${audios.length} audio${audios.length > 1 ? "s" : ""}`);
-    if (file.length)
-      parts.push(`${file.length} file${file.length > 1 ? "s" : ""}`);
+    if (images.length) parts.push(`${images.length} image${images.length > 1 ? "s" : ""}`);
+    if (videos.length) parts.push(`${videos.length} video${videos.length > 1 ? "s" : ""}`);
+    if (audios.length) parts.push(`${audios.length} audio${audios.length > 1 ? "s" : ""}`);
+    if (files.length) parts.push(`${files.length} file${files.length > 1 ? "s" : ""}`);
     return parts.join(", ");
   };
 
@@ -58,7 +56,7 @@ export default function ReplyPreview() {
       {images.length > 0 && <ImageIcon className="w-3 h-3 text-blue-500" />}
       {videos.length > 0 && <Video className="w-3 h-3 text-purple-500" />}
       {audios.length > 0 && <AudioLines className="w-3 h-3 text-green-500" />}
-      {file.length > 0 && <Paperclip className="w-3 h-3 text-gray-500" />}
+      {files.length > 0 && <Paperclip className="w-3 h-3 text-gray-500" />}
     </div>
   );
 
@@ -87,17 +85,13 @@ export default function ReplyPreview() {
           {attachments.length > 0 && (
             <div className="flex items-center space-x-1">
               {getAttachmentIcons()}
-              <p className="text-xs text-gray-500 italic">
-                {getAttachmentSummary()}
-              </p>
+              <p className="text-xs text-gray-500 italic">{getAttachmentSummary()}</p>
             </div>
           )}
 
           {/* Placeholder if no content or attachments */}
           {!replyingTo.content?.text && attachments.length === 0 && (
-            <p className="text-sm text-gray-400 italic">
-              Message has no content
-            </p>
+            <p className="text-sm text-gray-400 italic">Message has no content</p>
           )}
         </div>
 

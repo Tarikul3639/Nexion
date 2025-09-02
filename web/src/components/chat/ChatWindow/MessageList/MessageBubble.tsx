@@ -18,7 +18,7 @@ interface Props {
 
 const MessageBubble = forwardRef<HTMLDivElement, Props>(
 
-  ({ message, highlighted, onReply }, ref) => {
+  ({ message, highlighted }, ref) => {
     const { setReplyToId } = useChat();
     const [isDragging, setIsDragging] = useState(false);
     const controls = useAnimation();

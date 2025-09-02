@@ -23,7 +23,6 @@ export default function MessageList() {
 
   // Expose scrollToMessage to the context
   useEffect(() => {
-    // @ts-ignore - we know this exists because we added it to the interface
     context.scrollToMessage = scrollToMessage;
   }, [context]);
 
