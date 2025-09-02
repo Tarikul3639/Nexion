@@ -6,18 +6,45 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EllipsisVertical } from "lucide-react";
+import { useChat } from "@/context/ChatContext";
 
 interface MessageDropdownProps {
   options?: string[];
+  msgId: string;
 }
 
 const MessageDropdown: FC<MessageDropdownProps> = ({
   options = ["Reply", "Forward", "Copy", "Report", "Delete"],
+  msgId,
 }) => {
+  const { setReplyToId } = useChat();
+
+  const onClick = (item: string) => {
+    switch (item) {
+      case "Reply":
+        setReplyToId(msgId);
+        break;
+
+      case "Edit":
+        // edit logic
+        break;
+
+      case "Delete":
+        // delete logic
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <EllipsisVertical className="text-gray-400 h-7 w-7 p-1 hover:bg-[#323438]/50 rounded-sm cursor-pointer" strokeWidth={2} />
+        <EllipsisVertical
+          className="text-gray-400 h-7 w-7 p-1 hover:bg-[#323438]/50 rounded-sm cursor-pointer"
+          strokeWidth={2}
+        />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -27,6 +54,7 @@ const MessageDropdown: FC<MessageDropdownProps> = ({
         {options.map((item) => (
           <DropdownMenuItem
             key={item}
+            onClick={() => onClick(item)}
             className="text-gray-200 rounded-none data-[highlighted]:bg-[#3F4245] data-[highlighted]:text-white"
           >
             {item}

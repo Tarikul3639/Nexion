@@ -4,6 +4,7 @@ import { ChatProvider } from "@/context/ChatContext";
 import { ChatItem } from "@/types/chat";
 import InputBar from "./InputBar/index";
 import MessageList from "./MessageList";
+import ReplyPreview from "./ReplayPreview";
 
 export default function ChatContainer() {
   const { selectedChat, setSelectedChat } = usePanel();
@@ -16,6 +17,7 @@ export default function ChatContainer() {
           setSelectedChat={setSelectedChat}
         />
         <MessageList />
+        <ReplyPreview />
         <InputBar />
       </ChatProvider>
     </div>

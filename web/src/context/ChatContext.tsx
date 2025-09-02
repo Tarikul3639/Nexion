@@ -17,6 +17,8 @@ interface ChatContextType {
   setDraftMessage: React.Dispatch<React.SetStateAction<DraftMessage | null>>;
   allMessages: MessageItem[];
   setAllMessages: React.Dispatch<React.SetStateAction<MessageItem[]>>;
+  replyToId: string | null;
+  setReplyToId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -27,6 +29,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [aiSuggestions, setAISuggestions] = useState<string[]>(suggestion);
   const [isRecordingActive, setIsRecordingActive] = useState(false);
+  const [replyToId, setReplyToId] = useState<string | null>(null);
   const [allMessages, setAllMessages] = useState<MessageItem[]>(initialMessages);
   const [draftMessage, setDraftMessage] = useState<DraftMessage | null>({
   text: "",
@@ -54,6 +57,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setDraftMessage,
     allMessages,
     setAllMessages,
+    replyToId,
+    setReplyToId,
   };
 
   return <ChatContext.Provider value={Value}>{children}</ChatContext.Provider>;

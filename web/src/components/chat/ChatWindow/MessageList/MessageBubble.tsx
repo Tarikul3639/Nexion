@@ -85,7 +85,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
               <MessageHeader message={message} />
               <MessageContent msg={message.content} />
             </div>
-            <MessageDropdown />
+            <MessageDropdown msgId={message.id} />
           </div>
         </motion.div>
       </div>
