@@ -13,6 +13,8 @@ import { MessageItem } from "@/types/message";
 
 export default function SendButton() {
   const {
+    replyToId,
+    setReplyToId,
     draftMessage,
     setDraftMessage,
     setAllMessages,
@@ -30,12 +32,14 @@ export default function SendButton() {
       timestamp: new Date().toISOString(),
       status: "sending",
       isMe: true,
+      replyToId: replyToId || undefined,
       content: draftMessage,
     };
     setAllMessages((prev) => [...prev, newMessage]);
     // Clear the input after sending
     setDraftMessage(null);
     setIsRecordingActive(false);
+    setReplyToId(null);
   };
 
   return (

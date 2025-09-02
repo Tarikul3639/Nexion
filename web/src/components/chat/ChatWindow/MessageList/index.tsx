@@ -4,8 +4,11 @@ import MessageItem from "./MessageBubble";
 import { useChat } from "@/context/ChatContext";
 
 export default function MessageList() {
-  const { allMessages } = useChat();
-  const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
+  const context = useChat();
+  const { allMessages } = context;
+  const [highlightedMessageId, setHighlightedMessageId] = useState<
+    string | null
+  >(null);
   const messageRefs = useRef<{ [key: string]: HTMLDivElement }>({});
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -17,6 +20,12 @@ export default function MessageList() {
       setTimeout(() => setHighlightedMessageId(null), 2000);
     }
   };
+
+  // Expose scrollToMessage to the context
+  useEffect(() => {
+    // @ts-ignore - we know this exists because we added it to the interface
+    context.scrollToMessage = scrollToMessage;
+  }, [context]);
 
   // Scroll to bottom when messages change
   useEffect(() => {

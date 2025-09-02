@@ -38,6 +38,7 @@ export const messages: MessageItem[] = [
     timestamp: "2025-08-30T09:32:00Z",
     status: "sent",
     isMe: true,
+    replyToId: "1",
   },
 
   // 📄 File message
@@ -84,5 +85,19 @@ export const messages: MessageItem[] = [
     timestamp: "2025-08-30T09:36:00Z",
     status: "sent",
     isMe: false,
+    replyToId: "3",
   },
+  {
+    id: "5",
+    senderId: "u1",
+    senderName: "Tarikul",
+    senderAvatar: "https://i.pravatar.cc/100?img=1",
+    content: {
+      text: "This is a reply to a message",
+    },
+    timestamp: "2025-08-30T09:38:00Z",
+    status: "sent",
+    isMe: true,
+    replyToId: "4",
+  }
 ];

@@ -19,6 +19,7 @@ interface ChatContextType {
   setAllMessages: React.Dispatch<React.SetStateAction<MessageItem[]>>;
   replyToId: string | null;
   setReplyToId: React.Dispatch<React.SetStateAction<string | null>>;
+  scrollToMessage?: (messageId: string) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);

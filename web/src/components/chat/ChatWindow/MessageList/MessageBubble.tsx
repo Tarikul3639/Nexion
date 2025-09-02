@@ -7,6 +7,7 @@ import MessageHeader from "./MessageHeader";
 import type { MessageItem } from "@/types/message";
 import MessageDropdown from "./MessageDropdown";
 import MessageContent from "./MessageContent";
+import { useChat } from "@/context/ChatContext";
 
 interface Props {
   message: MessageItem;
@@ -16,7 +17,9 @@ interface Props {
 }
 
 const MessageBubble = forwardRef<HTMLDivElement, Props>(
+
   ({ message, highlighted, onReply }, ref) => {
+    const { setReplyToId } = useChat();
     const [isDragging, setIsDragging] = useState(false);
     const controls = useAnimation();
     const dragStarted = useRef(false);
@@ -52,10 +55,10 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
           }}
           onDragEnd={(_, info) => {
             if (info.offset.x < -40 && message.isMe) {
-              onReply?.(message);
+              setReplyToId(message.id);
             }
             if (info.offset.x > 40 && !message.isMe) {
-              onReply?.(message);
+              setReplyToId(message.id);
             }
             setIsDragging(false);
             controls.start({ x: 0 });
@@ -81,9 +84,10 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
                   ? "rounded-br-none bg-blue-950"
                   : "rounded-bl-none rounded-br-xl bg-[#323438]"
               } ${`message.isPinned ? "ring-2 ring-yellow-400" : ""`}`}
+              data-message-id={message.id}
             >
               <MessageHeader message={message} />
-              <MessageContent msg={message.content} />
+              <MessageContent msg={message.content} replyToId={message.replyToId} />
             </div>
             <MessageDropdown msgId={message.id} />
           </div>
