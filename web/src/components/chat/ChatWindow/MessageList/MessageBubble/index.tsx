@@ -4,7 +4,7 @@ import React, { forwardRef, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import DragIndicator from "@/components/common/DragIndicator";
 import MessageAvatar from "./MessageAvatar";
-import MessageHeader from "./MessageHeader";
+import MessageHeader from "../MessageHeader";
 import MessageContent from "./MessageContent";
 import MessageStatus from "./MessageStatus";
 import type { MessageItem } from "@/types/message";

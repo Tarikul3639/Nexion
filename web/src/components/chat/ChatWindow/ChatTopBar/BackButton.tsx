@@ -15,7 +15,7 @@ export default function BackButton() {
       history.pushState({ chatOpen: true }, "");
     }
 
-    const handlePopState = (event: PopStateEvent) => {
+    const handlePopState = () => {
       if (selectedChat) {
         // Close the chat instead of navigating back
         setSelectedChat(null);

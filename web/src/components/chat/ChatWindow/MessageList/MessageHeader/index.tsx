@@ -1,6 +1,5 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { CheckCheck } from "lucide-react";
 import { MessageItem } from "@/types/message";
 
 export default function MessageHeader({ message }: { message: MessageItem }) {
