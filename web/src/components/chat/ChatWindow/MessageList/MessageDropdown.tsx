@@ -17,20 +17,26 @@ const MessageDropdown: FC<MessageDropdownProps> = ({
   options = ["Reply", "Forward", "Copy", "Report", "Delete"],
   msgId,
 }) => {
-  const { setReplyToId } = useChat();
+  const { setReplyToId, allMessages, setAllMessages } = useChat();
 
   const onClick = (item: string) => {
     switch (item) {
       case "Reply":
         setReplyToId(msgId);
         break;
-
+      case "Forward":
+        break;
+      case "Copy":
+        navigator.clipboard.writeText(
+          allMessages.find((msg) => msg.id === msgId)?.content.text || ""
+        );
+        break;
       case "Edit":
         // edit logic
         break;
 
       case "Delete":
-        // delete logic
+        setAllMessages((prev) => prev.filter((msg) => msg.id !== msgId));
         break;
 
       default:
