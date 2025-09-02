@@ -1,95 +1,81 @@
 "use client";
+
 import React, { forwardRef, useRef, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import DragIndicator from "@/components/common/DragIndicator";
 import MessageAvatar from "./MessageAvatar";
 import MessageHeader from "./MessageHeader";
-import type { MessageItem } from "@/types/message";
-import MessageDropdown from "./MessageDropdown";
 import MessageContent from "./MessageContent";
+import MessageStatus from "./MessageStatus";
+import type { MessageItem } from "@/types/message";
 import { useChat } from "@/context/ChatContext";
 
 interface Props {
   message: MessageItem;
   highlighted?: boolean;
   scrollToMessage?: (id: string) => void;
-  onReply?: (message: MessageItem) => void;
 }
 
 const MessageBubble = forwardRef<HTMLDivElement, Props>(
-
   ({ message, highlighted }, ref) => {
     const { setReplyToId } = useChat();
     const [isDragging, setIsDragging] = useState(false);
     const controls = useAnimation();
     const dragStarted = useRef(false);
 
+    // Determine if drag offset exceeds threshold
+    const handleDrag = (offsetX: number) => {
+      if ((message.isMe && offsetX < -40) || (!message.isMe && offsetX > 40)) {
+        setIsDragging(true);
+      } else {
+        setIsDragging(false);
+      }
+    };
+
+    const handleDragEnd = (offsetX: number) => {
+      if ((message.isMe && offsetX < -40) || (!message.isMe && offsetX > 40)) {
+        setReplyToId(message.id);
+      }
+      setIsDragging(false);
+      controls.start({ x: 0 });
+    };
+
+    const containerClass = `flex max-w-screen overflow-hidden ${
+      message.isMe ? "justify-end" : "justify-start"
+    } ${highlighted ? "bg-gray-200 p-2 rounded-sm" : ""}`;
+
+    const bubbleClass = `flex items-start space-x-3 max-w-[90%] md:max-w-sm lg:max-w-md relative ${
+      message.isMe ? "flex-row-reverse space-x-reverse" : ""
+    }`;
+
     return (
-      <div
-        ref={ref}
-        className={`flex max-w-screen overflow-hidden ${
-          message.isMe ? "justify-end" : "justify-start"
-        } ${highlighted ? "bg-gray-200 p-2 rounded-sm" : ""}`}
-      >
+      <div ref={ref} className={containerClass}>
         <motion.div
           drag="x"
-          transition={{ type: "spring", stiffness: 1000, damping: 35 }}
           dragConstraints={{ left: -50, right: 50 }}
           dragElastic={0.2}
-          onDragStart={() => {
-            dragStarted.current = true;
-            // Initially indicator is hidden
-            setIsDragging(false);
-          }}
-          onDrag={(e, info) => {
-            const offset = info.offset.x;
-            // Only show drag indicator if threshold exceeded
-            if (
-              (message.isMe && offset < -40) ||
-              (!message.isMe && offset > 40)
-            ) {
-              setIsDragging(true);
-            } else {
-              setIsDragging(false);
-            }
-          }}
-          onDragEnd={(_, info) => {
-            if (info.offset.x < -40 && message.isMe) {
-              setReplyToId(message.id);
-            }
-            if (info.offset.x > 40 && !message.isMe) {
-              setReplyToId(message.id);
-            }
-            setIsDragging(false);
-            controls.start({ x: 0 });
-          }}
+          transition={{ type: "spring", stiffness: 1000, damping: 35 }}
           animate={controls}
           initial={{ x: 0 }}
-          className={`flex items-end space-x-3 max-w-[90%] md:max-w-sm lg:max-w-md relative ${
-            message.isMe ? "flex-row-reverse space-x-reverse" : ""
-          }`}
+          className={bubbleClass}
+          onDragStart={() => {
+            dragStarted.current = true;
+            setIsDragging(false);
+          }}
+          onDrag={(e, info) => handleDrag(info.offset.x)}
+          onDragEnd={(_, info) => handleDragEnd(info.offset.x)}
         >
-          {/* Drag indicator */}
           {isDragging && <DragIndicator isMe={message.isMe} />}
-
           <MessageAvatar message={message} />
-          <div
-            className={`flex items-center space-x-2 ${
-              message.isMe ? "flex-row-reverse space-x-reverse" : ""
-            }`}
-          >
-            <div
-              className={`relative group select-none text-white rounded shadow-sm leading-6 p-4 rounded-xl ${
-                message.isMe
-                  ? "rounded-br-none bg-blue-950"
-                  : "rounded-bl-none rounded-br-xl bg-[#323438]"
-              } ${`message.isPinned ? "ring-2 ring-yellow-400" : ""`}`}
-              data-message-id={message.id}
-            >
-              <MessageHeader message={message} />
-              <MessageContent msg={message.content} replyToId={message.replyToId} />
-            </div>
-            <MessageDropdown msgId={message.id} />
+          <div>
+            <MessageHeader message={message} />
+            <MessageContent
+              msg={message.content}
+              replyToId={message.replyToId}
+              isMe={message.isMe}
+              id={message.id}
+            />
+            {message.isMe && <MessageStatus />}
           </div>
         </motion.div>
       </div>
@@ -97,7 +83,6 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
   }
 );
 
-// Add display name to fix the eslint error
 MessageBubble.displayName = "MessageBubble";
 
 export default MessageBubble;

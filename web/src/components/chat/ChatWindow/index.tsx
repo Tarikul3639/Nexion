@@ -3,7 +3,6 @@ import { ChatProvider } from "@/context/ChatContext";
 import InputBar from "./InputBar/index";
 import MessageList from "./MessageList";
 import ReplyPreview from "./ReplayPreview";
-import { useEffect, useState } from "react";
 
 export default function ChatContainer() {
   return (

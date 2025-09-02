@@ -16,7 +16,6 @@ export default function MessageHeader({ message }: { message: MessageItem }) {
         message.isMe ? "justify-start flex-row-reverse space-x-reverse" : ""
       }`}
     >
-      {message.isMe && <CheckCheck className="w-4 h-4 text-blue-600" />}
       <span className="text-base font-semibold text-gray-50">
         {message.senderName}
       </span>

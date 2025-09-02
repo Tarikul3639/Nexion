@@ -1,30 +1,50 @@
 import React from "react";
 import { DraftMessage } from "@/types/message";
+import MessageDropdown from "./MessageDropdown";
 import ImageCard from "./ImageCard";
 import AudioCard from "./AudioCard";
 import TextCard from "./TextCard";
 import ReplyView from "./ReplayView";
+import FileCard from "./FileCard";
+
+interface MessageContentProps {
+  msg: DraftMessage;
+  replyToId?: string;
+  isMe: boolean;
+  id: string;
+}
 
 export default function MessageContent({
   msg,
   replyToId,
-}: {
-  msg: DraftMessage;
-  replyToId?: string;
-}) {
+  isMe,
+  id,
+}: MessageContentProps) {
+  const containerClasses = `relative flex items-center group select-none text-white leading-6 space-x-2 ${
+    isMe ? "flex-row-reverse space-x-reverse" : ""
+  }`;
+
+  const bubbleClasses = `text-base text-gray-50 space-y-2.5 leading-relaxed whitespace-pre-wrap break-words rounded-xl p-4 shadow-sm ${
+    isMe ? "rounded-tr-none bg-blue-950 pb-2" : "rounded-tl-none rounded-br-xl bg-[#323438]"
+  }`;
+
   return (
-    <div className="relative text-base text-gray-50 space-y-2.5 leading-relaxed whitespace-pre-wrap break-words">
-      {/* Replying to */}
-      {replyToId && <ReplyView replyToId={replyToId} />}
-      
-      {/* Message content */}
-      {msg.text && <TextCard msg={msg} />}
+    <div className={containerClasses} data-message-id={id}>
+      <div className={bubbleClasses}>
+        {/* Replying to another message */}
+        {replyToId && <ReplyView replyToId={replyToId} />}
 
-      {/* Images */}
-      <ImageCard msg={msg} />
+        {/* Text message */}
+        {msg.text && <TextCard msg={msg} />}
 
-      {/* Audio */}
-      <AudioCard msg={msg} />
+        {/* Media attachments */}
+        <ImageCard msg={msg} />
+        <AudioCard msg={msg} />
+        <FileCard msg={msg} />
+      </div>
+
+      {/* Dropdown for message actions */}
+      <MessageDropdown msgId={id} />
     </div>
   );
 }
