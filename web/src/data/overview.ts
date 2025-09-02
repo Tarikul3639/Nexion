@@ -170,5 +170,26 @@ export const allChats: ChatItem[] = [
       content: "Can we go over the cell structure again?",
       timestamp: "5h",
     },
-  }
+  },
+  {
+    id: "9",
+    name: "Mathematics Study Group",
+    type: "group",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
+    participants: 10,
+    unreadCount: 0,
+    isTyping: false,
+    status: "offline",
+    lastActive: "2h ago",
+    isPinned: false,
+    lastMessage: {
+      id: "m9",
+      senderId: "student9",
+      senderName: "David Smith",
+      senderRole: "student",
+      type: "text",
+      content: "Can we review the last chapter?",
+      timestamp: "5h",
+    },
+  },
 ];

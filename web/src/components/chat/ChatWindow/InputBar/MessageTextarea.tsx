@@ -7,7 +7,7 @@ export default function MessageTextarea() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (textareaRef.current) {
+    if (replyToId && textareaRef.current) {
       const timeout = setTimeout(() => {
         textareaRef.current!.focus();
         const length = textareaRef.current!.value.length;

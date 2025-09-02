@@ -9,7 +9,7 @@ interface SidebarWrapperProps {
 
 export function SidebarWrapper({ children }: SidebarWrapperProps) {
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden bg-[#131313]">
+    <div className="flex flex-col md:flex-row h-[100dvh] w-screen overflow-hidden bg-[#131313]">
       {/* Desktop Sidebar */}
       <DesktopSidebar />
       {/* Main Content Area */}
