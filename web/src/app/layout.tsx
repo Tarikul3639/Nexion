@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import RegisterServiceWorker from "@/components/core/RegisterServiceWorker";
 import { metadata, viewport } from "@/components/core/metadata";
 // import AppProtection from "@/components/core/AppProtection";
+// import RouteGuard from "@/components/core/RouteGuard";
 import { SocketProvider } from "@/context/SocketContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { PanelProvider } from "@/context/PanelContext";
@@ -52,7 +53,9 @@ export default function RootLayout({
         {/* <AppProtection /> */}
         <AuthProvider>
           <SocketProvider>
-            <PanelProvider>{children}</PanelProvider>
+            <PanelProvider>
+              {children}
+            </PanelProvider>
           </SocketProvider>
         </AuthProvider>
       </body>

@@ -88,7 +88,7 @@ const LoginPage: React.FC = () => {
       if (success) {
         // Get redirect URL from query params or default to dashboard
         const urlParams = new URLSearchParams(window.location.search);
-        const redirectTo = urlParams.get('redirect') || '/dashboard';
+        const redirectTo = urlParams.get('redirect') || '/';
         router.push(redirectTo);
       } else {
         setError(message);
@@ -102,7 +102,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex">
+    <div className="min-h-screen bg-primary flex">
       {/* Left Section */}
       <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-500 to-indigo-600 p-12 items-center justify-center rounded-tr-[10rem]">
         <section className="text-center text-white max-w-md">
@@ -133,8 +133,8 @@ const LoginPage: React.FC = () => {
       {/* Right Section - Login Form */}
       <main className="w-full lg:w-1/2 flex items-center justify-center p-2 sm:p-8">
         <div className="w-full max-w-md">
-          <Card className="sm:shadow-md sm:border border-gray-200 pb-8">
-            <CardHeader>
+          <Card className="sm:shadow-md sm:border border-neutral-800 pb-8 bg-neutral-900">
+            <CardHeader className="bg-primary">
               <div className="text-center">
                 <Link
                   href="/"
@@ -144,13 +144,13 @@ const LoginPage: React.FC = () => {
                     <BotMessageSquare className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                    ChatFly
+                    Nexion
                   </span>
                 </Link>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-300">
                   Sign in to your account
                 </h1>
-                <p className="text-gray-600 mt-2">
+                <p className="text-gray-400 mt-2">
                   Welcome back! Please enter your details.
                 </p>
               </div>
@@ -161,9 +161,9 @@ const LoginPage: React.FC = () => {
                   {error}
                 </div>
               )}
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 text-gray-300">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-gray-600 text-sm">
+                  <Label htmlFor="email" className="text-gray-400 text-sm">
                     Email Address
                   </Label>
                   <div className="relative">
@@ -174,7 +174,7 @@ const LoginPage: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="pl-10 h-11 focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:border-blue-500"
+                      className="pl-10 h-11 border-gray-600 focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:border-blue-500 rounded"
                     />
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <Mail className="h-4 w-4 text-gray-400" />
@@ -182,7 +182,7 @@ const LoginPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-gray-600 text-sm">
+                  <Label htmlFor="password" className="text-gray-400 text-sm">
                     Password
                   </Label>
                   <div className="relative">
@@ -193,7 +193,7 @@ const LoginPage: React.FC = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="px-10 h-11 focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:border-blue-500"
+                      className="px-10 h-11 border-gray-600 focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:border-blue-500 rounded"
                     />
                     <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <LockKeyhole className="h-4 w-4 text-gray-400" />
@@ -214,7 +214,7 @@ const LoginPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label className="flex items-center text-gray-600 text-sm">
+                  <Label className="flex items-center text-gray-400 text-sm">
                     <Input
                       id="remember"
                       type="checkbox"
@@ -226,7 +226,7 @@ const LoginPage: React.FC = () => {
                   </Label>
                   <Link
                     href="/auth/forgot-password"
-                    className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    className="text-blue-500 hover:text-blue-700 text-sm font-medium"
                   >
                     Forgot Password?
                   </Link>
@@ -241,11 +241,11 @@ const LoginPage: React.FC = () => {
               </form>
 
               <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-400">
                   Don&rsquo;t have an account?{" "}
                   <Link
                     href="/auth/signup"
-                    className="text-blue-600 hover:text-blue-700 font-medium"
+                    className="text-blue-500 hover:text-blue-600 font-medium"
                   >
                     Sign up
                   </Link>
@@ -256,10 +256,10 @@ const LoginPage: React.FC = () => {
               <div className="mt-6">
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300" />
+                    <div className="w-full border-t border-gray-500" />
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">
+                    <span className="px-2 bg-neutral-900 text-gray-500">
                       Or continue with
                     </span>
                   </div>

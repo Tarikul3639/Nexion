@@ -5,6 +5,8 @@
 
 @theme{
   --breakpoint-xs: 400px;
+
+  --color-primary: #131313;
 }
 
 @theme inline {
