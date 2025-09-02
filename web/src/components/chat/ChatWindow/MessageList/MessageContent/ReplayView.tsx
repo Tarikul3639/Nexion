@@ -25,20 +25,20 @@ export default function ReplyView({ replyToId }: { replyToId: string }) {
     // Add transition class
     messageElement.classList.add(
       "transition-all",
-      "duration-300",
+      "duration-500",
       "ease-in-out",
-      "opacity-80"
+      "opacity-50",
+      "scale-102"
     );
 
     // Remove after duration
     setTimeout(() => {
       messageElement.classList.remove(
-        "transition-all",
-        "duration-300",
         "ease-in-out",
-        "opacity-80"
+        "opacity-50",
+        "scale-102"
       );
-    }, 1000);
+    }, 2000);
   };
 
   return (

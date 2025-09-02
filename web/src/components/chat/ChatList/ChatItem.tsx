@@ -15,10 +15,10 @@ export default function ChatItem({ chat, isActive, onSelect }: ChatItemProps) {
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
-        <Avatar className="w-10 md:w-12 h-10 md:h-12 rounded-lg">
+        <Avatar className="w-12 h-12 rounded-lg">
           <AvatarImage src={chat.avatar} alt={chat.name} />
           <AvatarFallback className="rounded-lg">
-            <span className="text-xl font-bold">
+            <span className="text-[20px] font-extrabold">
               {chat.name?.slice(0, 2).toUpperCase() ?? "NA"}
             </span>
           </AvatarFallback>
@@ -33,14 +33,14 @@ export default function ChatItem({ chat, isActive, onSelect }: ChatItemProps) {
       {/* Info */}
       <div className="flex-1 min-w-0 ml-3">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="font-semibold text-sm text-gray-50 truncate">
+          <h3 className="font-semibold text-base text-gray-100 truncate">
             {chat.name}
           </h3>
           <span className="text-xs text-[#8B8B90] flex-shrink-0 ml-2">
             {lastMsg.timestamp}
           </span>
         </div>
-        <p className="text-xs text-[#8B8B90] truncate">
+        <p className="text-sm text-[#8B8B90] truncate">
           {chat.isTyping ? (
             <span className="text-[#23C26C]">Someone is typing...</span>
           ) : (
