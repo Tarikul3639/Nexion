@@ -10,10 +10,10 @@ socket.on("getChatList", async () => {
     const conversations = await Conversation.find({
       participants: socket.user?._id,
     })
-      .select("username type avatar unread lastMessage participants updatedAt") // শুধু দরকারি fields
+      .select("username type avatar unread lastMessage participants updatedAt") 
       .populate({
         path: "lastMessage",
-        select: "content sender createdAt", // lastMessage এ যা দরকার শুধু
+        select: "content sender createdAt", 
         populate: { path: "sender", select: "username avatar" } // lastMessage sender info
       })
       .sort({ updatedAt: -1 });

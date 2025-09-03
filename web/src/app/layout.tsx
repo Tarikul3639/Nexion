@@ -55,9 +55,7 @@ export default function RootLayout({
         <AuthProvider>
           <SocketProvider>
             <PanelProvider>
-              <LeftPanelDataProvider>
-                {children}
-              </LeftPanelDataProvider>
+              <LeftPanelDataProvider>{children}</LeftPanelDataProvider>
             </PanelProvider>
           </SocketProvider>
         </AuthProvider>

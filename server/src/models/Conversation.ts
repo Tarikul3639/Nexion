@@ -2,8 +2,8 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IConversation extends Document {
-  username: string;
-  type: "classroom" | "group" | "direct";
+  name: string; // Name of conversation/group/class
+  type: "direct" | "group" | "classroom";
   lastMessage?: mongoose.Types.ObjectId;
   avatar?: string;
   unread?: number;
@@ -14,8 +14,8 @@ export interface IConversation extends Document {
 
 const conversationSchema: Schema<IConversation> = new Schema(
   {
-    username: { type: String, required: true },
-    type: { type: String, enum: ["classroom", "group", "direct"], default: "direct", required: true },
+    name: { type: String, required: true },
+    type: { type: String, enum: ["direct", "group", "classroom"], required: true },
     lastMessage: { type: Schema.Types.ObjectId, ref: "Message" },
     avatar: String,
     unread: { type: Number, default: 0 },
@@ -24,9 +24,8 @@ const conversationSchema: Schema<IConversation> = new Schema(
   { timestamps: true }
 );
 
-const Conversation: Model<IConversation> = mongoose.model<IConversation>(
+export const Conversation: Model<IConversation> = mongoose.model<IConversation>(
   "Conversation",
   conversationSchema
 );
-
 export default Conversation;
