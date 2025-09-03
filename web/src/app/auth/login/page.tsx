@@ -91,9 +91,9 @@ const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#131313] flex">
       {/* Left Section */}
-      <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-900/15 to-blue-800/10 p-12 items-center justify-center rounded-tr-[10rem] border-r border-blue-500/20">
+      <aside className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-neutral-800 to-neutral-950 p-12 items-center justify-center rounded-tr-[10rem] border-r border-blue-500/10">
         <section className="text-center text-neutral-100 max-w-md">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-blue-500/25">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-blue-500/25">
             <BotMessageSquare className="w-10 h-10 text-white" />
           </div>
           <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
@@ -122,11 +122,11 @@ const LoginPage: React.FC = () => {
       {/* Right Section - Login Form */}
       <main className="w-full lg:w-1/2 flex items-center justify-center p-2 sm:p-8">
         <div className="w-full max-w-md">
-          <Card className="sm:shadow-md sm:border border-blue-500/20 pb-8 bg-neutral-900/50 shadow-xl shadow-blue-500/10">
+          <Card className="border-none pb-8 bg-neutral-900/50 ring-1 ring-neutral-800">
             <CardHeader className="bg-[#131313]">
               <div className="text-center">
                 <Link href="/" className="flex items-center justify-center space-x-2 mb-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/25">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-700 rounded-sm flex items-center justify-center shadow-lg shadow-blue-500/25">
                     <BotMessageSquare className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">

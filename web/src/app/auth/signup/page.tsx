@@ -114,7 +114,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen max-h-screen bg-[#131313] flex">
       {/* Left Side - Image/Illustration */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-neutral-800 to-neutral-900 sm:p-12 items-center justify-center rounded-tr-[10rem] border-r border-blue-500/15">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-neutral-800 to-neutral-900 sm:p-12 items-center justify-center rounded-tr-[10rem] border-r-1 border-neutral-800">
         <div className="text-center text-white max-w-md">
           <div className="w-20 h-20 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-8">
             <Sparkles className="w-10 h-10 text-blue-400" />
@@ -125,7 +125,7 @@ export default function SignupPage() {
             and teachers
           </p>
           <div className="space-y-4">
-            <div className="flex items-center space-x-3 text-neutral-300">
+            <div className="flex items-center space-x-3 text-neutral-300 ">
               <BotMessageSquare className="w-5 h-5 text-blue-400" />
               <span>Smart messaging with AI suggestions</span>
             </div>
@@ -144,14 +144,14 @@ export default function SignupPage() {
       {/* Right Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-2 sm:p-8 overflow-y-auto">
         <div className="w-full max-w-md">
-          <Card className="ring-1 ring-blue-500/20 border-0 bg-neutral-900/50 backdrop-blur-sm">
+          <Card className="ring-1 ring-neutral-800 border-0 bg-neutral-900/50 backdrop-blur-sm">
             <CardHeader className="space-y-1">
               <div className="text-center">
                 <Link
                   href="/"
                   className="flex items-center justify-center space-x-2 mb-3"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/25">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-700 rounded-sm flex items-center justify-center shadow-lg shadow-blue-500/25">
                     <BotMessageSquare className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">

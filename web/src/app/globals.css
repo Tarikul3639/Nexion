@@ -176,3 +176,19 @@
   -ms-user-select: none; /* IE/Edge */
   user-select: none; /* Standard */
 }
+
+/* Autocomplete color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px rgba(55, 65, 81, 0.5) inset; /* gray bg */
+  -webkit-text-fill-color: #f9fafb; /* text color */
+  transition: background-color 5000s ease-in-out 0s; /* prevent flashing */
+}
+
+/* Selection color */
+::selection {
+  background-color: #3b82f6; /* Tailwind blue-500 */
+  color: #ffffff; /* text color when text selected */
+}
