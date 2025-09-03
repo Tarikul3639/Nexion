@@ -9,7 +9,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { useChat } from "@/context/ChatContext";
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/message";
 
 export default function SendButton() {
   const {

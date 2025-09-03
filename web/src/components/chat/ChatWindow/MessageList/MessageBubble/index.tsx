@@ -7,7 +7,7 @@ import MessageAvatar from "./MessageAvatar";
 import MessageHeader from "../MessageHeader";
 import MessageContent from "./MessageContent";
 import MessageStatus from "./MessageStatus";
-import type { MessageItem } from "@/types/message";
+import type { MessageItem } from "@/types/message/message";
 import { useChat } from "@/context/ChatContext";
 
 interface Props {

@@ -1,4 +1,4 @@
-import { DraftMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message/message";
 
 export default function TextCard({ msg }: { msg: DraftMessage }) {
   if (!msg.text) return null;

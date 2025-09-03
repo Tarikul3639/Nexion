@@ -1,11 +1,20 @@
+"use client";
+
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ChatTypeIcon from "./ChatTypeIcon";
-import { ChatItemProps } from "@/types/chat";
+import { IChatList } from "@/types/message/message.messageList";
 import LastMessagePreview from "./LastMessagePreview";
 
-export default function ChatItem({ chat, isActive, onSelect }: ChatItemProps) {
+export interface IChatListProps {
+  chat: IChatList;
+  isActive: boolean;
+  onSelect: (chat: IChatList) => void;
+}
+
+export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
   const lastMsg = chat.lastMessage;
+  console.log("Last message:", lastMsg);
   return (
     <div
       className={`flex items-center md:px-2 py-3 cursor-pointer transition-colors duration-200 rounded-xl ${
@@ -23,7 +32,7 @@ export default function ChatItem({ chat, isActive, onSelect }: ChatItemProps) {
             </span>
           </AvatarFallback>
         </Avatar>
-        {chat.type !== "single" && (
+        {chat.type !== "direct" && (
           <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-[#23C26C] text-center rounded-full flex items-center justify-center">
             <ChatTypeIcon type={chat.type} />
           </div>
@@ -36,8 +45,14 @@ export default function ChatItem({ chat, isActive, onSelect }: ChatItemProps) {
           <h3 className="font-semibold text-base text-gray-100 truncate">
             {chat.name}
           </h3>
-          <span className="text-xs text-[#8B8B90] flex-shrink-0 ml-2">
-            {lastMsg.timestamp}
+          <span className="text-xs text-[#8B8B90] flex-shrink-0 ml-2 uppercase">
+            {lastMsg
+              ? new Date(lastMsg.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              : ""}
           </span>
         </div>
         <p className="text-sm text-[#8B8B90] truncate">

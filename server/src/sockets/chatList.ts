@@ -1,36 +1,62 @@
+// handlers/chatListHandler.ts
 import { Server } from "socket.io";
-import { AuthenticatedSocket } from "./types";
+import { AuthenticatedSocket, IChatList } from "./types";
 import Conversation from "../models/Conversation";
+import Message from "../models/Message";
 import User from "../models/User";
 
 export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
-  // Server
-socket.on("getChatList", async () => {
-  try {
-    const conversations = await Conversation.find({
-      participants: socket.user?._id,
-    })
-      .select("username type avatar unread lastMessage participants updatedAt") 
-      .populate({
-        path: "lastMessage",
-        select: "content sender createdAt", 
-        populate: { path: "sender", select: "username avatar" } // lastMessage sender info
+  // ---------------- Get Chat List ----------------
+  socket.on("getChatList", async () => {
+    try {
+      const userId = socket.user?._id;
+      console.log("userId in getChatList:", userId);
+      if (!userId) return;
+
+      // All conversation where user is a participant
+      const conversations = await Conversation.find({
+        participants: userId,
       })
-      .sort({ updatedAt: -1 });
+        .populate({
+          path: "lastMessage",
+          select: "content type sender createdAt isPinned",
+          populate: { path: "sender", select: "username avatar" },
+        })
+        .populate("participants", "username avatar")
+        .sort({ updatedAt: -1 })
+        .lean();
 
-    socket.emit("chatList", conversations);
-  } catch (error) {
-    console.error(error);
-    socket.emit("chatListError", "Failed to fetch chat list");
-  }
-});
+      // Map conversations to include unread count
+      const chatList = await Promise.all(
+        conversations.map(async (conv: any) => {
+          const unreadCount = await Message.countDocuments({
+            conversation: conv._id,
+            readBy: { $ne: userId },
+          });
 
-  // Client
-  socket.emit("getChatList");
+          return {
+            id: conv._id,
+            name: conv.name,
+            type: conv.type,
+            avatar: conv.avatar,
+            isPinned: conv.isPinned,
+            lastMessage: conv.lastMessage,
+            participants: conv.participants,
+            updatedAt: conv.updatedAt,
+            unreadCount,
+          };
+        })
+      );
+      console.log("chatList:", chatList);
+      socket.emit("chatList", chatList);
+    } catch (error) {
+      console.error(error);
+      socket.emit("chatListError", "Failed to fetch chat list");
+    }
+  });
 
-  // Listen for search queries
+  // ---------------- Search Users for New Chat ----------------
   socket.on("searchChats", async (query: string) => {
-    // console.log("Searching chats for user:", socket.user?._id, "Query:", query);
     if (!query) {
       socket.emit("searchChatsResult", []);
       return;
@@ -38,11 +64,8 @@ socket.on("getChatList", async () => {
 
     const results = await User.find({
       username: { $regex: query, $options: "i" },
-    })
-      .sort({ updatedAt: -1 })
-      .select("username avatar online");
+    }).select("username avatar online");
 
-    // console.log("Search results:", results);
     socket.emit("searchChatsResult", results);
   });
-}
+};

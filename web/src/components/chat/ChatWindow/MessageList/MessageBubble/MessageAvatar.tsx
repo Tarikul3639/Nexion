@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, AvatarFallback,AvatarImage } from "@/components/ui/avatar";
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/message";
 
 export default function MessageAvatar({ message }: { message: MessageItem }) {
   return (

@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DraftMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message/message";
 
 // Data for the waveform bars
 const waveformBars = [

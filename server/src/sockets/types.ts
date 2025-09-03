@@ -12,6 +12,7 @@ export interface ITokenPayload {
   iat?: number;
   exp?: number;
 }
+
 // User type
 export interface IUser {
   _id: string;
@@ -19,4 +20,22 @@ export interface IUser {
   username: string;
   avatar?: string;
   online?: boolean;
+}
+
+export interface IChatList {
+  _id: string;
+  name: string;
+  type: "direct" | "group" | "classroom";
+  avatar?: string;
+  lastMessage?: {
+    _id: string;
+    content: { text?: string; attachments?: any[] };
+    type: "text" | "image" | "video" | "file" | "audio";
+    sender: { _id: string; username: string; avatar?: string };
+    createdAt: string;
+    isPinned?: boolean;
+  };
+  participants: { _id: string; username: string; avatar?: string }[];
+  updatedAt: string;
+  unreadCount: number;
 }

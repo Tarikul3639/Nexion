@@ -10,6 +10,7 @@ export interface IConversation extends Document {
   participants: mongoose.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
+  isPinned?: boolean;
 }
 
 const conversationSchema: Schema<IConversation> = new Schema(
@@ -20,6 +21,7 @@ const conversationSchema: Schema<IConversation> = new Schema(
     avatar: String,
     unread: { type: Number, default: 0 },
     participants: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
+    isPinned: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

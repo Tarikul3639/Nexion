@@ -1,9 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState } from "react";
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/message";
 import { messages as initialMessages } from "@/data/messages";
-import { DraftMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message/message";
 
 interface ChatContextType {
   showAISuggestions: boolean;

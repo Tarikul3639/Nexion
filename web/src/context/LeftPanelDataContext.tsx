@@ -36,14 +36,21 @@ export const LeftPanelDataProvider = ({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     if (!socket) return;
-    console.log(socket);
+
     // Loading true until first data arrives
     setLoading(true);
 
-    // Chats
-    socket.on("initialChats", (chats: ChatItem[]) => {
+    // --- Chats ---
+    socket.emit("getChatList");
+
+    socket.on("chatList", (chats: ChatItem[]) => {
+    console.log("Received chat list:", chats);
       setAllChats(chats);
       setLoading(false);
+    });
+
+    socket.on("newChat", (chat: ChatItem) => {
+      setAllChats(prev => [chat, ...prev]);
     });
 
     socket.on("newChat", (chat: ChatItem) => {

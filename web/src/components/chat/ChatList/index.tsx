@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Search, Pin } from "lucide-react";
 import ChatItem from "./ChatItem";
-import { ChatListProps } from "@/types/chat";
+import { IChatList } from "@/types/message/message.messageList";
+
+interface ChatListProps {
+  allChats: IChatList[];
+  selectedChat?: IChatList;
+  onSelectChat: (chat: IChatList) => void;
+}
 
 export default function ChatList({
   allChats = [],

@@ -1,44 +1,61 @@
-import React from "react";
-import { Message, FileMessage, VideoMessage, ImageMessage } from "@/types/chat";
+"use client";
 
-interface MessagePreviewProps {
-  message: Message;
+import React from "react";
+import { IMessage } from "@/types/message/message.messageList";
+
+interface LastMessagePreviewProps {
+  message?: IMessage;
 }
 
-export default function LastMessagePreview({ message }: MessagePreviewProps) {
-  switch (message.type) {
-    case "text":
-      return (
-        <span>
-          <span className="text-gray-300 font-semibold">{message.senderName}:</span>{" "}
-          {message.content}
-        </span>
-      );
-    case "image":
-      const imageMsg = message as ImageMessage;
-      return (
-        <span>
-          <span className="text-gray-300 font-semibold">{message.senderName}:</span> [Image:{" "}
-          {imageMsg.content.alt ?? "unknown"}]
-        </span>
-      );
-    case "video":
-      const videoMsg = message as VideoMessage;
-      return (
-        <span>
-          <span className="text-gray-300 font-semibold">{message.senderName}:</span> [Video:{" "}
-          {videoMsg.content.duration ?? "unknown"}]
-        </span>
-      );
-    case "file":
-      const fileMsg = message as FileMessage;
-      return (
-        <span>
-          <span className="text-gray-300 font-semibold">{message.senderName}:</span> [File:{" "}
-          {fileMsg.content.filename ?? "unknown"}]
-        </span>
-      );
-    default:
-      return null;
+export default function LastMessagePreview({ message }: LastMessagePreviewProps) {
+  if (!message) return null;
+
+  const { sender, content } = message;
+
+  if (content?.text) {
+    return (
+      <span>
+        <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+        {content.text}
+      </span>
+    );
   }
+
+  if (content?.attachments?.length) {
+    const att = content.attachments[0];
+    switch (att.type) {
+      case "image":
+        return (
+          <span>
+            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            [Image: {att.alt ?? "unknown"}]
+          </span>
+        );
+      case "video":
+        return (
+          <span>
+            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            [Video: {att.duration ?? "unknown"}s]
+          </span>
+        );
+      case "audio":
+        return (
+          <span>
+            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            [Audio: {att.duration ?? "unknown"}s]
+          </span>
+        );
+      case "file":
+        return (
+          <span>
+            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            [File: {att.name ?? "unknown"}]
+          </span>
+        );
+      default:
+        return null;
+    }
+  }
+
+  return <span>[No content]</span>;
 }

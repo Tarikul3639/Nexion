@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/message";
 
 export default function MessageHeader({ message }: { message: MessageItem }) {
   const formattedTime = new Date(message.timestamp).toLocaleTimeString([], {

@@ -1,7 +1,7 @@
 import { Download } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import Image from "next/image";
-import { DraftMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message/message";
 
 export default function ImageCard({ msg }: { msg: DraftMessage }) {
   // Check inside the card
