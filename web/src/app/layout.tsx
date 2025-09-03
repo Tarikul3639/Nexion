@@ -5,6 +5,7 @@ import { metadata, viewport } from "@/components/core/metadata";
 // import RouteGuard from "@/components/core/RouteGuard";
 import { SocketProvider } from "@/context/SocketContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { LeftPanelDataProvider } from "@/context/LeftPanelDataContext";
 import { PanelProvider } from "@/context/PanelContext";
 import { Toaster } from "sonner";
 import React from "react";
@@ -54,7 +55,9 @@ export default function RootLayout({
         <AuthProvider>
           <SocketProvider>
             <PanelProvider>
-              {children}
+              <LeftPanelDataProvider>
+                {children}
+              </LeftPanelDataProvider>
             </PanelProvider>
           </SocketProvider>
         </AuthProvider>
