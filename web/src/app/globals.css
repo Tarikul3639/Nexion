@@ -1,11 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Custom Variant for dark mode */
 @custom-variant dark (&:is(.dark *));
 
+/* Theme variables */
 @theme{
   --breakpoint-xs: 400px;
-
   --color-primary: #131313;
 }
 
@@ -49,13 +50,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
+/* Root variables */
 :root {
   --text-xs: 12px;
   --text-sm: 13px;
@@ -96,6 +91,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+/* Dark mode variables */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -130,6 +126,7 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Base layer */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -145,50 +142,44 @@
   height: 3px;
   background: transparent;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background-color: #2f3031; /* Tailwind's blue-500 */
+  background-color: #2f3031; /* Tailwind blue-500 */
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge */
-.hide-scrollbar {
-  -ms-overflow-style: none;
-}
-
-/* Hide scrollbar for Firefox */
-.hide-scrollbar {
-  scrollbar-width: none;
-}
+/* Hide scrollbar for Chrome, Safari, Opera, IE, Edge, Firefox */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* User Select disabled */
 * {
-  -webkit-user-select: none; /* Chrome, Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE/Edge */
-  user-select: none; /* Standard */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-/* Autocomplete color */
+/* Autocomplete / autofill styling */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0px 1000px rgba(55, 65, 81, 0.5) inset; /* gray bg */
+  -webkit-box-shadow: 0 0 0px 1000px rgba(55, 65, 81, 0.5) inset; /* background */
   -webkit-text-fill-color: #f9fafb; /* text color */
+  caret-color: #6948ff; /* cursor color */
   transition: background-color 5000s ease-in-out 0s; /* prevent flashing */
 }
 
-/* Selection color */
+/* Text selection color */
 ::selection {
   background-color: #3b82f6; /* Tailwind blue-500 */
-  color: #ffffff; /* text color when text selected */
+  color: #ffffff;
+}
+
+/* Dark mode selection */
+.dark ::selection {
+  background-color: #2563eb; /* Tailwind blue-600 */
+  color: #ffffff;
 }
