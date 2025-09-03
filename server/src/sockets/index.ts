@@ -2,7 +2,7 @@
 import { Server } from "socket.io";
 import { chatListHandler } from "./chatList";
 import { conversationHandler } from "./conversation";
-import User from "../models/User";
+import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import config from "config";
 import { IUser, AuthenticatedSocket, ITokenPayload } from "./types";

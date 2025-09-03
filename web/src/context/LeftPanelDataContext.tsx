@@ -17,15 +17,24 @@ interface LeftPanelDataContextType {
   loading: boolean;
 }
 
-const LeftPanelDataContext = createContext<LeftPanelDataContextType | undefined>(undefined);
+const LeftPanelDataContext = createContext<
+  LeftPanelDataContextType | undefined
+>(undefined);
 
 export const useLeftPanelData = () => {
   const context = useContext(LeftPanelDataContext);
-  if (!context) throw new Error("useLeftPanelData must be used within LeftPanelDataProvider");
+  if (!context)
+    throw new Error(
+      "useLeftPanelData must be used within LeftPanelDataProvider"
+    );
   return context;
 };
 
-export const LeftPanelDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const LeftPanelDataProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { activeTab } = usePanel();
   const { socket } = useSocket();
 
@@ -44,17 +53,16 @@ export const LeftPanelDataProvider = ({ children }: { children: React.ReactNode 
     socket.emit("getChatList");
 
     socket.on("chatList", (chats: ChatItem[]) => {
-    console.log("Received chat list:", chats);
       setAllChats(chats);
       setLoading(false);
     });
 
     socket.on("newChat", (chat: ChatItem) => {
-      setAllChats(prev => [chat, ...prev]);
+      setAllChats((prev) => [chat, ...prev]);
     });
 
     socket.on("newChat", (chat: ChatItem) => {
-      setAllChats(prev => [chat, ...prev]);
+      setAllChats((prev) => [chat, ...prev]);
     });
 
     // Classrooms

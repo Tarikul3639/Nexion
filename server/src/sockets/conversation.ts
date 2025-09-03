@@ -1,9 +1,9 @@
 // server/src/sockets/conversation.ts
 import { Server } from "socket.io";
 import { AuthenticatedSocket } from "./types";
-import Conversation from "../models/Conversation";
-import Message from "../models/Message";
-import User from "../models/User";
+import Conversation from "@/models/Conversation";
+import Message from "@/models/Message";
+import User from "@/models/User";
 
 export const conversationHandler = (
   io: Server,

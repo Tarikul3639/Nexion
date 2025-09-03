@@ -6,7 +6,7 @@ import {
   logout,
   getProfile,
   profileUpdate,
-} from "../controllers";
+} from "@/controllers";
 
 const router = Router();
 

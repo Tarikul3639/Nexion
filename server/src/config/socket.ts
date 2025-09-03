@@ -1,8 +1,7 @@
 import { Server, Socket } from "socket.io";
 import jwt from "jsonwebtoken";
-import Message from "../models/Message";
-import { User } from "../types";
-import { socketEvents } from "../constants/socket";
+import Message from "@/models/Message";
+import { socketEvents } from "@/constants/socket";
 import config from "config";
 
 interface chatSocket extends Socket {

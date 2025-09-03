@@ -1,9 +1,9 @@
 // handlers/chatListHandler.ts
 import { Server } from "socket.io";
 import { AuthenticatedSocket, IChatList } from "./types";
-import Conversation from "../models/Conversation";
-import Message from "../models/Message";
-import User from "../models/User";
+import Conversation from "@/models/Conversation";
+import Message from "@/models/Message";
+import User from "@/models/User";
 
 export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
   // ---------------- Get Chat List ----------------
