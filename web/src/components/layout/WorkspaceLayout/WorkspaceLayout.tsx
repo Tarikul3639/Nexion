@@ -24,7 +24,7 @@ export default function WorkspaceLayout() {
   }, [isAuthenticated, isLoading, pathname, router]);
 
   // Show loading state while checking authentication
-  if (!isLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
