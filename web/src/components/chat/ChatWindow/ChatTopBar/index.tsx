@@ -2,7 +2,7 @@
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { usePanel } from "@/context/PanelContext";
-import { ChatItem } from "@/types/chat";
+import { IChatList } from "@/types/message/message.messageList";
 import BackButton from "./BackButton";
 import ChatAvatar from "./ChatAvatar";
 import ChatInfo from "./ChatInfo";
@@ -17,8 +17,8 @@ export default function ChatHeader() {
         {/* Left Side */}
         <div className="flex items-center space-x-2 md:space-x-3 flex-1 min-w-0">
           <BackButton />
-          <ChatAvatar chat={selectedChat as ChatItem} />
-          <ChatInfo chat={selectedChat as ChatItem} />
+          <ChatAvatar chat={selectedChat as IChatList} />
+          <ChatInfo chat={selectedChat as IChatList} />
         </div>
 
         {/* Right Side */}

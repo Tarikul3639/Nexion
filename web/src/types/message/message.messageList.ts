@@ -40,8 +40,11 @@ export interface IChatList {
     _id: string;
     username: string;
     avatar?: string;
+    status?: "online" | "offline" | "away" | "busy";
+    lastSeen?: string;
   }[];
   updatedAt: string;
   unreadCount: number;
   isPinned?: boolean;
+  lastActive?: string; 
 }

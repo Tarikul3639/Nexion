@@ -1,9 +1,9 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChatItem } from "@/types/chat";
+import { IChatList } from "@/types/message/message";
 
-export default function ChatAvatar({ chat }: { chat: ChatItem }) {
+export default function ChatAvatar({ chat }: { chat: IChatList }) {
   return (
     <Avatar className="w-12 h-12 rounded-lg flex-shrink-0">
       <AvatarImage src={chat.avatar} alt={chat.name} />

@@ -22,7 +22,7 @@ export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
           select: "content type sender createdAt isPinned",
           populate: { path: "sender", select: "username avatar" },
         })
-        .populate("participants", "username avatar")
+        .populate("participants", "username avatar status lastSeen")
         .sort({ updatedAt: -1 })
         .lean();
 

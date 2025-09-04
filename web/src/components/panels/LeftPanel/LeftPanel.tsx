@@ -4,7 +4,7 @@ import React from "react";
 import ChatList from "@/components/chat/ChatList";
 import ClassroomList from "@/components/classroom/ClassroomList";
 import BotList from "@/components/bot/BotList";
-import { ChatItem } from "@/types/chat";
+import { IChatList } from "@/types/message/message.messageList";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { usePanel } from "@/context/PanelContext";
@@ -27,9 +27,9 @@ export default function LeftPanel() {
       case "chats":
         return (
           <ChatList
-            allChats={allChats as ChatItem[]}
-            selectedChat={selectedChat as ChatItem | undefined}
-            onSelectChat={(chat) => setSelectedChat(chat as ChatItem)}
+            allChats={allChats as IChatList[]}
+            selectedChat={selectedChat as IChatList | undefined}
+            onSelectChat={(chat) => setSelectedChat(chat as IChatList)}
           />
         );
 

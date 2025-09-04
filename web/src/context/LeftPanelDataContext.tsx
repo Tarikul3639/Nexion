@@ -2,16 +2,16 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePanel } from "@/context/PanelContext";
-import { ChatItem } from "@/types/chat";
+import { IChatList } from "@/types/message/message.messageList";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { useSocket } from "@/context/SocketContext";
 
 interface LeftPanelDataContextType {
-  allChats: ChatItem[];
+  allChats: IChatList[];
   allClassrooms: Classroom[];
   allBots: Bot[];
-  setAllChats: React.Dispatch<React.SetStateAction<ChatItem[]>>;
+  setAllChats: React.Dispatch<React.SetStateAction<IChatList[]>>;
   setAllClassrooms: React.Dispatch<React.SetStateAction<Classroom[]>>;
   setAllBots: React.Dispatch<React.SetStateAction<Bot[]>>;
   loading: boolean;
@@ -38,7 +38,7 @@ export const LeftPanelDataProvider = ({
   const { activeTab } = usePanel();
   const { socket } = useSocket();
 
-  const [allChats, setAllChats] = useState<ChatItem[]>([]);
+  const [allChats, setAllChats] = useState<IChatList[]>([]);
   const [allClassrooms, setAllClassrooms] = useState<Classroom[]>([]);
   const [allBots, setAllBots] = useState<Bot[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,16 +52,17 @@ export const LeftPanelDataProvider = ({
     // --- Chats ---
     socket.emit("getChatList");
 
-    socket.on("chatList", (chats: ChatItem[]) => {
+    socket.on("chatList", (chats: IChatList[]) => {
+      console.log("ChatList: ",chats);
       setAllChats(chats);
       setLoading(false);
     });
 
-    socket.on("newChat", (chat: ChatItem) => {
+    socket.on("newChat", (chat: IChatList) => {
       setAllChats((prev) => [chat, ...prev]);
     });
 
-    socket.on("newChat", (chat: ChatItem) => {
+    socket.on("newChat", (chat: IChatList) => {
       setAllChats((prev) => [chat, ...prev]);
     });
 
