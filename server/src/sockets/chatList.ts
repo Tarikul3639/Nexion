@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { AuthenticatedSocket, IChatList } from "./types";
 import Conversation from "@/models/Conversation";
 import Message from "@/models/Message";
-import User, { IUser } from "@/models/User";
+import User from "@/models/User";
 import { IConversation } from "@/models/Conversation";
 
 export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
@@ -37,14 +37,6 @@ export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
             readBy: { $ne: userId },
           });
 
-          // Treat populated participants as IUser[]
-          const participants = conv.participants as unknown as IUser[];
-
-          // Remove the current user from participants array
-          const otherParticipants = participants.filter(
-            (p) => p._id.toString() !== userId.toString()
-          );
-
           return {
             id: conv._id,
             name: conv.name,
@@ -52,7 +44,7 @@ export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
             avatar: conv.avatar,
             isPinned: conv.isPinned,
             lastMessage: conv.lastMessage,
-            participants: otherParticipants, // Only other users
+            participants: conv.participants,
             updatedAt: conv.updatedAt,
             unreadCount,
           };
