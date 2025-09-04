@@ -3,36 +3,47 @@ import { Server } from "socket.io";
 import { AuthenticatedSocket, IChatList } from "./types";
 import Conversation from "@/models/Conversation";
 import Message from "@/models/Message";
-import User from "@/models/User";
+import User, { IUser } from "@/models/User";
+import { IConversation } from "@/models/Conversation";
 
 export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
-  // ---------------- Get Chat List ----------------
+  // ---------------- Handle Fetching Chat List ----------------
   socket.on("getChatList", async () => {
     try {
       const userId = socket.user?._id;
-      console.log("userId in getChatList:", userId);
       if (!userId) return;
 
-      // All conversation where user is a participant
+      // Fetch all conversations where the current user is a participant
       const conversations = await Conversation.find({
         participants: userId,
       })
+        // Populate last message with sender info
         .populate({
           path: "lastMessage",
           select: "content type sender createdAt isPinned",
           populate: { path: "sender", select: "username avatar" },
         })
+        // Populate participants with basic user info
         .populate("participants", "username avatar status lastSeen")
-        .sort({ updatedAt: -1 })
+        .sort({ updatedAt: -1 }) // Latest updated conversations first
         .lean();
 
-      // Map conversations to include unread count
+      // Map each conversation to include unread message count and participants excluding self
       const chatList = await Promise.all(
-        conversations.map(async (conv: any) => {
+        conversations.map(async (conv: IConversation) => {
+          // Count unread messages for the current user
           const unreadCount = await Message.countDocuments({
             conversation: conv._id,
             readBy: { $ne: userId },
           });
+
+          // Treat populated participants as IUser[]
+          const participants = conv.participants as unknown as IUser[];
+
+          // Remove the current user from participants array
+          const otherParticipants = participants.filter(
+            (p) => p._id.toString() !== userId.toString()
+          );
 
           return {
             id: conv._id,
@@ -41,13 +52,14 @@ export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
             avatar: conv.avatar,
             isPinned: conv.isPinned,
             lastMessage: conv.lastMessage,
-            participants: conv.participants,
+            participants: otherParticipants, // Only other users
             updatedAt: conv.updatedAt,
             unreadCount,
           };
         })
       );
-      console.log("chatList:", chatList);
+
+      // Emit the processed chat list to the client
       socket.emit("chatList", chatList);
     } catch (error) {
       console.error(error);
@@ -55,13 +67,14 @@ export const chatListHandler = (io: Server, socket: AuthenticatedSocket) => {
     }
   });
 
-  // ---------------- Search Users for New Chat ----------------
+  // ---------------- Handle Searching Users for New Chat ----------------
   socket.on("searchChats", async (query: string) => {
     if (!query) {
       socket.emit("searchChatsResult", []);
       return;
     }
 
+    // Search users by username (case-insensitive) and return basic info
     const results = await User.find({
       username: { $regex: query, $options: "i" },
     }).select("username avatar online");
