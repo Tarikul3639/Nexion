@@ -9,7 +9,6 @@ export default function MessageHeader({ message }: { message: MessageItem }) {
     minute: "2-digit",
     hour12: true,
   });
-  console.log(message);
 
   return (
     <div
@@ -49,7 +48,7 @@ export default function MessageHeader({ message }: { message: MessageItem }) {
       <span className="text-sm font-normal text-gray-400 uppercase">
         {formattedTime}
         {message.isEdited && (
-          <span className="ml-1 text-gray-400 italic">(edited)</span>
+          <span className="ml-1 text-xs font-normal text-gray-400 capitalize">(edited)</span>
         )}
       </span>
     </div>

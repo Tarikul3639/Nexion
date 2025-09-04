@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useChat } from "@/context/ChatContext";
 import { MessageItem } from "@/types/message/message";
+import { usePanel } from "@/context/PanelContext";
+import { useSocket } from "@/context/SocketContext";
 
 export default function SendButton() {
   const {
@@ -20,23 +22,41 @@ export default function SendButton() {
     setAllMessages,
     setIsRecordingActive,
   } = useChat();
- if(!draftMessage?.text && !draftMessage?.attachments?.length) return null;
+  const { socket } = useSocket();
+  const { selectedChat } = usePanel();
+
+  if (!draftMessage?.text && !draftMessage?.attachments?.length) return null;
+
   // Function to handle message sending
   const handleMessageSend = () => {
-    console.log(draftMessage);
-    const newMessage: MessageItem = {
-      id: Date.now().toString(),
-      senderId: "user123",
-      senderName: "User",
-      senderAvatar: "https://example.com/avatar.jpg",
+    if (!socket || !selectedChat) return;
+
+    const tempId = Date.now().toString();
+
+    const optimisticMessage: MessageItem = {
+      id: tempId,
+      senderId: "me", // backend userId replace হবে socket.user থেকে
+      senderName: "You",
+      senderAvatar: "",
       updatedAt: new Date().toISOString(),
       status: "sending",
       isMe: true,
       replyToId: replyToId || undefined,
       content: draftMessage,
     };
-    setAllMessages((prev) => [...prev, newMessage]);
-    // Clear the input after sending
+
+    // Local UI update (optimistic)
+    setAllMessages((prev) => [...prev, optimisticMessage]);
+
+    // Emit to backend
+    socket.emit("sendMessage", {
+      conversation: selectedChat.id,
+      participants: selectedChat.participants, // সার্ভারে যাতে পাঠানো যায়
+      content: draftMessage,
+      replyTo: replyToId,
+    });
+
+    // Reset input state
     setDraftMessage(null);
     setIsRecordingActive(false);
     setReplyToId(null);

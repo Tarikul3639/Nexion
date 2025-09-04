@@ -17,6 +17,7 @@ export interface IMessage extends Document {
   isPinned?: boolean;
   readBy?: mongoose.Types.ObjectId[];
   status?: "sending" | "sent" | "delivered" | "seen";
+  isEdited?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -35,8 +36,10 @@ const messageSchema: Schema<IMessage> = new Schema(
     replyTo: { type: Schema.Types.ObjectId, ref: "Message" },
     reactions: [ReactionSchema],
     isPinned: { type: Boolean, default: false },
+    isEdited: { type: Boolean, default: false },
     readBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
     status: { type: String, enum: ["sending", "sent", "delivered", "seen"], default: "sent" },
+
   },
   { timestamps: true }
 );

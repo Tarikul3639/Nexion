@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { MessageItem } from "@/types/message/message";
 import { DraftMessage } from "@/types/message/message";
 import { useSocket } from "@/context/SocketContext";
+import { usePanel } from "@/context/PanelContext";
 
 interface ChatContextType {
   showAISuggestions: boolean;
@@ -28,6 +29,7 @@ const suggestion = ["AI Suggestion 1", "AI Suggestion 2", "AI Suggestion 3"];
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const { socket } = useSocket();
+  const { selectedChat } = usePanel();
 
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [aiSuggestions, setAISuggestions] = useState<string[]>(suggestion);
@@ -50,14 +52,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   // ---------------- Fetch messages from server ----------------
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !selectedChat) return;
 
     // Request initial messages
-    socket.emit("getMessages");
+    socket.emit("getMessages", { chatId: selectedChat?.id });
 
     // Listen for incoming messages
     socket.on("messages", (messages: MessageItem[]) => {
-      console.log("Messages: ", messages);
+      // console.log("Messages: ", messages);
       setAllMessages(messages);
     });
 
@@ -70,7 +72,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       socket.off("messages");
       socket.off("newMessage");
     };
-  }, [socket]);
+  }, [socket, selectedChat?.id]);
 
   const Value: ChatContextType = {
     showAISuggestions,
