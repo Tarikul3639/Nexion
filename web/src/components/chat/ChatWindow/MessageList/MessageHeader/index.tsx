@@ -3,11 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { MessageItem } from "@/types/message/message";
 
 export default function MessageHeader({ message }: { message: MessageItem }) {
-  const formattedTime = new Date(message.timestamp).toLocaleTimeString([], {
+  // console.log(message);
+  const formattedTime = new Date(message.updatedAt).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
   });
+  console.log(message);
 
   return (
     <div
@@ -44,7 +46,7 @@ export default function MessageHeader({ message }: { message: MessageItem }) {
         </Badge>
       )}
 
-      <span className="text-base font-normal text-gray-400">
+      <span className="text-sm font-normal text-gray-400 uppercase">
         {formattedTime}
         {message.isEdited && (
           <span className="ml-1 text-gray-400 italic">(edited)</span>

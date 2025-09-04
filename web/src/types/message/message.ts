@@ -21,7 +21,7 @@ export type MessageItem = {
   senderName: string;
   senderAvatar: string;
   content: DraftMessage;
-  timestamp: string;
+  updatedAt: string;
   status: "sending" | "sent" | "delivered" | "seen";
   isMe: boolean;
   role?: "teacher" | "assistant" | "admin" | "student";

@@ -2,6 +2,7 @@
 import { Server } from "socket.io";
 import { chatListHandler } from "./chatList";
 import { conversationHandler } from "./conversation";
+import { messageHandler } from "./messageHandler";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import config from "config";
@@ -45,6 +46,7 @@ export const setupSocket = (io: Server) => {
     // Attach handlers
     chatListHandler(io, socket);
     conversationHandler(io, socket, userSockets);
+    messageHandler(io, socket, userSockets);
 
     socket.on("disconnect", () => {
       // Remove socket from map

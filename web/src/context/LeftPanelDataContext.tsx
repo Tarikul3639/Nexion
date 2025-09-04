@@ -53,7 +53,7 @@ export const LeftPanelDataProvider = ({
     socket.emit("getChatList");
 
     socket.on("chatList", (chats: IChatList[]) => {
-      console.log("ChatList: ",chats);
+      // console.log("ChatList: ",chats);
       setAllChats(chats);
       setLoading(false);
     });

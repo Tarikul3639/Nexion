@@ -29,7 +29,7 @@ export default function SendButton() {
       senderId: "user123",
       senderName: "User",
       senderAvatar: "https://example.com/avatar.jpg",
-      timestamp: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       status: "sending",
       isMe: true,
       replyToId: replyToId || undefined,
