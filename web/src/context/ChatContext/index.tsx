@@ -68,9 +68,21 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       setAllMessages((prev) => [...prev, message]);
     });
 
+    // Listen for message status updates
+    socket.on("messageStatusUpdate", ({ tempId, id, status }) => {
+      setAllMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === tempId
+            ? { ...msg, status, id } // replace tempId with real DB id
+            : msg
+        )
+      );
+    });
+
     return () => {
       socket.off("messages");
       socket.off("newMessage");
+      socket.off("messageStatusUpdate");
     };
   }, [socket, selectedChat?.id]);
 

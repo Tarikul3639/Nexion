@@ -1,13 +1,17 @@
 import { Download } from "lucide-react";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 import Image from "next/image";
 import { DraftMessage } from "@/types/message/message";
 
 export default function ImageCard({ msg }: { msg: DraftMessage }) {
   // Check inside the card
-  if (!msg.attachments?.some(att => att.type === "image")) return null;
+  if (!msg.attachments?.some((att) => att.type === "image")) return null;
 
-  const images = msg.attachments.filter(att => att.type === "image");
+  const images = msg.attachments.filter((att) => att.type === "image");
 
   // Responsive grid
   let gridCols = "grid-cols-1";
@@ -18,7 +22,10 @@ export default function ImageCard({ msg }: { msg: DraftMessage }) {
     <div className="min-w-[calc(100vw-150px)] sm:min-w-[calc(50vw-150px)] md:min-w-[calc(50vw-150px)] xl:min-w-[calc(40vw-150px)]">
       <div className={`grid ${gridCols} gap-2`}>
         {images.map((img, index) => (
-          <div key={index} className="relative group w-full overflow-hidden rounded-lg aspect-square">
+          <div
+            key={index}
+            className="relative group w-full overflow-hidden rounded-lg aspect-square"
+          >
             {/* Hover Overlay */}
             <div className="absolute inset-0 bg-gray-900/50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10 rounded-lg">
               <Tooltip>
@@ -32,8 +39,8 @@ export default function ImageCard({ msg }: { msg: DraftMessage }) {
             </div>
 
             <Image
-              src={img.url}
-              alt={img.alt || `image ${index + 1}`}
+              src={img.url || (img.file ? URL.createObjectURL(img.file) : "")}
+              alt={img.alt || img.name || `image ${index + 1}`}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"

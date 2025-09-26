@@ -15,7 +15,7 @@ export interface IConversation extends Document {
 
 const conversationSchema: Schema<IConversation> = new Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String },
     type: { type: String, enum: ["direct", "group", "classroom"], required: true },
     lastMessage: { type: Schema.Types.ObjectId, ref: "Message" },
     avatar: String,

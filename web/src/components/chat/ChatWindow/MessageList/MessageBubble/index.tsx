@@ -75,7 +75,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
               isMe={message.isMe}
               id={message.id}
             />
-            {message.isMe && <MessageStatus />}
+            {message.isMe && <MessageStatus status={message.status} />}
           </div>
         </motion.div>
       </div>

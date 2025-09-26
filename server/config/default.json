@@ -28,5 +28,10 @@
   "upload": {
     "maxFileSize": "10MB",
     "allowedTypes": ["image/jpeg", "image/png", "image/gif"]
+  },
+    "cloudinary": {
+    "cloud_name": "dt9jpmqwf",
+    "api_key": "229292613465955",
+    "api_secret": "wAvEaAMctKmURy68ndYpZ3xqnmc"
   }
 }

@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useChat } from "@/context/ChatContext";
+import { url } from "inspector";
 
 // Attachment types for messages
 export type AttachmentType = "image" | "video" | "file" | "audio";
@@ -49,13 +50,17 @@ export default function AttachmentDropdown() {
       if (type === "image") {
         return {
           type: "image" as const,
-          url: URL.createObjectURL(file),
-          alt: file.name,
+          url: URL.createObjectURL(file), // for preview
+          file, // raw File object
+          name: file.name,
+          size: file.size,
+          extension: file.name.split(".").pop() || "",
         };
       } else if (type === "file") {
         return {
           type: "file" as const,
-          url: URL.createObjectURL(file),
+          url: URL.createObjectURL(file), // for preview
+          file,
           name: file.name,
           size: file.size,
           extension: file.name.split(".").pop() || "",
@@ -63,15 +68,20 @@ export default function AttachmentDropdown() {
       } else if (type === "video") {
         return {
           type: "video" as const,
-          url: URL.createObjectURL(file),
+          url: URL.createObjectURL(file), // for preview
+          file,
+          name: file.name,
+          size: file.size,
         };
       } else if (type === "audio") {
         return {
           type: "audio/webm" as const,
-          url: URL.createObjectURL(file),
+          url: URL.createObjectURL(file), // for preview
+          file,
+          name: file.name,
+          size: file.size,
         };
       }
-      // If none match, return undefined instead of null
       throw new Error("Invalid attachment type");
     });
 

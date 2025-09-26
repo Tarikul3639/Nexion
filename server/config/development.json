@@ -10,5 +10,10 @@
   },
   "cors": {
     "origin": ["http://localhost:3000", "http://localhost:5173", "http://localhost:8080"]
+  },
+    "cloudinary": {
+    "cloud_name": "dt9jpmqwf",
+    "api_key": "229292613465955",
+    "api_secret": "wAvEaAMctKmURy68ndYpZ3xqnmc"
   }
 }

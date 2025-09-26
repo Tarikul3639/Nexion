@@ -1,8 +1,14 @@
 import { Server } from "socket.io";
 import Message from "@/models/Message";
+import Conversation from "@/models/Conversation";
 import { AuthenticatedSocket } from "./types";
 import { DraftMessage, MessageItem } from "./types";
 import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
+import config from "config";
+
+// Cloudinary config
+cloudinary.config(config.get("cloudinary"));
 
 export const messageHandler = (
   io: Server,
@@ -25,7 +31,9 @@ export const messageHandler = (
         content: msg.content as DraftMessage,
         updatedAt: msg.updatedAt.toISOString(),
         status: "sent",
-        isMe: socket.user?._id.toString() === (msg.sender._id as mongoose.Types.ObjectId).toString(),
+        isMe:
+          socket.user?._id.toString() ===
+          (msg.sender._id as mongoose.Types.ObjectId).toString(),
         role: msg.sender.role,
         replyToId: msg.replyTo?.toString(),
         isEdited: msg.isEdited ?? false,
@@ -40,35 +48,48 @@ export const messageHandler = (
 
   // ---------------- Send new message ----------------
   socket.on("sendMessage", async (data: any) => {
-    console.log("Sending message:", data);
+    console.log(
+      "sendMessage data:",
+      data.content.attachments.map((a: any) => a.type)
+    );
     try {
       const newMessage = await Message.create(data);
-      const populated = await newMessage.populate("sender", "username avatar role");
+      const populated = await newMessage.populate(
+        "sender",
+        "username avatar role"
+      );
 
-      const sender = populated.sender as any; // TypeScript safe cast
-
-      const msgObj: MessageItem = {
+      const msgObj: MessageItem & { tempId?: string } = {
         id: (populated._id as mongoose.Types.ObjectId).toString(),
-        senderId: (sender._id as mongoose.Types.ObjectId).toString(),
-        senderName: sender.username,
-        senderAvatar: sender.avatar || "",
+        senderId: (populated.sender as any)._id.toString(), // safe cast
+        senderName: (populated.sender as any).username,
+        senderAvatar: (populated.sender as any).avatar || "",
         content: populated.content as DraftMessage,
         updatedAt: populated.updatedAt.toISOString(),
         status: "sent",
-        isMe: socket.user?._id.toString() === (sender._id as mongoose.Types.ObjectId).toString(),
-        role: sender.role,
+        isMe: false,
+        role: (populated.sender as any).role,
         replyToId: populated.replyTo?.toString(),
         isEdited: populated.isEdited ?? false,
+        tempId: data.tempId,
       };
 
       // Emit to conversation participants
-      if (data.conversation && Array.isArray(data.participants)) {
-        data.participants.forEach((userId: string) => {
-          io.to(userId).emit("newMessage", msgObj);
+      const conversation = await Conversation.findById(
+        data.conversation
+      ).lean();
+      if (conversation?.participants) {
+        conversation.participants.forEach((userId: any) => {
+          io.to(userId.toString()).emit("newMessage", msgObj);
         });
-      } else {
-        io.emit("newMessage", msgObj);
       }
+
+      // Send status update to sender
+      io.to(socket.id).emit("messageStatusUpdate", {
+        id: msgObj.id, // real DB ID
+        tempId: data.tempId, // match frontend temp message
+        status: "sent",
+      });
     } catch (err) {
       console.error(err);
       socket.emit("sendMessageError", "Failed to send message");

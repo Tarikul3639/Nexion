@@ -15,7 +15,7 @@ export default function ChatList({
   onSelectChat,
 }: ChatListProps) {
   const [searchValue, setSearchValue] = useState("");
-
+  console.log("All Chats:", allChats);
   const filteredPinnedChats = allChats.filter(
     (chat) =>
       chat.isPinned &&

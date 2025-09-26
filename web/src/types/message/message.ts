@@ -3,7 +3,8 @@ export type DraftMessage = {
   text?: string;
   attachments?: {
     type: "image" | "video" | "file" | "audio/webm";
-    url: string;
+    file?: File; // local file (for preview before upload)
+    url?: string; // uploaded URL
     name?: string;
     size?: number;
     extension?: string;
@@ -27,6 +28,7 @@ export type MessageItem = {
   role?: "teacher" | "assistant" | "admin" | "student";
   replyToId?: string;
   isEdited?: boolean;
+  tempId?: string; // For optimistic UI updates
 };
 
 // ...............MessageList...........................

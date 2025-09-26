@@ -9,57 +9,84 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { useChat } from "@/context/ChatContext";
-import { MessageItem } from "@/types/message/message";
 import { usePanel } from "@/context/PanelContext";
 import { useSocket } from "@/context/SocketContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SendButton() {
   const {
-    replyToId,
-    setReplyToId,
     draftMessage,
     setDraftMessage,
+    allMessages,
     setAllMessages,
+    replyToId,
+    setReplyToId,
     setIsRecordingActive,
   } = useChat();
   const { socket } = useSocket();
   const { selectedChat } = usePanel();
+  const { user } = useAuth();
 
   if (!draftMessage?.text && !draftMessage?.attachments?.length) return null;
 
-  // Function to handle message sending
-  const handleMessageSend = () => {
-    if (!socket || !selectedChat) return;
+  const handleMessageSend = async () => {
+    if (!socket || !selectedChat || !user || !draftMessage) return;
 
     const tempId = Date.now().toString();
+    let uploadedAttachments: any = [];
 
-    const optimisticMessage: MessageItem = {
+    // Upload files to backend
+    if (draftMessage.attachments?.length) {
+      uploadedAttachments = await Promise.all(
+        draftMessage.attachments.map(async (att) => {
+          if (!att.file) return att; // already has URL, skip
+
+          const formData = new FormData();
+          formData.append("file", att.file);
+
+          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`, {
+            // your upload route
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await res.json();
+
+          return {
+            ...att,
+            url: data.url, // cloudinary URL
+            file: undefined, // optional: remove local File
+          };
+        })
+      );
+    }
+
+    const optimisticMessage = {
       id: tempId,
-      senderId: "me", // backend userId replace হবে socket.user থেকে
-      senderName: "You",
-      senderAvatar: "",
+      senderId: user.id,
+      senderName: user.username || "Unknown",
+      senderAvatar: user.avatar || "",
+      content: { ...draftMessage, attachments: uploadedAttachments },
       updatedAt: new Date().toISOString(),
-      status: "sending",
+      status: "sending" as const,
       isMe: true,
       replyToId: replyToId || undefined,
-      content: draftMessage,
+      tempId,
     };
 
-    // Local UI update (optimistic)
     setAllMessages((prev) => [...prev, optimisticMessage]);
 
-    // Emit to backend
     socket.emit("sendMessage", {
       conversation: selectedChat.id,
-      participants: selectedChat.participants, // সার্ভারে যাতে পাঠানো যায়
-      content: draftMessage,
+      sender: user.id,
+      content: { ...draftMessage, attachments: uploadedAttachments },
       replyTo: replyToId,
+      tempId,
     });
 
-    // Reset input state
-    setDraftMessage(null);
-    setIsRecordingActive(false);
+    setDraftMessage({ text: "", attachments: [] });
     setReplyToId(null);
+    setIsRecordingActive(false);
   };
 
   return (
