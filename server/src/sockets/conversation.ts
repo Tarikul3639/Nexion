@@ -50,6 +50,7 @@ export const conversationHandler = (
 
   socket.on("sendMessage", async ({ senderId, receiverId, text, attachments, replyTo }) => {
     try {
+      console.log("sendMessage called with:", { senderId, receiverId, text, attachments, replyTo });   
       let conversation = await Conversation.findById(receiverId);
 
       if (!conversation) {
@@ -68,9 +69,11 @@ export const conversationHandler = (
 
       const messageData = {
         conversation: conversation._id,
-        sender: senderId,
-        content: text,
-        attachments,
+        sender: senderId, 
+        content: {
+          text: text,
+          attachments: attachments
+        },
         replyTo,
         isEdited: false,
       };

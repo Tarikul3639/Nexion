@@ -17,11 +17,11 @@ export default function SendButton() {
   const {
     draftMessage,
     setDraftMessage,
-    allMessages,
     setAllMessages,
     replyToId,
     setReplyToId,
     setIsRecordingActive,
+    setUploadProgress,
   } = useChat();
   const { socket } = useSocket();
   const { selectedChat } = usePanel();
@@ -33,57 +33,109 @@ export default function SendButton() {
     if (!socket || !selectedChat || !user || !draftMessage) return;
 
     const tempId = Date.now().toString();
-    let uploadedAttachments: any = [];
 
-    // Upload files to backend
-    if (draftMessage.attachments?.length) {
-      uploadedAttachments = await Promise.all(
-        draftMessage.attachments.map(async (att) => {
-          if (!att.file) return att; // already has URL, skip
-
-          const formData = new FormData();
-          formData.append("file", att.file);
-
-          const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`, {
-            // your upload route
-            method: "POST",
-            body: formData,
-          });
-
-          const data = await res.json();
-
-          return {
-            ...att,
-            url: data.url, // cloudinary URL
-            file: undefined, // optional: remove local File
-          };
-        })
-      );
-    }
-
+    // ---------- 1. OPTIMISTIC MESSAGE (Instant show in UI) ----------
     const optimisticMessage = {
       id: tempId,
       senderId: user.id,
       senderName: user.username || "Unknown",
       senderAvatar: user.avatar || "",
-      content: { ...draftMessage, attachments: uploadedAttachments },
+      content: {
+        ...draftMessage,
+        attachments: draftMessage.attachments?.map((att) => ({
+          ...att,
+          // show preview instantly
+          previewUrl: att.file ? URL.createObjectURL(att.file) : att.url,
+        })),
+      },
       updatedAt: new Date().toISOString(),
-      status: "sending" as const,
+      status: "uploading" as const,
       isMe: true,
       replyToId: replyToId || undefined,
-      tempId,
     };
 
     setAllMessages((prev) => [...prev, optimisticMessage]);
 
+    // ---------- 2. UPLOAD FILES ----------
+    let uploadedAttachments: any = [];
+
+    if (draftMessage.attachments?.length) {
+      uploadedAttachments = await Promise.all(
+        draftMessage.attachments.map((att) => {
+          return new Promise(async (resolve, reject) => {
+            if (!att.file) return resolve(att);
+
+            const formData = new FormData();
+            formData.append("file", att.file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open(
+              "POST",
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`
+            );
+
+            // track progress
+            xhr.upload.onprogress = (event) => {
+              if (event.lengthComputable) {
+                const percent = Math.round((event.loaded / event.total) * 100);
+
+                // console log for image upload progress
+                console.log(
+                  `Uploading ${att.name || att.file?.name}: ${percent}%`
+                );
+
+                setUploadProgress((prev) => ({
+                  ...prev,
+                  [att.name || (att.file ? att.file.name : "")]: percent,
+                }));
+              }
+            };
+
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                const data = JSON.parse(xhr.responseText);
+                resolve({
+                  ...att,
+                  url: data.url,
+                  file: undefined,
+                  previewUrl: undefined,
+                });
+              } else {
+                reject(new Error("Upload failed"));
+              }
+            };
+
+            xhr.onerror = () => reject(new Error("Upload failed"));
+            xhr.send(formData);
+          });
+        })
+      );
+    }
+
+    // ---------- 3. UPDATE OPTIMISTIC MESSAGE ----------
+    setAllMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === tempId
+          ? {
+              ...msg,
+              status: "sending",
+              content: { ...msg.content, attachments: uploadedAttachments },
+            }
+          : msg
+      )
+    );
+
+    // ---------- 4. SEND TO SOCKET ----------
     socket.emit("sendMessage", {
       conversation: selectedChat.id,
+      receiverId: selectedChat.id,
       sender: user.id,
       content: { ...draftMessage, attachments: uploadedAttachments },
       replyTo: replyToId,
       tempId,
     });
 
+    // ---------- 5. RESET DRAFT ----------
     setDraftMessage({ text: "", attachments: [] });
     setReplyToId(null);
     setIsRecordingActive(false);

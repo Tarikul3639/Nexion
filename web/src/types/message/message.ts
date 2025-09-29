@@ -23,7 +23,7 @@ export type MessageItem = {
   senderAvatar: string;
   content: DraftMessage;
   updatedAt: string;
-  status: "sending" | "sent" | "delivered" | "seen";
+  status: "uploading" | "sending" | "sent" | "delivered" | "seen";
   isMe: boolean;
   role?: "teacher" | "assistant" | "admin" | "student";
   replyToId?: string;

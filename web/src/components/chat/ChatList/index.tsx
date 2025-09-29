@@ -15,7 +15,7 @@ export default function ChatList({
   onSelectChat,
 }: ChatListProps) {
   const [searchValue, setSearchValue] = useState("");
-  console.log("All Chats:", allChats);
+
   const filteredPinnedChats = allChats.filter(
     (chat) =>
       chat.isPinned &&
@@ -25,7 +25,7 @@ export default function ChatList({
   const filteredAllChats = allChats.filter(
     (chat) =>
       !chat.isPinned &&
-      chat.name.toLowerCase().includes(searchValue.toLowerCase())
+      chat.name?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   return (

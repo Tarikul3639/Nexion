@@ -21,6 +21,10 @@ interface ChatContextType {
   replyToId: string | null;
   setReplyToId: React.Dispatch<React.SetStateAction<string | null>>;
   scrollToMessage?: (messageId: string) => void;
+  uploadProgress: { [key: string]: number }; // key: attachment url, value: progress %
+  setUploadProgress: React.Dispatch<
+    React.SetStateAction<{ [key: string]: number }>
+  >;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -36,6 +40,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [isRecordingActive, setIsRecordingActive] = useState(false);
   const [replyToId, setReplyToId] = useState<string | null>(null);
   const [allMessages, setAllMessages] = useState<MessageItem[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<{
+    [key: string]: number;
+  }>({});
   const [draftMessage, setDraftMessage] = useState<DraftMessage | null>({
     text: "",
     attachments: [],
@@ -64,17 +71,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Optional: listen for new messages in real-time
-    socket.on("newMessage", (message: MessageItem) => {
-      setAllMessages((prev) => [...prev, message]);
-    });
-
-    // Listen for message status updates
-    socket.on("messageStatusUpdate", ({ tempId, id, status }) => {
+    socket.on("newMessage", (message) => {
       setAllMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === tempId
-            ? { ...msg, status, id } // replace tempId with real DB id
-            : msg
+        prev.map((m) =>
+          m.id === message.tempId ? { ...message, isMe: true } : m
         )
       );
     });
@@ -100,6 +100,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setAllMessages,
     replyToId,
     setReplyToId,
+    uploadProgress,
+    setUploadProgress,
   };
 
   return <ChatContext.Provider value={Value}>{children}</ChatContext.Provider>;

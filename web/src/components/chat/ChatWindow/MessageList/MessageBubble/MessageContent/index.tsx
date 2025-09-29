@@ -25,7 +25,9 @@ export default function MessageContent({
   }`;
 
   const bubbleClasses = `text-base text-gray-50 space-y-2.5 leading-relaxed whitespace-pre-wrap break-words rounded-xl p-4 shadow-sm ${
-    isMe ? "rounded-tr-none bg-blue-950 pb-2" : "rounded-tl-none rounded-br-xl bg-[#323438]"
+    isMe
+      ? "rounded-tr-none bg-blue-950 pb-2"
+      : "rounded-tl-none rounded-br-xl bg-[#323438]"
   }`;
 
   return (

@@ -26,7 +26,11 @@ export const setupSocket = (io: Server) => {
       const user = await User.findById(decoded._id).select("_id email username");
       if (!user) return next(new Error("Authentication error: User not found"));
 
-      socket.user = user as IUser;
+      socket.user = {
+        _id: user._id.toString(),
+        email: user.email,
+        username: user.username
+      } as IUser;
 
       next();
     } catch (err) {
@@ -45,7 +49,7 @@ export const setupSocket = (io: Server) => {
 
     // Attach handlers
     chatListHandler(io, socket);
-    conversationHandler(io, socket, userSockets);
+    // conversationHandler(io, socket, userSockets);
     messageHandler(io, socket, userSockets);
 
     socket.on("disconnect", () => {

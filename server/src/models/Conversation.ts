@@ -20,7 +20,7 @@ const conversationSchema: Schema<IConversation> = new Schema(
     lastMessage: { type: Schema.Types.ObjectId, ref: "Message" },
     avatar: String,
     unread: { type: Number, default: 0 },
-    participants: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
+    participants: [{ type: Schema.Types.ObjectId, ref: "User"}],
     isPinned: { type: Boolean, default: false },
   },
   { timestamps: true }
