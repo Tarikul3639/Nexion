@@ -83,11 +83,6 @@ export default function ImageCard({ msg }: { msg: DraftMessage }) {
   if (!msg.attachments?.some((att) => att.type === "image")) return null;
   const images = msg.attachments.filter((att) => att.type === "image");
 
-  // Grid layout
-  let gridCols = "grid-cols-1";
-  if (images.length === 2) gridCols = "grid-cols-2";
-  else if (images.length >= 3) gridCols = "grid-cols-2";
-
   // Download handler
   const handleDownload = async (img: any, index: number) => {
     const filename = img.name || img.file?.name || `image-${index + 1}`;
@@ -134,6 +129,11 @@ export default function ImageCard({ msg }: { msg: DraftMessage }) {
       console.error("Download failed:", err);
     }
   };
+
+  // Grid layout
+  let gridCols = "grid-cols-1 height-[100px]";
+  if (images.length === 2) gridCols = "grid-cols-2";
+  else if (images.length >= 3) gridCols = "grid-cols-2";
 
   return (
     <div className="min-w-[calc(100vw-150px)] sm:min-w-[calc(50vw-150px)] md:min-w-[calc(50vw-150px)] xl:min-w-[calc(40vw-150px)]">

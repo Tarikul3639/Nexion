@@ -14,6 +14,10 @@ interface LeftPanelDataContextType {
   setAllChats: React.Dispatch<React.SetStateAction<IChatList[]>>;
   setAllClassrooms: React.Dispatch<React.SetStateAction<Classroom[]>>;
   setAllBots: React.Dispatch<React.SetStateAction<Bot[]>>;
+  searchActive: boolean;
+  setSearchActive: React.Dispatch<React.SetStateAction<boolean>>;
+  searchResults: IChatList[];
+  setSearchResults: React.Dispatch<React.SetStateAction<IChatList[]>>;
   loading: boolean;
 }
 
@@ -40,6 +44,8 @@ export const LeftPanelDataProvider = ({
 
   const [allChats, setAllChats] = useState<IChatList[]>([]);
   const [allClassrooms, setAllClassrooms] = useState<Classroom[]>([]);
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<IChatList[]>([]);
   const [allBots, setAllBots] = useState<Bot[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -56,6 +62,10 @@ export const LeftPanelDataProvider = ({
       // console.log("ChatList: ",chats);
       setAllChats(chats);
       setLoading(false);
+    });
+
+    socket.on("searchUsersResult", (results: IChatList[]) => {
+      setSearchResults(results);
     });
 
     socket.on("newChat", (chat: IChatList) => {
@@ -86,6 +96,7 @@ export const LeftPanelDataProvider = ({
 
     return () => {
       socket.off("initialChats");
+      socket.off("searchUsersResult");
       socket.off("newChat");
       socket.off("initialClassrooms");
       socket.off("updateClassrooms");
@@ -103,6 +114,10 @@ export const LeftPanelDataProvider = ({
         setAllChats,
         setAllClassrooms,
         setAllBots,
+        searchActive,
+        setSearchActive,
+        searchResults,
+        setSearchResults,
         loading,
       }}
     >

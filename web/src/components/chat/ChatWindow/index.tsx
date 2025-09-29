@@ -3,6 +3,7 @@ import { ChatProvider } from "@/context/ChatContext";
 import InputBar from "./InputBar/index";
 import MessageList from "./MessageList";
 import ReplyPreview from "./ReplayPreview";
+import ImagePreview from "./ImagePreview";
 
 export default function ChatContainer() {
   return (
@@ -10,6 +11,7 @@ export default function ChatContainer() {
       <ChatProvider>
         <ChatHeader />
         <MessageList />
+        <ImagePreview />
         <ReplyPreview />
         <InputBar />
       </ChatProvider>

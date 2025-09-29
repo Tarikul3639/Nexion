@@ -1,12 +1,12 @@
 // server/src/sockets/index.ts
 import { Server } from "socket.io";
-import { chatListHandler } from "./chatList";
-import { conversationHandler } from "./conversation";
-import { messageHandler } from "./messageHandler";
+import { getChatListHandler } from "./chat/leftPanel/getChatList";
+import { searchUsersHandler } from "./chat/leftPanel/searchUsers";
+import { messageHandler } from "./chat/messageHandler";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import config from "config";
-import { IUser, AuthenticatedSocket, ITokenPayload } from "./types";
+import { IUser, AuthenticatedSocket, ITokenPayload } from "@/types/chat";
 
 export const setupSocket = (io: Server) => {
   // Map to store userId -> set of socketIds
@@ -48,8 +48,8 @@ export const setupSocket = (io: Server) => {
     console.log("✅ New socket connected:", socket.id, "User:", socket.user?.username);
 
     // Attach handlers
-    chatListHandler(io, socket);
-    // conversationHandler(io, socket, userSockets);
+    getChatListHandler(io, socket);
+    searchUsersHandler(io, socket);
     messageHandler(io, socket, userSockets);
 
     socket.on("disconnect", () => {

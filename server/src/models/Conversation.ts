@@ -2,6 +2,7 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IConversation extends Document {
+  _id: mongoose.Types.ObjectId;
   name: string; // Name of conversation/group/class
   type: "direct" | "group" | "classroom";
   lastMessage?: mongoose.Types.ObjectId;
