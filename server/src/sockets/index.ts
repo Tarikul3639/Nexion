@@ -1,8 +1,8 @@
 // server/src/sockets/index.ts
 import { Server } from "socket.io";
-import { getChatListHandler } from "./chat/leftPanel/getChatList";
-import { searchUsersHandler } from "./chat/leftPanel/searchUsers";
-import { messageHandler } from "./chat/messageHandler";
+import { getChatListHandler } from "./chat/LeftPanel/getChatList";
+import { searchUsersHandler } from "./chat/LeftPanel/searchUsers";
+import { messageHandler } from "./chat/RightPanel/messageHandler";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import config from "config";
