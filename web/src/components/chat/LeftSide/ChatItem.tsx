@@ -14,6 +14,7 @@ export interface IChatListProps {
 
 export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
   const lastMsg = chat.lastMessage;
+  const avatar = chat.avatar;
 
   return (
     <div
@@ -25,13 +26,14 @@ export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
       {/* Avatar */}
       <div className="relative flex-shrink-0">
         <Avatar className="w-12 h-12 rounded-lg">
-          <AvatarImage src={chat.avatar} alt={chat.name} />
+          <AvatarImage src={avatar} alt={chat.name} />
           <AvatarFallback className="rounded-lg">
             <span className="text-[20px] font-extrabold">
               {chat.name?.slice(0, 2).toUpperCase() ?? "NA"}
             </span>
           </AvatarFallback>
         </Avatar>
+
         {chat.type !== "direct" && (
           <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-[#23C26C] text-center rounded-full flex items-center justify-center">
             <ChatTypeIcon type={chat.type} />

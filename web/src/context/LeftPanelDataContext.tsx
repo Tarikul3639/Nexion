@@ -64,7 +64,7 @@ export const LeftPanelDataProvider = ({
       setLoading(false);
     });
 
-    socket.on("searchUsersResult", (results: IChatList[]) => {
+    socket.on("searchResults", (results: IChatList[]) => {
       setSearchResults(results);
     });
 

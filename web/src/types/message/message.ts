@@ -63,7 +63,7 @@ export interface IMessage {
 export interface IChatList {
   _id: string;
   name: string;
-  type: "direct" | "group" | "classroom";
+  type: "direct" | "group" | "classroom" | "user";
   avatar?: string;
   isTyping?: boolean;
   lastMessage?: IMessage;

@@ -127,8 +127,8 @@ export default function SendButton() {
 
     // ---------- 4. SEND TO SOCKET ----------
     socket.emit("sendMessage", {
-      conversation: selectedChat.id,
-      receiverId: selectedChat.id,
+      conversation: selectedChat.type !== "user" ? selectedChat.id : undefined,
+      receiverId: selectedChat.type === "user" ? selectedChat.id : undefined,
       sender: user.id,
       content: { ...draftMessage, attachments: uploadedAttachments },
       replyTo: replyToId,

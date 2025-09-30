@@ -19,7 +19,7 @@ export default function SearchBar({
     if (!socket) return;
     const timeout = setTimeout(() => {
       if (searchValue.trim().length > 1) {
-        socket.emit("searchUsers", { search: searchValue.trim() });
+        socket.emit("search", { search: searchValue.trim() });
         setSearchActive(true);
       } else {
         setSearchActive(false);

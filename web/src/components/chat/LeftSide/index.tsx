@@ -21,12 +21,14 @@ const { searchActive, searchResults } = useLeftPanelData();
 
 const chatsToShow = searchActive ? searchResults : allChats;
 
+// console.log("Chats to show:", chatsToShow);
+
 const filteredPinnedChats = chatsToShow.filter(
   (chat) => chat.isPinned && chat.name?.toLowerCase().includes("")
 );
 
 const filteredAllChats = chatsToShow.filter(
-  (chat) => !chat.isPinned && chat.name?.toLowerCase().includes("")
+  (chat) => !chat.isPinned
 );
 
 
