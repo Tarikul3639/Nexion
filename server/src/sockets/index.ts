@@ -16,20 +16,23 @@ export const setupSocket = (io: Server) => {
   io.use(async (socket: AuthenticatedSocket, next) => {
     try {
       const token = socket.handshake.auth.token;
-      if (!token) return next(new Error("Authentication error: No token provided"));
+      if (!token)
+        return next(new Error("Authentication error: No token provided"));
 
       const key = config.get("jwt.secret") as string;
       if (!key) throw new Error("JWT secret key not found");
 
       const decoded = jwt.verify(token, key) as ITokenPayload;
 
-      const user = await User.findById(decoded._id).select("_id email username");
+      const user = await User.findById(decoded._id).select(
+        "_id email username"
+      );
       if (!user) return next(new Error("Authentication error: User not found"));
 
       socket.user = {
         _id: user._id.toString(),
         email: user.email,
-        username: user.username
+        username: user.username,
       } as IUser;
 
       next();
@@ -44,8 +47,15 @@ export const setupSocket = (io: Server) => {
     // Add socket to map
     if (!userSockets.has(userId)) userSockets.set(userId, new Set());
     userSockets.get(userId)!.add(socket.id);
+    User.findByIdAndUpdate(userId, { status: "online" }).exec();
+    io.emit("userStatusUpdate", { userId, status: "online" });
 
-    console.log("✅ New socket connected:", socket.id, "User:", socket.user?.username);
+    console.log(
+      "✅ New socket connected:",
+      socket.id,
+      "User:",
+      socket.user?.username
+    );
 
     // Attach handlers
     getChatListHandler(io, socket);
@@ -55,9 +65,17 @@ export const setupSocket = (io: Server) => {
     socket.on("disconnect", () => {
       // Remove socket from map
       userSockets.get(userId)?.delete(socket.id);
-      if (userSockets.get(userId)?.size === 0) userSockets.delete(userId);
-
-      console.log("❌ Socket disconnected:", socket.id, "User:", socket.user?.username);
+      if (userSockets.get(userId)?.size === 0) {
+        userSockets.delete(userId);
+        User.findByIdAndUpdate(userId, { status: "offline", lastSeen: new Date() }).exec();
+        io.emit("userStatusUpdate", { userId, status: "offline" });
+      }
+      console.log(
+        "❌ Socket disconnected:",
+        socket.id,
+        "User:",
+        socket.user?.username
+      );
     });
   });
 };

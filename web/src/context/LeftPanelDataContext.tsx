@@ -64,6 +64,17 @@ export const LeftPanelDataProvider = ({
       setLoading(false);
     });
 
+    socket.on("userStatusUpdate", ({ userId, status }) => {
+      setAllChats((prev) =>
+        prev.map((chat) => ({
+          ...chat,
+          participants: chat.participants.map((p) =>
+            p._id === userId ? { ...p, status } : p
+          ),
+        }))
+      );
+    });
+
     socket.on("searchResults", (results: IChatList[]) => {
       setSearchResults(results);
     });

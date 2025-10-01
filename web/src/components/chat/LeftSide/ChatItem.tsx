@@ -2,9 +2,9 @@
 
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ChatTypeIcon from "./ChatTypeIcon";
 import { IChatList } from "@/types/message/message.messageList";
 import LastMessagePreview from "./LastMessagePreview";
+import { useAuth } from "@/context/AuthContext";
 
 export interface IChatListProps {
   chat: IChatList;
@@ -13,9 +13,14 @@ export interface IChatListProps {
 }
 
 export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
+  const { user } = useAuth();
   const lastMsg = chat.lastMessage;
   const avatar = chat.avatar;
-
+  const type = chat.type;
+  const status =
+    chat.participants && chat.participants.length && user
+      ? chat.participants.find((p) => p._id !== user.id)?.status
+      : undefined;
   return (
     <div
       className={`flex items-center md:px-2.5 py-2.5 cursor-pointer transition-colors duration-200 rounded-xl ${
@@ -34,10 +39,21 @@ export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
           </AvatarFallback>
         </Avatar>
 
-        {chat.type !== "direct" && (
-          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-[#23C26C] text-center rounded-full flex items-center justify-center">
-            <ChatTypeIcon type={chat.type} />
-          </div>
+        {status && (
+          <span
+            className={`absolute -bottom-1 -right-1 flex items-center justify-center text-white font-bold h-4 w-4 text-[10px] uppercase rounded-full leading-none
+              ${
+                status === "online"
+                  ? "bg-[#23C26C]"
+                  : status === "away"
+                  ? "bg-yellow-500"
+                  : status === "busy"
+                  ? "bg-red-500"
+                  : "bg-gray-500"
+              }`}
+          >
+            {type.slice(0, 1).toUpperCase()}
+          </span>
         )}
       </div>
 

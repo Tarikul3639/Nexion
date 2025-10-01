@@ -65,6 +65,7 @@ export interface IChatList {
   name: string;
   type: "direct" | "group" | "classroom" | "user";
   avatar?: string;
+  status?: "online" | "offline" | "away" | "busy";
   isTyping?: boolean;
   lastMessage?: IMessage;
   participants: {
