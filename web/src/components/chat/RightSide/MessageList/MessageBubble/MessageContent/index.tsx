@@ -6,6 +6,7 @@ import AudioCard from "./AudioCard";
 import TextCard from "./TextCard";
 import ReplyView from "./ReplayView";
 import FileCard from "./FileCard";
+import { useInView } from "react-intersection-observer";
 
 interface MessageContentProps {
   msg: DraftMessage;

@@ -1,3 +1,4 @@
+// handlers/messageHandler.ts
 import { Server } from "socket.io";
 import Message from "@/models/Message";
 import Conversation from "@/models/Conversation";
@@ -24,7 +25,7 @@ export const messageHandler = (
         senderAvatar: msg.sender.avatar || "",
         content: msg.content as DraftMessage,
         updatedAt: msg.updatedAt.toISOString(),
-        status: "sent",
+        status: msg.status || "sent",
         isMe: socket.user?._id.toString() === msg.sender._id.toString(),
         role: msg.sender.role,
         replyToId: msg.replyTo?.toString(),
@@ -122,6 +123,58 @@ export const messageHandler = (
       } catch (err) {
         console.error("sendMessage error:", err);
         socket.emit("sendMessageError", "Failed to send message");
+      }
+    }
+  );
+
+  // ---------------- Delete Message ----------------
+  socket.on("deleteMessage", async ({ messageId }: { messageId: string }) => {
+    try {
+      const msg = await Message.findById(messageId);
+      if (!msg) throw new Error("Message not found");
+
+      await Message.deleteOne({ _id: messageId });
+      socket.emit("messageDeleted", { messageId });
+    } catch (err) {
+      console.error("deleteMessage error:", err);
+      socket.emit("deleteMessageError", "Failed to delete message");
+    }
+  });
+
+  // ---------------- Read Message ----------------
+  socket.on(
+    "messageRead",
+    async ({ messageId, userId }: { messageId: string; userId: string }) => {
+      try {
+        const message = await Message.findById(messageId);
+        if (!message) throw new Error("Message not found");
+
+        // Add userId to readBy if not already present
+        if (!message.readBy?.includes(new mongoose.Types.ObjectId(userId))) {
+          message.readBy = [...(message.readBy || []), new mongoose.Types.ObjectId(userId)];
+        }
+
+        // update status -> seen
+        message.status = "seen";
+        await message.save();
+
+        // notify sender + participants
+        const conversation = await Conversation.findById(message.conversation).lean();
+        if (conversation?.participants) {
+          conversation.participants.forEach((participantId: any) => {
+            const sockets = userSockets.get(participantId.toString());
+            sockets?.forEach((sId) => {
+              io.to(sId).emit("messageRead", {
+                messageId: messageId,
+                userId: userId,
+                conversationId: conversation._id.toString(),
+              });
+            });
+          });
+        }
+      } catch (err) {
+        console.error("messageRead error:", err);
+        socket.emit("messageReadError", "Failed to mark message as read");
       }
     }
   );

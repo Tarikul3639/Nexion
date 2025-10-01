@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EllipsisVertical } from "lucide-react";
 import { useChat } from "@/context/ChatContext";
+import { useSocket } from "@/context/SocketContext";
 
 interface MessageDropdownProps {
   options?: string[];
@@ -18,25 +19,38 @@ const MessageDropdown: FC<MessageDropdownProps> = ({
   msgId,
 }) => {
   const { setReplyToId, allMessages, setAllMessages } = useChat();
+  const { socket } = useSocket();
 
   const onClick = (item: string) => {
     switch (item) {
       case "Reply":
         setReplyToId(msgId);
         break;
+
       case "Forward":
+        // forward logic
         break;
+
       case "Copy":
         navigator.clipboard.writeText(
           allMessages.find((msg) => msg.id === msgId)?.content.text || ""
         );
         break;
+
       case "Edit":
         // edit logic
         break;
 
       case "Delete":
-        setAllMessages((prev) => prev.filter((msg) => msg.id !== msgId));
+        if (socket) {
+          socket.emit("deleteMessage", { messageId: msgId });
+
+          socket.on("messageDeleted", ({ messageId }) => {
+            setAllMessages((prev) =>
+              prev.filter((msg) => msg.id !== messageId)
+            );
+          });
+        }
         break;
 
       default:

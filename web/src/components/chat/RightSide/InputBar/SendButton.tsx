@@ -146,6 +146,7 @@ export default function SendButton() {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
+            id="send-btn"
             size="icon"
             onClick={handleMessageSend}
             className={`rounded-sm flex items-center justify-center transition-all duration-200 focus:outline-none ${
