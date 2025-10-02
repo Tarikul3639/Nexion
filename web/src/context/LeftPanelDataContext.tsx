@@ -59,9 +59,25 @@ export const LeftPanelDataProvider = ({
     socket.emit("getChatList");
 
     socket.on("chatList", (chats: IChatList[]) => {
-      // console.log("ChatList: ",chats);
+      console.log("ChatList: ", chats);
       setAllChats(chats);
       setLoading(false);
+    });
+
+    // Chat list update
+    socket.on("chatListUpdate", (update) => {
+      console.log("Chat list update:", update.conversationId, update.lastMessage);
+      setAllChats((prev) =>
+        prev.map((chat) =>
+          chat.id === update.conversationId
+            ? {
+                ...chat,
+                lastMessage: update.lastMessage,
+                updatedAt: update.updatedAt,
+              }
+            : chat
+        )
+      );
     });
 
     socket.on("userStatusUpdate", ({ userId, status }) => {
@@ -77,14 +93,6 @@ export const LeftPanelDataProvider = ({
 
     socket.on("searchResults", (results: IChatList[]) => {
       setSearchResults(results);
-    });
-
-    socket.on("newChat", (chat: IChatList) => {
-      setAllChats((prev) => [chat, ...prev]);
-    });
-
-    socket.on("newChat", (chat: IChatList) => {
-      setAllChats((prev) => [chat, ...prev]);
     });
 
     // Classrooms
@@ -108,7 +116,7 @@ export const LeftPanelDataProvider = ({
     return () => {
       socket.off("initialChats");
       socket.off("searchUsersResult");
-      socket.off("newChat");
+      socket.off("newMessage");
       socket.off("initialClassrooms");
       socket.off("updateClassrooms");
       socket.off("initialBots");

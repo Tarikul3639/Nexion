@@ -68,9 +68,9 @@ export type MessageItem = {
   senderName: string;
   senderAvatar: string;
   content: DraftMessage;
-  updatedAt: string;
+  updatedAt?: string;
+  createdAt?: string;
   status: "sending" | "sent" | "delivered" | "seen";
-  isMe: boolean;
   role?: "teacher" | "assistant" | "admin" | "student";
   replyToId?: string;
   isEdited?: boolean;

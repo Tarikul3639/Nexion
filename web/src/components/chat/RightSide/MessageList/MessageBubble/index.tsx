@@ -28,6 +28,9 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
     const [isDragging, setIsDragging] = useState(false);
     const controls = useAnimation();
     const dragStarted = useRef(false);
+    
+    // Determine if the message is sent by the current user
+    message.isMe = message.senderId === user?.id;
 
     // 👁️ intersection observer hook
     const { ref: inViewRef, inView } = useInView({
@@ -37,9 +40,9 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
 
     // ✅ message read event emit
     useEffect(() => {
-      if (inView && message.isMe && socket && user) {
+      if (inView && !message.isMe && socket && user) {
         socket.emit("messageRead", {
-          messageId: message.id,
+          messageId: message.id.toString(),
           userId: user.id,
         });
       }

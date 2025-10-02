@@ -70,13 +70,20 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       setAllMessages(messages);
     });
 
-    // Optional: listen for new messages in real-time
     socket.on("newMessage", (message) => {
-      setAllMessages((prev) =>
-        prev.map((m) =>
-          m.id === message.tempId ? { ...message, isMe: true } : m
-        )
-      );
+      setAllMessages((prev) => {
+        if (message.tempId) {
+          // replace optimistic message with real message
+          return prev.map((m) =>
+            m.id === message.tempId ? { ...message } : m
+          );
+        }
+
+        // no tempId → just append if not duplicate
+        const exists = prev.some((m) => m.id === message.id);
+        if (!exists) return [...prev, message];
+        return prev;
+      });
     });
 
     return () => {

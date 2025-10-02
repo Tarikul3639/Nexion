@@ -4,6 +4,7 @@ import Message from "@/models/Message";
 import Conversation from "@/models/Conversation";
 import { AuthenticatedSocket, DraftMessage, MessageItem } from "@/types/chat";
 import mongoose from "mongoose";
+import c from "config";
 
 export const messageHandler = (
   io: Server,
@@ -26,7 +27,6 @@ export const messageHandler = (
         content: msg.content as DraftMessage,
         updatedAt: msg.updatedAt.toISOString(),
         status: msg.status || "sent",
-        isMe: socket.user?._id.toString() === msg.sender._id.toString(),
         role: msg.sender.role,
         replyToId: msg.replyTo?.toString(),
         isEdited: msg.isEdited ?? false,
@@ -95,19 +95,38 @@ export const messageHandler = (
           "username avatar role"
         );
 
-        const msgObj: MessageItem & { tempId?: string } = {
+        // Base message
+        const baseMsgObj: MessageItem = {
           id: (newMessage._id as mongoose.Types.ObjectId).toString(),
           senderId: (populated.sender as any)._id.toString(),
           senderName: (populated.sender as any).username,
           senderAvatar: (populated.sender as any).avatar || "",
           content: populated.content as DraftMessage,
-          updatedAt: populated.updatedAt.toISOString(),
+          updatedAt: populated.createdAt.toISOString(),
           status: "sent",
-          isMe: false,
           role: (populated.sender as any).role,
           replyToId: populated.replyTo?.toString(),
           isEdited: populated.isEdited ?? false,
+        };
+
+        // Sender gets message with tempId for optimistic UI
+        const senderMsgObj = {
+          ...baseMsgObj,
           tempId: data.tempId,
+        };
+
+        const chatListUpdate = {
+          conversationId,
+          lastMessage: {
+            _id: baseMsgObj.id,
+            content: baseMsgObj.content,
+            createdAt: baseMsgObj.updatedAt,
+            sender: {
+              _id: baseMsgObj.senderId,
+              username: baseMsgObj.senderName,
+              avatar: baseMsgObj.senderAvatar || "",
+            },
+          },
         };
 
         // Notify all participants
@@ -116,7 +135,14 @@ export const messageHandler = (
           conversation.participants.forEach((userId: any) => {
             const sockets = userSockets.get(userId.toString());
             sockets?.forEach((sId) => {
-              io.to(sId).emit("newMessage", msgObj);
+              // Just tempId for sender
+              if (userId.toString() === data.sender) {
+                io.to(sId).emit("newMessage", senderMsgObj);
+                io.to(sId).emit("chatListUpdate", chatListUpdate);
+              } else {
+                io.to(sId).emit("newMessage", baseMsgObj);
+                io.to(sId).emit("chatListUpdate", chatListUpdate);
+              }
             });
           });
         }
@@ -151,7 +177,10 @@ export const messageHandler = (
 
         // Add userId to readBy if not already present
         if (!message.readBy?.includes(new mongoose.Types.ObjectId(userId))) {
-          message.readBy = [...(message.readBy || []), new mongoose.Types.ObjectId(userId)];
+          message.readBy = [
+            ...(message.readBy || []),
+            new mongoose.Types.ObjectId(userId),
+          ];
         }
 
         // update status -> seen
@@ -159,7 +188,9 @@ export const messageHandler = (
         await message.save();
 
         // notify sender + participants
-        const conversation = await Conversation.findById(message.conversation).lean();
+        const conversation = await Conversation.findById(
+          message.conversation
+        ).lean();
         if (conversation?.participants) {
           conversation.participants.forEach((participantId: any) => {
             const sockets = userSockets.get(participantId.toString());
