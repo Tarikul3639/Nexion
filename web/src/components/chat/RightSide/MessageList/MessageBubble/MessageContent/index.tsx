@@ -1,26 +1,22 @@
 import React from "react";
-import { DraftMessage } from "@/types/message/message";
+import { DraftMessage,MessageItem } from "@/types/message/message";
 import MessageDropdown from "./MessageDropdown";
 import ImageCard from "./ImageCard";
 import AudioCard from "./AudioCard";
 import TextCard from "./TextCard";
 import ReplyView from "./ReplayView";
 import FileCard from "./FileCard";
-import { useInView } from "react-intersection-observer";
+import MessageSeenStatus from "./MessageSeenStatus";
 
 interface MessageContentProps {
-  msg: DraftMessage;
-  replyToId?: string;
-  isMe: boolean;
-  id: string;
+  message: MessageItem;
 }
 
 export default function MessageContent({
-  msg,
-  replyToId,
-  isMe,
-  id,
+  message,
 }: MessageContentProps) {
+  const { isMe, id, content, replyToId } = message;
+
   const containerClasses = `relative flex items-center group select-none text-white leading-6 space-x-2 ${
     isMe ? "flex-row-reverse space-x-reverse" : ""
   }`;
@@ -38,14 +34,14 @@ export default function MessageContent({
         {replyToId && <ReplyView replyToId={replyToId} />}
 
         {/* Text message */}
-        {msg.text && <TextCard msg={msg} />}
+        {content.text && <TextCard msg={content} />}
 
         {/* Media attachments */}
-        <ImageCard msg={msg} />
-        <AudioCard msg={msg} />
-        <FileCard msg={msg} />
+        <ImageCard msg={content} />
+        <AudioCard msg={content} />
+        <FileCard msg={content} />
+        <MessageSeenStatus message={message} />
       </div>
-
       {/* Dropdown for message actions */}
       <MessageDropdown msgId={id} />
     </div>

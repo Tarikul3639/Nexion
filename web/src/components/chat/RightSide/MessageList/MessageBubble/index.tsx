@@ -45,7 +45,6 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
           messageId: message.id.toString(),
           userId: user.id,
         });
-        console.log("Message read emitted for message ID:", message.id, "by user:", user.username);
       }
     }, [inView, message, socket, user]);
 
@@ -102,12 +101,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
           <MessageAvatar message={message} />
           <div>
             <MessageHeader message={message} />
-            <MessageContent
-              msg={message.content}
-              replyToId={message.replyToId}
-              isMe={message.isMe}
-              id={message.id}
-            />
+            <MessageContent message={message} />
             {message.isMe && <MessageStatus status={message.status} />}
           </div>
         </motion.div>

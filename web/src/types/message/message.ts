@@ -22,6 +22,11 @@ export type MessageItem = {
   senderName: string;
   senderAvatar: string;
   content: DraftMessage;
+  readBy?: {
+    id: string;
+    username: string;
+    avatar?: string;
+  }[];
   updatedAt: string;
   status: "uploading" | "sending" | "sent" | "delivered" | "seen";
   isMe: boolean;

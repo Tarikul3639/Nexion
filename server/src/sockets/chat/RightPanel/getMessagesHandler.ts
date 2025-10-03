@@ -7,6 +7,7 @@ export const getMessagesHandler = (socket: AuthenticatedSocket) => {
     try {
       const messages = await Message.find({ conversation: chatId })
         .populate("sender", "username avatar role")
+        .populate("readBy", "username avatar")
         .sort({ createdAt: 1 })
         .lean();
 
@@ -17,6 +18,11 @@ export const getMessagesHandler = (socket: AuthenticatedSocket) => {
         senderName: msg.sender.username,
         senderAvatar: msg.sender.avatar || "",
         content: msg.content as DraftMessage,
+        readBy: msg.readBy.map((user: any) => ({
+          id: user._id.toString(),
+          username: user.username,
+          avatar: user.avatar || "",
+        })),
         updatedAt: msg.updatedAt.toISOString(),
         status: msg.status || "sent",
         role: msg.sender.role,
