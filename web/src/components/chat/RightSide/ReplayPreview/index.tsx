@@ -63,7 +63,7 @@ export default function ReplyPreview() {
   const onCancel = () => setReplyToId(null);
 
   return (
-    <div className="bg-white/5 border-l-4 border-blue-500 px-4 py-3 rounded-r-md mb-2">
+    <div className="bg-[#1c1c1c] border-l-4 border-blue-500 px-4 py-3 rounded-r-md mb-2">
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           {/* Sender & icons */}
@@ -76,7 +76,7 @@ export default function ReplyPreview() {
 
           {/* Message content */}
           {replyingTo.content?.text && (
-            <p className="text-sm text-gray-600 truncate break-words whitespace-pre-wrap overflow-wrap break-all">
+            <p className="text-sm text-gray-500 truncate break-words whitespace-pre-wrap overflow-wrap break-all">
               {replyingTo.content.text}
             </p>
           )}

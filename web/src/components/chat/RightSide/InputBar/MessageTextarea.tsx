@@ -29,7 +29,7 @@ export default function MessageTextarea() {
   return (
     <Textarea
       ref={textareaRef}
-      className="w-full text-gray-200 min-h-0 max-h-40 resize-none rounded-sm border border-gray-700 text-sm md:text-base leading-tight break-words overflow-wrap break-all"
+      className="w-full text-gray-200 min-h-0 max-h-40 resize-none rounded-sm border-none text-sm md:text-base leading-tight break-words overflow-wrap break-all focus-visible:ring-0 focus-visible:outline-none focus-visible:border-gray-700 active:ring-0 active:outline-none active:border-gray-700"
       placeholder="Type your message..."
       value={draftMessage?.text || ""}
       onKeyDown={handleKeyDown}

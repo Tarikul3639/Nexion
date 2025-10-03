@@ -15,7 +15,7 @@ export default function LastMessagePreview({ message }: LastMessagePreviewProps)
   if (content?.text) {
     return (
       <span>
-        <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+        <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
         {content.text}
       </span>
     );
@@ -27,28 +27,28 @@ export default function LastMessagePreview({ message }: LastMessagePreviewProps)
       case "image":
         return (
           <span>
-            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
             [Image: {att.alt ?? "unknown"}]
           </span>
         );
       case "video":
         return (
           <span>
-            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
             [Video: {att.duration ?? "unknown"}s]
           </span>
         );
       case "audio":
         return (
           <span>
-            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
             [Audio: {att.duration ?? "unknown"}s]
           </span>
         );
       case "file":
         return (
           <span>
-            <span className="text-gray-300 font-semibold">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
             [File: {att.name ?? "unknown"}]
           </span>
         );

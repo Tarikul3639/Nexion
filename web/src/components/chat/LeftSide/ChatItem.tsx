@@ -23,8 +23,8 @@ export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
       : undefined;
   return (
     <div
-      className={`flex items-center md:px-2.5 py-2.5 cursor-pointer transition-colors duration-200 rounded-xl ${
-        isActive ? "bg-[#323438]" : "hover:bg-[#323438] active:bg-[#1E1E1F]"
+      className={`flex items-center md:px-2.5 py-2.5 cursor-pointer transition-colors duration-200 rounded-sm ${
+        isActive ? "bg-[#323436]" : "hover:bg-[#323438] active:bg-[#1E1E1F]"
       }`}
       onClick={() => onSelect(chat)}
     >
@@ -60,7 +60,7 @@ export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
       {/* Info */}
       <div className="flex-1 min-w-0 ml-3">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="font-semibold text-base text-gray-100 truncate">
+          <h3 className="font-semibold text-base text-gray-100 truncate capitalize">
             {chat.name}
           </h3>
           <span className="text-xs text-[#8B8B90] flex-shrink-0 ml-2 uppercase">

@@ -6,6 +6,7 @@ import { IChatList } from "@/types/message/message.messageList";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { useSocket } from "@/context/SocketContext";
+import { useAuth } from "@/context/AuthContext";
 
 interface LeftPanelDataContextType {
   allChats: IChatList[];
@@ -41,6 +42,7 @@ export const LeftPanelDataProvider = ({
 }) => {
   const { activeTab } = usePanel();
   const { socket } = useSocket();
+  const { user } = useAuth();
 
   const [allChats, setAllChats] = useState<IChatList[]>([]);
   const [allClassrooms, setAllClassrooms] = useState<Classroom[]>([]);
@@ -66,13 +68,25 @@ export const LeftPanelDataProvider = ({
 
     // Chat list update
     socket.on("chatListUpdate", (update) => {
-      console.log("Chat list update:", update.conversationId, update.lastMessage, update.unreadCount);
+
+      // Show notification (if allowed)
+      if ("Notification" in window && Notification.permission === "granted" && update.lastMessage.sender._id !== user?.id) {
+        new Notification(update.lastMessage?.sender.username || "Nexion", {
+          body: `Message: ${update.lastMessage?.content.text}` || "You received a new message",
+          icon: update.lastMessage?.sender.avatar || "/Nexion.svg", // messenger style
+        });
+      }
+      
+      // Update chat state
       setAllChats((prev) =>
         prev.map((chat) =>
           chat.id === update.conversationId
             ? {
                 ...chat,
-                unreadCount: update.unreadCount !== undefined ? update.unreadCount : chat.unreadCount,
+                unreadCount:
+                  update.unreadCount !== undefined
+                    ? update.unreadCount
+                    : chat.unreadCount,
                 lastMessage: update.lastMessage,
                 updatedAt: update.updatedAt,
               }
@@ -124,6 +138,30 @@ export const LeftPanelDataProvider = ({
       socket.off("updateBots");
     };
   }, [socket, activeTab]);
+
+  // Add this useEffect to LeftPanelDataProvider
+  useEffect(() => {
+    if ("Notification" in window) {
+      // Check if permission is denied and inform the user
+      if (Notification.permission === "denied") {
+        console.warn(
+          "Notification permission is denied. Please enable it in your browser settings."
+        );
+      }
+
+      // If permission is not 'granted', try to request it.
+      // NOTE: Direct requests without a user gesture are often blocked or ignored by browsers.
+      if (Notification.permission !== "granted") {
+        // It's best practice to tie this to a user action,
+        // but for initial setup, you can try this (it might not work on all browsers):
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            console.log("Notification permission granted on load.");
+          }
+        });
+      }
+    }
+  }, []);
 
   return (
     <LeftPanelDataContext.Provider

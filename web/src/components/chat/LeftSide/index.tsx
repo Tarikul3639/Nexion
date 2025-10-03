@@ -31,7 +31,7 @@ export default function ChatList({
 
   const filteredAllChats = chatsToShow.filter((chat) => !chat.isPinned);
 
-  if (!isLoading) {
+  if (isLoading) {
     return <ChatListSkeleton />;
   }
 
