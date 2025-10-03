@@ -4,7 +4,6 @@ import Message from "@/models/Message";
 import Conversation from "@/models/Conversation";
 import { AuthenticatedSocket, DraftMessage, MessageItem } from "@/types/chat";
 import mongoose from "mongoose";
-import c from "config";
 
 export const messageHandler = (
   io: Server,
@@ -81,6 +80,7 @@ export const messageHandler = (
           sender: data.sender,
           content: data.content,
           replyTo: data.replyTo,
+          readBy: [data.sender],
           isEdited: false,
         });
 
@@ -115,8 +115,16 @@ export const messageHandler = (
           tempId: data.tempId,
         };
 
+        // unread count calculate per user
+        const unreadCount = await Message.countDocuments({
+          conversation: conversationId,
+          readBy: { $ne: data.sender },
+        });
+      console.log("Calculated unread count for conversation", conversationId, "is", unreadCount);
+
         const chatListUpdate = {
           conversationId,
+          unreadCount,
           lastMessage: {
             _id: baseMsgObj.id,
             content: baseMsgObj.content,
@@ -130,22 +138,61 @@ export const messageHandler = (
         };
 
         // Notify all participants
-        const conversation = await Conversation.findById(conversationId).lean();
-        if (conversation?.participants) {
-          conversation.participants.forEach((userId: any) => {
-            const sockets = userSockets.get(userId.toString());
-            sockets?.forEach((sId) => {
-              // Just tempId for sender
-              if (userId.toString() === data.sender) {
-                io.to(sId).emit("newMessage", senderMsgObj);
-                io.to(sId).emit("chatListUpdate", chatListUpdate);
-              } else {
-                io.to(sId).emit("newMessage", baseMsgObj);
-                io.to(sId).emit("chatListUpdate", chatListUpdate);
-              }
-            });
-          });
-        }
+        // const conversation = await Conversation.findById(conversationId).lean();
+        // if (conversation?.participants) {
+        //   conversation.participants.forEach((userId: any) => {
+        //     const sockets = userSockets.get(userId.toString());
+        //     sockets?.forEach((sId) => {
+        //       // Just tempId for sender
+        //       if (userId.toString() === data.sender) {
+        //         io.to(sId).emit("newMessage", senderMsgObj);
+        //         io.to(sId).emit("chatListUpdate", chatListUpdate);
+        //       } else {
+        //         io.to(sId).emit("newMessage", baseMsgObj);
+        //         io.to(sId).emit("chatListUpdate", chatListUpdate);
+        //       }
+        //     });
+        //   });
+        // }
+        // Notify all participants
+const conversation = await Conversation.findById(conversationId).lean();
+if (conversation?.participants) {
+  for (const userId of conversation.participants) {
+    const sockets = userSockets.get(userId.toString());
+
+    // unreadCount calculate per user (important 🔥)
+    const unreadCount = await Message.countDocuments({
+      conversation: conversationId,
+      readBy: { $ne: userId },
+    });
+
+    const chatListUpdate = {
+      conversationId,
+      unreadCount,
+      lastMessage: {
+        _id: baseMsgObj.id,
+        content: baseMsgObj.content,
+        createdAt: baseMsgObj.updatedAt,
+        sender: {
+          _id: baseMsgObj.senderId,
+          username: baseMsgObj.senderName,
+          avatar: baseMsgObj.senderAvatar || "",
+        },
+      },
+    };
+
+    sockets?.forEach((sId) => {
+      if (userId.toString() === data.sender) {
+        io.to(sId).emit("newMessage", senderMsgObj);
+        io.to(sId).emit("chatListUpdate", chatListUpdate);
+      } else {
+        io.to(sId).emit("newMessage", baseMsgObj);
+        io.to(sId).emit("chatListUpdate", chatListUpdate);
+      }
+    });
+  }
+}
+
       } catch (err) {
         console.error("sendMessage error:", err);
         socket.emit("sendMessageError", "Failed to send message");

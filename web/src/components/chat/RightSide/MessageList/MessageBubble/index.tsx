@@ -45,6 +45,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
           messageId: message.id.toString(),
           userId: user.id,
         });
+        console.log("Message read emitted for message ID:", message.id, "by user:", user.username);
       }
     }, [inView, message, socket, user]);
 

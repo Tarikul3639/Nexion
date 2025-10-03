@@ -66,12 +66,13 @@ export const LeftPanelDataProvider = ({
 
     // Chat list update
     socket.on("chatListUpdate", (update) => {
-      console.log("Chat list update:", update.conversationId, update.lastMessage);
+      console.log("Chat list update:", update.conversationId, update.lastMessage, update.unreadCount);
       setAllChats((prev) =>
         prev.map((chat) =>
           chat.id === update.conversationId
             ? {
                 ...chat,
+                unreadCount: update.unreadCount !== undefined ? update.unreadCount : chat.unreadCount,
                 lastMessage: update.lastMessage,
                 updatedAt: update.updatedAt,
               }

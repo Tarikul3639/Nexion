@@ -15,7 +15,7 @@ export interface IMessage extends Document {
   replyTo?: mongoose.Types.ObjectId;
   reactions?: typeof ReactionSchema[];
   isPinned?: boolean;
-  readBy?: mongoose.Types.ObjectId[];
+  readBy: mongoose.Types.ObjectId[];
   status?: "sending" | "sent" | "delivered" | "seen";
   isEdited?: boolean;
   createdAt: Date;
