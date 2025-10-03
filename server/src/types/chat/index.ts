@@ -64,6 +64,7 @@ export type DraftMessage = {
 // MessageItem will use DraftMessage as content
 export type MessageItem = {
   id: string;
+  conversationId: string;
   senderId: string;
   senderName: string;
   senderAvatar: string;

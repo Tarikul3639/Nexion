@@ -72,6 +72,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
     socket.on("newMessage", (message) => {
       setAllMessages((prev) => {
+        
+        const isInCurrentChat = message.conversationId === selectedChat?.id;
+        if (!isInCurrentChat) return prev; // ignore messages for other chats
+
         if (message.tempId) {
           // replace optimistic message with real message
           return prev.map((m) =>

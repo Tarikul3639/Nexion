@@ -20,6 +20,7 @@ export const messageHandler = (
 
       const formatted: MessageItem[] = messages.map((msg: any) => ({
         id: (msg._id as mongoose.Types.ObjectId).toString(),
+        conversationId: msg.conversation.toString(),
         senderId: msg.sender._id.toString(),
         senderName: msg.sender.username,
         senderAvatar: msg.sender.avatar || "",
@@ -42,9 +43,9 @@ export const messageHandler = (
   socket.on(
     "sendMessage",
     async (data: {
-      conversation?: string; // existing conversation ID (optional)
+      conversation?: string;
       sender: string;
-      receiverId?: string; // for direct chat (optional)
+      receiverId?: string;
       content: DraftMessage;
       replyTo?: string;
       tempId: string;
@@ -80,7 +81,7 @@ export const messageHandler = (
           sender: data.sender,
           content: data.content,
           replyTo: data.replyTo,
-          readBy: [data.sender],
+          readBy: [data.sender], // sender already read
           isEdited: false,
         });
 
@@ -95,9 +96,10 @@ export const messageHandler = (
           "username avatar role"
         );
 
-        // Base message
+        // Base message object
         const baseMsgObj: MessageItem = {
           id: (newMessage._id as mongoose.Types.ObjectId).toString(),
+          conversationId: conversationId,
           senderId: (populated.sender as any)._id.toString(),
           senderName: (populated.sender as any).username,
           senderAvatar: (populated.sender as any).avatar || "",
@@ -109,90 +111,54 @@ export const messageHandler = (
           isEdited: populated.isEdited ?? false,
         };
 
-        // Sender gets message with tempId for optimistic UI
+        // Sender gets tempId for optimistic UI
         const senderMsgObj = {
           ...baseMsgObj,
           tempId: data.tempId,
         };
 
-        // unread count calculate per user
-        const unreadCount = await Message.countDocuments({
-          conversation: conversationId,
-          readBy: { $ne: data.sender },
-        });
-      console.log("Calculated unread count for conversation", conversationId, "is", unreadCount);
-
-        const chatListUpdate = {
-          conversationId,
-          unreadCount,
-          lastMessage: {
-            _id: baseMsgObj.id,
-            content: baseMsgObj.content,
-            createdAt: baseMsgObj.updatedAt,
-            sender: {
-              _id: baseMsgObj.senderId,
-              username: baseMsgObj.senderName,
-              avatar: baseMsgObj.senderAvatar || "",
-            },
-          },
-        };
+        // 🔥 Fetch all messages (only id + readBy) once
+        const allMessages = await Message.find({ conversation: conversationId })
+          .select("_id readBy")
+          .lean();
 
         // Notify all participants
-        // const conversation = await Conversation.findById(conversationId).lean();
-        // if (conversation?.participants) {
-        //   conversation.participants.forEach((userId: any) => {
-        //     const sockets = userSockets.get(userId.toString());
-        //     sockets?.forEach((sId) => {
-        //       // Just tempId for sender
-        //       if (userId.toString() === data.sender) {
-        //         io.to(sId).emit("newMessage", senderMsgObj);
-        //         io.to(sId).emit("chatListUpdate", chatListUpdate);
-        //       } else {
-        //         io.to(sId).emit("newMessage", baseMsgObj);
-        //         io.to(sId).emit("chatListUpdate", chatListUpdate);
-        //       }
-        //     });
-        //   });
-        // }
-        // Notify all participants
-const conversation = await Conversation.findById(conversationId).lean();
-if (conversation?.participants) {
-  for (const userId of conversation.participants) {
-    const sockets = userSockets.get(userId.toString());
+        const conversation = await Conversation.findById(conversationId).lean();
+        if (conversation?.participants) {
+          for (const userId of conversation.participants) {
+            const sockets = userSockets.get(userId.toString());
 
-    // unreadCount calculate per user (important 🔥)
-    const unreadCount = await Message.countDocuments({
-      conversation: conversationId,
-      readBy: { $ne: userId },
-    });
+            // calculate unread count for this user
+            const unreadCount = allMessages.filter(
+              (msg) => !msg.readBy.map(String).includes(userId.toString())
+            ).length;
 
-    const chatListUpdate = {
-      conversationId,
-      unreadCount,
-      lastMessage: {
-        _id: baseMsgObj.id,
-        content: baseMsgObj.content,
-        createdAt: baseMsgObj.updatedAt,
-        sender: {
-          _id: baseMsgObj.senderId,
-          username: baseMsgObj.senderName,
-          avatar: baseMsgObj.senderAvatar || "",
-        },
-      },
-    };
+            const chatListUpdate = {
+              conversationId,
+              unreadCount,
+              lastMessage: {
+                _id: baseMsgObj.id,
+                content: baseMsgObj.content,
+                createdAt: baseMsgObj.updatedAt,
+                sender: {
+                  _id: baseMsgObj.senderId,
+                  username: baseMsgObj.senderName,
+                  avatar: baseMsgObj.senderAvatar || "",
+                },
+              },
+            };
 
-    sockets?.forEach((sId) => {
-      if (userId.toString() === data.sender) {
-        io.to(sId).emit("newMessage", senderMsgObj);
-        io.to(sId).emit("chatListUpdate", chatListUpdate);
-      } else {
-        io.to(sId).emit("newMessage", baseMsgObj);
-        io.to(sId).emit("chatListUpdate", chatListUpdate);
-      }
-    });
-  }
-}
-
+            sockets?.forEach((sId) => {
+              if (userId.toString() === data.sender) {
+                io.to(sId).emit("newMessage", senderMsgObj);
+                io.to(sId).emit("chatListUpdate", chatListUpdate);
+              } else {
+                io.to(sId).emit("newMessage", baseMsgObj);
+                io.to(sId).emit("chatListUpdate", chatListUpdate);
+              }
+            });
+          }
+        }
       } catch (err) {
         console.error("sendMessage error:", err);
         socket.emit("sendMessageError", "Failed to send message");
