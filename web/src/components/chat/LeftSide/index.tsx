@@ -4,33 +4,36 @@ import ChatItem from "./ChatItem";
 import { IChatList } from "@/types/message/message.messageList";
 import { useLeftPanelData } from "@/context/LeftPanelDataContext";
 import SearchBar from "./SearchBar";
+import ChatListSkeleton from "./ChatListSkeleton";
 
 interface ChatListProps {
   allChats: IChatList[];
   selectedChat?: IChatList;
   onSelectChat: (chat: IChatList) => void;
+  isLoading: boolean;
 }
 
 export default function ChatList({
   allChats = [],
   selectedChat,
   onSelectChat,
+  isLoading,
 }: ChatListProps) {
+  const { searchActive, searchResults } = useLeftPanelData();
 
-const { searchActive, searchResults } = useLeftPanelData();
+  const chatsToShow = searchActive ? searchResults : allChats;
 
-const chatsToShow = searchActive ? searchResults : allChats;
+  // console.log("Chats to show:", chatsToShow);
 
-// console.log("Chats to show:", chatsToShow);
+  const filteredPinnedChats = chatsToShow.filter(
+    (chat) => chat.isPinned && chat.name?.toLowerCase().includes("")
+  );
 
-const filteredPinnedChats = chatsToShow.filter(
-  (chat) => chat.isPinned && chat.name?.toLowerCase().includes("")
-);
+  const filteredAllChats = chatsToShow.filter((chat) => !chat.isPinned);
 
-const filteredAllChats = chatsToShow.filter(
-  (chat) => !chat.isPinned
-);
-
+  if (!isLoading) {
+    return <ChatListSkeleton />;
+  }
 
   return (
     <div className="w-full h-full flex flex-col">

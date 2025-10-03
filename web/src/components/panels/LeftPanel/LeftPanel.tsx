@@ -9,18 +9,11 @@ import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { usePanel } from "@/context/PanelContext";
 import { useLeftPanelData } from "@/context/LeftPanelDataContext";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LeftPanel() {
   const { activeTab, selectedChat, setSelectedChat } = usePanel();
   const { allChats, loading } = useLeftPanelData();
-
-  if (loading) {
-    return (
-      <div className="w-full h-full flex items-center justify-center md:w-80 lg:w-96 bg-white/1 text-white">
-        <p className="p-4 text-center">Loading...</p>
-      </div>
-    );
-  }
 
   const renderContent = () => {
     switch (activeTab) {
@@ -30,6 +23,7 @@ export default function LeftPanel() {
             allChats={allChats as IChatList[]}
             selectedChat={selectedChat as IChatList | undefined}
             onSelectChat={(chat) => setSelectedChat(chat as IChatList)}
+            isLoading={loading as boolean}
           />
         );
 
