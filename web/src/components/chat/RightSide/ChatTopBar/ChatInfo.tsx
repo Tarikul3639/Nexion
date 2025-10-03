@@ -40,7 +40,7 @@ export default function ChatInfo({ chat }: ChatInfoProps) {
 
   return (
     <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-      <h3 className="text-lg md:text-xl font-semibold text-white truncate">{chat.name}</h3>
+      <h3 className="text-lg md:text-xl font-semibold text-white truncate capitalize">{chat.name}</h3>
       <Tooltip>
         <TooltipTrigger asChild>
           <div className="text-xs text-gray-400 font-medium cursor-pointer">

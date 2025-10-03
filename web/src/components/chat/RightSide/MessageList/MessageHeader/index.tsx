@@ -16,7 +16,7 @@ export default function MessageHeader({ message }: { message: MessageItem }) {
         message.isMe ? "justify-start flex-row-reverse space-x-reverse" : ""
       }`}
     >
-      <span className="text-base font-semibold text-gray-50">
+      <span className="text-base font-semibold text-gray-50 capitalize">
         {message.senderName}
       </span>
 

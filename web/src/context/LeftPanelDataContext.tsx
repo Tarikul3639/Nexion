@@ -61,22 +61,24 @@ export const LeftPanelDataProvider = ({
     socket.emit("getChatList");
 
     socket.on("chatList", (chats: IChatList[]) => {
-      console.log("ChatList: ", chats);
       setAllChats(chats);
       setLoading(false);
     });
 
     // Chat list update
     socket.on("chatListUpdate", (update) => {
-
       // Show notification (if allowed)
-      if ("Notification" in window && Notification.permission === "granted" && update.lastMessage.sender._id !== user?.id) {
+      if (
+        "Notification" in window &&
+        Notification.permission === "granted" &&
+        update.lastMessage.sender._id !== user?.id
+      ) {
         new Notification(update.lastMessage?.sender.username || "Nexion", {
-          body: `Message: ${update.lastMessage?.content.text}` || "You received a new message",
+          body: `Message: ${update.lastMessage?.content.text}` ||  "You received a new message",
           icon: update.lastMessage?.sender.avatar || "/Nexion.svg", // messenger style
         });
       }
-      
+
       // Update chat state
       setAllChats((prev) =>
         prev.map((chat) =>
