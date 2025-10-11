@@ -34,33 +34,24 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const Attachment_1 = require("./subSchemas/Attachment");
+const Reaction_1 = require("./subSchemas/Reaction");
 const messageSchema = new mongoose_1.Schema({
-    conversation: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "Conversation",
-        required: true,
-    },
-    sender: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
+    conversation: { type: mongoose_1.Schema.Types.ObjectId, ref: "Conversation", required: true },
+    sender: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    senderName: { type: String },
+    senderAvatar: { type: String },
     content: {
-        type: String,
-        required: true,
-        trim: true,
+        text: String,
+        attachments: [Attachment_1.AttachmentSchema],
     },
-    type: {
-        type: String,
-        enum: ["text", "image", "video", "file"],
-        default: "text",
-    },
-    readBy: [
-        {
-            type: mongoose_1.Schema.Types.ObjectId,
-            ref: "User",
-        },
-    ],
+    type: { type: String, enum: ["text", "image", "video", "file", "audio"], default: "text" },
+    replyTo: { type: mongoose_1.Schema.Types.ObjectId, ref: "Message" },
+    reactions: [Reaction_1.ReactionSchema],
+    isPinned: { type: Boolean, default: false },
+    isEdited: { type: Boolean, default: false },
+    readBy: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    status: { type: String, enum: ["sending", "sent", "delivered", "seen"], default: "sent" },
 }, { timestamps: true });
 const Message = mongoose_1.default.model("Message", messageSchema);
 exports.default = Message;

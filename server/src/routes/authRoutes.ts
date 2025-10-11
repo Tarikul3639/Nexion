@@ -6,6 +6,9 @@ import {
   logout,
   getProfile,
   profileUpdate,
+  ForgotPassword,
+  VerifyOTP,
+  passwordReset,
 } from "@/controllers";
 
 const router = Router();
@@ -14,6 +17,9 @@ const router = Router();
 router.get("/verify", verifyToken);
 router.post("/register", register);
 router.post("/login", login);
+router.post("/forgot-password", ForgotPassword);
+router.post("/verify-otp", VerifyOTP);
+router.post("/reset-password", passwordReset);
 
 // Protected routes (require authentication)
 router.post("/logout", logout);

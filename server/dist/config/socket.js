@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.configureSockets = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const Message_1 = __importDefault(require("../models/Message"));
-const socket_1 = require("../constants/socket");
+const Message_1 = __importDefault(require("@/models/Message"));
+const socket_1 = require("@/constants/socket");
 const config_1 = __importDefault(require("config"));
 const configureSockets = (io) => {
     // Middleware for authentication

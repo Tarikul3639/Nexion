@@ -27,9 +27,19 @@
     "maxFileSize": "10MB",
     "allowedTypes": ["image/jpeg", "image/png", "image/gif"]
   },
-    "cloudinary": {
+  "cloudinary": {
     "cloud_name": "dt9jpmqwf",
     "api_key": "229292613465955",
     "api_secret": "wAvEaAMctKmURy68ndYpZ3xqnmc"
+  },
+  "email": {
+    "service": "Gmail",
+    "host": "smtp.gmail.com",
+    "port": 465,
+    "secure": true,
+    "auth": {
+      "user": "tarikulislam3639@gmail.com",
+      "pass": "epbwkloaqtfjbxxr"
+    }
   }
 }

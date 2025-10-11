@@ -11,6 +11,9 @@ export interface IUser extends Document {
   friends: mongoose.Types.ObjectId[];
   blockedUsers: mongoose.Types.ObjectId[];
   lastSeen?: Date;
+  otp?: string;
+  otpExpires?: Date;     
+  otpVerified?: boolean;  
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,11 +29,16 @@ const UserSchema: Schema<IUser> = new Schema(
     friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
     blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
     lastSeen: { type: Date },
+
+    // 🔹 OTP fields
+    otp: { type: String, select: false },
+    otpExpires: { type: Date, select: false },
+    otpVerified: { type: Boolean, default: false, select: false },
   },
   { timestamps: true }
 );
 
-// Indexes for fast search
+// Indexes
 UserSchema.index({ username: 1 }, { unique: true });
 UserSchema.index({ email: 1 }, { unique: true });
 

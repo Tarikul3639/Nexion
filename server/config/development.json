@@ -9,11 +9,25 @@
     "secret": "dev-secret-key-not-for-production"
   },
   "cors": {
-    "origin": ["http://localhost:3000", "http://localhost:5173", "http://localhost:8080"]
+    "origin": [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://localhost:8080"
+    ]
   },
-    "cloudinary": {
+  "cloudinary": {
     "cloud_name": "dt9jpmqwf",
     "api_key": "229292613465955",
     "api_secret": "wAvEaAMctKmURy68ndYpZ3xqnmc"
+  },
+  "email": {
+    "service": "Gmail",
+    "host": "smtp.gmail.com",
+    "port": 465,
+    "secure": true,
+    "auth": {
+      "user": "tarikulislam3639@gmail.com",
+      "pass": "epbwkloaqtfjbxxr"
+    }
   }
 }

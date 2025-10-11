@@ -15,6 +15,7 @@
     "lucide",
     "Nexion",
     "Next.js",
+    "otplib",
     "pems",
     "placehold",
     "pravatar",
@@ -36,5 +37,10 @@
     "পুরো",
     "বসানো",
     "রাখো"
+  ],
+  "cSpell.ignoreWords": [
+    "Israk",
+    "Mamun",
+    "Soykot"
   ]
 }

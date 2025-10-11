@@ -33,58 +33,23 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-// models/User.ts
 const mongoose_1 = __importStar(require("mongoose"));
 const UserSchema = new mongoose_1.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true,
-    },
-    password: {
-        type: String,
-        required: true,
-        minlength: 6,
-        select: false, // Don't return password by default
-    },
-    avatar: {
-        type: String, // Could be a URL (Cloudinary/Cloudflare)
-        default: "",
-    },
-    status: {
-        type: String,
-        enum: ["online", "offline", "away"],
-        default: "offline",
-    },
-    bio: {
-        type: String,
-        maxLength: 150,
-    },
-    friends: [
-        {
-            type: mongoose_1.default.Schema.Types.ObjectId,
-            ref: "User",
-        },
-    ],
-    blockedUsers: [
-        {
-            type: mongoose_1.default.Schema.Types.ObjectId,
-            ref: "User",
-        },
-    ],
-    lastSeen: {
-        type: Date,
-    },
-}, { timestamps: true } // createdAt & updatedAt automatically added
-);
-// Index for searching by username or email
-UserSchema.index({ username: "text", email: "text" });
+    username: { type: String, required: true, unique: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    password: { type: String, required: true, minlength: 6, select: false },
+    avatar: { type: String, default: "https://example.com/default-avatar.png" },
+    status: { type: String, enum: ["online", "offline", "away", "busy"], default: "offline" },
+    bio: { type: String, maxLength: 150 },
+    friends: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "User", default: [] }],
+    blockedUsers: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "User", default: [] }],
+    lastSeen: { type: Date },
+    // 🔹 OTP fields
+    otp: { type: String, select: false },
+    otpExpires: { type: Date, select: false },
+    otpVerified: { type: Boolean, default: false, select: false },
+}, { timestamps: true });
+// Indexes
+UserSchema.index({ username: 1 }, { unique: true });
+UserSchema.index({ email: 1 }, { unique: true });
 exports.default = mongoose_1.default.model("User", UserSchema);
