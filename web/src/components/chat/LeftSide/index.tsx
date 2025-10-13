@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Pin } from "lucide-react";
 import ChatItem from "./ChatItem";
 import { IChatList } from "@/types/message/message.messageList";

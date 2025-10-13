@@ -9,10 +9,10 @@ import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { usePanel } from "@/context/PanelContext";
 import { useLeftPanelData } from "@/context/LeftPanelDataContext";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ProfileLeftPanel } from "@/components/profile/LeftPanel";
 
 export default function LeftPanel() {
-  const { activeTab, selectedChat, setSelectedChat } = usePanel();
+  const { activeTab, selectedChat, setSelectedChat, selectedProfile, setSelectedProfile } = usePanel();
   const { allChats, loading } = useLeftPanelData();
 
   const renderContent = () => {
@@ -45,14 +45,18 @@ export default function LeftPanel() {
           />
         );
 
+      case "profile":
+        return (
+          <ProfileLeftPanel
+            activeSection={selectedProfile ? (selectedProfile.tabName as any) : "general"}
+            onSectionChange={(section) => setSelectedProfile({ tabName: section })}
+          />
+        );
+
       default:
         return <div>Select a tab to see content</div>;
     }
   };
 
-  return (
-    <div className="w-full h-full md:w-80 lg:w-96">
-      {renderContent()}
-    </div>
-  );
+  return <div className="w-full h-full md:w-80 lg:w-96">{renderContent()}</div>;
 }

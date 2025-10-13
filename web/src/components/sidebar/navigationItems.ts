@@ -1,4 +1,4 @@
-import { MessagesSquare , GraduationCap, User, Briefcase, Calendar } from "lucide-react"
+import { MessagesSquare , GraduationCap, Briefcase, Calendar } from "lucide-react"
 
 export interface NavigationItem {
   id: string
@@ -12,14 +12,12 @@ export const desktopNavigationItems: NavigationItem[] = [
   { id: "classroom", icon: GraduationCap, label: "Classroom" },
   { id: "work", icon: Briefcase, label: "Work" },
   { id: "calendar", icon: Calendar, label: "Calendar" },
-  { id: "profile", icon: User, label: "Profile" },
 ]
 
 // Mobile sidebar items
 export const mobileNavigationItems: NavigationItem[] = [
   { id: "chats", icon: MessagesSquare , label: "Chats" },
   { id: "classroom", icon: GraduationCap, label: "Classroom" },
-  { id: "profile", icon: User, label: "Profile" },
 ]
 
 // Tab keys for easy reference

@@ -49,3 +49,7 @@ export interface IChatList {
   isPinned?: boolean;
   lastActive?: string; 
 }
+
+export interface IProfile{
+  tabName: string;
+}

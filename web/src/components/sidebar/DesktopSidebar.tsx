@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Settings } from "lucide-react";
+import { User } from "lucide-react";
 import { desktopNavigationItems, TAB_KEYS, TabKey } from "./navigationItems";
 import { usePanel } from "@/context/PanelContext";
 
@@ -39,15 +39,16 @@ export function DesktopSidebar() {
 
       <button
         className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors group relative ${
-          activeTab === TAB_KEYS.SETTINGS
-            ? "bg-blue-600 text-white"
+          activeTab === TAB_KEYS.PROFILE
+            ? "bg-gradient-to-r from-blue-500 to-indigo-800 text-white"
             : "text-gray-400 hover:text-white hover:bg-gray-800"
         }`}
-        title="Settings"
+        onClick={() => setActiveTab(TAB_KEYS.PROFILE as TabKey)}
+        title="Profile"
       >
-        <Settings size={20} />
+        <User size={20} />
         <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
-          Settings
+          Profile
         </div>
       </button>
     </div>
