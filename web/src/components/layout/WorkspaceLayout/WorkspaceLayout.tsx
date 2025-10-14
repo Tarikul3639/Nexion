@@ -13,7 +13,7 @@ export default function WorkspaceLayout() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { selectedChat } = usePanel();
+  const { selectedChat, selectedProfile } = usePanel();
   const { isDesktop } = useResponsive();
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -36,7 +36,7 @@ export default function WorkspaceLayout() {
   return (
     <SidebarWrapper>
       {!isDesktop ? (
-        selectedChat ? (
+        selectedChat || selectedProfile ? (
           <RightPanel />
         ) : (
           <LeftPanel />

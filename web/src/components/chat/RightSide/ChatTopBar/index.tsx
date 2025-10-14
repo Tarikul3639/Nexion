@@ -4,7 +4,7 @@
 import { Card, CardHeader } from "@/components/ui/card";
 import { usePanel } from "@/context/PanelContext";
 import { IChatList } from "@/types/message/message.messageList";
-import BackButton from "./BackButton";
+import BackButton from "../../../ui/BackButton";
 import ChatAvatar from "./ChatAvatar";
 import ChatInfo from "./ChatInfo";
 import ActionButtons from "./ActionButtons";
