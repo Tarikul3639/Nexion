@@ -1,8 +1,16 @@
 "use client";
 
 import React from "react";
-import SearchBar from "../../chat/LeftSide/SearchBar";
 import { cn } from "@/lib/utils";
+import SearchBar from "../../chat/LeftSide/SearchBar";
+import {
+  User,
+  Settings,
+  Sliders,
+  Shield,
+  Bell,
+  Puzzle,
+} from "lucide-react";
 
 import type { ProfileSection } from "../types";
 
@@ -10,16 +18,28 @@ export function ProfileLeftPanel({
   activeSection,
   onSectionChange,
 }: {
-  activeSection: ProfileSection;
+  activeSection: ProfileSection | undefined;
   onSectionChange: (section: ProfileSection) => void;
 }) {
   const sections = [
-    { id: "general" as ProfileSection, label: "General" },
-    { id: "account" as ProfileSection, label: "Account" },
-    { id: "preferences" as ProfileSection, label: "Preferences" },
-    { id: "security" as ProfileSection, label: "Security" },
-    { id: "notifications" as ProfileSection, label: "Notifications" },
-    { id: "integrations" as ProfileSection, label: "Integrations" },
+    { id: "general" as ProfileSection, label: "General", icon: User },
+    { id: "account" as ProfileSection, label: "Account", icon: Settings },
+    {
+      id: "preferences" as ProfileSection,
+      label: "Preferences",
+      icon: Sliders,
+    },
+    { id: "security" as ProfileSection, label: "Security", icon: Shield },
+    {
+      id: "notifications" as ProfileSection,
+      label: "Notifications",
+      icon: Bell,
+    },
+    {
+      id: "integrations" as ProfileSection,
+      label: "Integrations",
+      icon: Puzzle,
+    },
   ];
 
   return (
@@ -29,26 +49,30 @@ export function ProfileLeftPanel({
         <SearchBar />
       </div>
 
-      <div className="mt-4 px-4 text-xs font-medium text-[#67676D] tracking-wide mb-3">
+      <div className="mt-4 px-4 text-xs font-medium text-[#67676D] tracking-wide mb-3 uppercase">
         Profile
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <nav className="p-3">
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => onSectionChange(section.id)}
-              className={cn(
-                "w-full text-left px-4 py-2.5 rounded-md text-sm transition-colors",
-                activeSection === section.id
-                  ? "bg-zinc-800 text-white font-medium"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-              )}
-            >
-              {section.label}
-            </button>
-          ))}
+        <nav className="px-3">
+          {sections.map((section) => {
+            const Icon = section.icon;
+            return (
+              <button
+                key={section.id}
+                onClick={() => onSectionChange(section.id)}
+                className={cn(
+                  "w-full flex items-center gap-3 text-left px-4 py-2.5 rounded-md text-sm transition-colors",
+                  activeSection === section.id
+                    ? "bg-zinc-800 text-white font-medium"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                )}
+              >
+                <Icon className="w-4 h-4" />
+                {section.label}
+              </button>
+            );
+          })}
         </nav>
       </div>
     </div>

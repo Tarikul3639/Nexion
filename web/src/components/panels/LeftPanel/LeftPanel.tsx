@@ -10,9 +10,17 @@ import { Bot } from "@/types/bot";
 import { usePanel } from "@/context/PanelContext";
 import { useLeftPanelData } from "@/context/LeftPanelDataContext";
 import { ProfileLeftPanel } from "@/components/profile/LeftPanel";
+import type { ProfileSection } from "@/components/profile/types";
 
 export default function LeftPanel() {
-  const { activeTab, selectedChat, setSelectedChat, selectedProfile, setSelectedProfile } = usePanel();
+  const {
+    activeTab,
+    selectedChat,
+    setSelectedChat,
+    selectedProfile,
+    setSelectedProfile,
+  } = usePanel();
+
   const { allChats, loading } = useLeftPanelData();
 
   const renderContent = () => {
@@ -30,7 +38,7 @@ export default function LeftPanel() {
       case "classroom":
         return (
           <ClassroomList
-            classrooms={[] /* replace with classroom data */}
+            classrooms={[]}
             selectedClassroom={selectedChat as Classroom | undefined}
             onSelectClassroom={(cls) => setSelectedChat(cls as Classroom)}
           />
@@ -39,7 +47,7 @@ export default function LeftPanel() {
       case "bots":
         return (
           <BotList
-            bots={[] /* replace with bot data */}
+            bots={[]}
             selectedBot={selectedChat as Bot | undefined}
             onSelectBot={(bot) => setSelectedChat(bot as Bot)}
           />
@@ -48,8 +56,10 @@ export default function LeftPanel() {
       case "profile":
         return (
           <ProfileLeftPanel
-            activeSection={selectedProfile ? (selectedProfile.tabName as any) : "general"}
-            onSectionChange={(section) => setSelectedProfile({ tabName: section })}
+            activeSection={selectedProfile as ProfileSection | undefined}
+            onSectionChange={(section: ProfileSection) =>
+              setSelectedProfile(section)
+            }
           />
         );
 
