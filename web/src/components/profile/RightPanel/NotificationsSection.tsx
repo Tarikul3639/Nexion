@@ -6,19 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 
+const SWITCH_CLASSES =
+  "data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-zinc-600 transition-all duration-300";
+
 export function NotificationsSection() {
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold text-white mb-2">
-          Notifications
-        </h2>
-        <p className="text-sm text-zinc-400">
-          Control how you receive notifications
-        </p>
-      </div>
-
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-6">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 space-y-0.5">
         <h3 className="text-lg font-semibold text-white">
           Email Notifications
         </h3>
@@ -30,7 +24,7 @@ export function NotificationsSection() {
               Get notified about new messages
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -40,7 +34,7 @@ export function NotificationsSection() {
               Notifications about class activities
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -50,7 +44,7 @@ export function NotificationsSection() {
               When your bot tasks are finished
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -58,11 +52,11 @@ export function NotificationsSection() {
             <Label className="text-white">Weekly Summary</Label>
             <p className="text-sm text-zinc-400">Weekly activity digest</p>
           </div>
-          <Switch />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
       </Card>
 
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-6">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 space-y-0.5">
         <h3 className="text-lg font-semibold text-white">Push Notifications</h3>
 
         <div className="flex items-center justify-between">
@@ -70,7 +64,7 @@ export function NotificationsSection() {
             <Label className="text-white">Direct Messages</Label>
             <p className="text-sm text-zinc-400">Push notifications for DMs</p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -78,7 +72,7 @@ export function NotificationsSection() {
             <Label className="text-white">Mentions</Label>
             <p className="text-sm text-zinc-400">When someone mentions you</p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -88,11 +82,11 @@ export function NotificationsSection() {
               New assignments in classroom
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
       </Card>
 
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-6">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 space-y-0.5">
         <h3 className="text-lg font-semibold text-white">Do Not Disturb</h3>
 
         <div className="flex items-center justify-between">
@@ -100,7 +94,7 @@ export function NotificationsSection() {
             <Label className="text-white">Enable Do Not Disturb</Label>
             <p className="text-sm text-zinc-400">Mute all notifications</p>
           </div>
-          <Switch />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="space-y-2">
@@ -114,7 +108,7 @@ export function NotificationsSection() {
                 id="dnd-start"
                 type="time"
                 defaultValue="22:00"
-                className="bg-zinc-800 border-zinc-700 text-white mt-1"
+                className="bg-zinc-800 border-zinc-700 text-white mt-1 rounded"
               />
             </div>
             <div>
@@ -125,7 +119,7 @@ export function NotificationsSection() {
                 id="dnd-end"
                 type="time"
                 defaultValue="08:00"
-                className="bg-zinc-800 border-zinc-700 text-white mt-1"
+                className="bg-zinc-800 border-zinc-700 text-white mt-1 rounded"
               />
             </div>
           </div>

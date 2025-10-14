@@ -17,7 +17,7 @@ export const desktopNavigationItems: NavigationItem[] = [
 // Mobile sidebar items
 export const mobileNavigationItems: NavigationItem[] = [
   { id: "chats", icon: MessagesSquare , label: "Chats" },
-  { id: "classroom", icon: GraduationCap, label: "Classroom" },
+  { id: "profile", icon: GraduationCap, label: "Profile" },
 ]
 
 // Tab keys for easy reference

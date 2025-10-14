@@ -6,17 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 
+const INPUT_BUTTON_CLASSES =
+  "bg-zinc-800 rounded border-neutral-700 text-white focus-visible:ring-0 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500";
+
 export function SecuritySection() {
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold text-white mb-2">Security</h2>
-        <p className="text-sm text-zinc-400">
-          Manage your security settings and authentication
-        </p>
-      </div>
-
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-6">
+      <Card className="p-6 bg-neutral-900 border-neutral-800">
         <div className="space-y-2">
           <Label htmlFor="current-password" className="text-white">
             Current Password
@@ -24,7 +20,8 @@ export function SecuritySection() {
           <Input
             id="current-password"
             type="password"
-            className="bg-zinc-800 border-zinc-700 text-white"
+            placeholder="Enter Your Current Password"
+            className={INPUT_BUTTON_CLASSES}
           />
         </div>
 
@@ -35,7 +32,8 @@ export function SecuritySection() {
           <Input
             id="new-password"
             type="password"
-            className="bg-zinc-800 border-zinc-700 text-white"
+            placeholder="Enter Your New Password"
+            className={INPUT_BUTTON_CLASSES}
           />
         </div>
 
@@ -46,23 +44,24 @@ export function SecuritySection() {
           <Input
             id="confirm-password"
             type="password"
-            className="bg-zinc-800 border-zinc-700 text-white"
+            placeholder="Re-enter Your New Password"
+            className={INPUT_BUTTON_CLASSES}
           />
         </div>
 
-        <div className="flex justify-end pt-4">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <div className="flex justify-end">
+          <Button className="text-sm bg-blue-600 hover:bg-blue-700 text-white active:scale-95 transition-all rounded">
             Update Password
           </Button>
         </div>
       </Card>
 
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-6">
+      <Card className="p-6 bg-neutral-900 border-neutral-800">
         <div>
           <h3 className="text-lg font-semibold text-white mb-2">
             Two-Factor Authentication
           </h3>
-          <p className="text-sm text-zinc-400 mb-4">
+          <p className="text-sm text-neutral-400 mb-4">
             Add an extra layer of security to your account
           </p>
         </div>
@@ -74,14 +73,14 @@ export function SecuritySection() {
           </div>
           <Button
             variant="outline"
-            className="border-zinc-700 text-white hover:bg-zinc-800 bg-transparent"
+            className="border-zinc-700 text-white hover:text-white hover:bg-zinc-800 bg-transparent active:scale-95 transition-all rounded"
           >
             Enable 2FA
           </Button>
         </div>
       </Card>
 
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-4">
+      <Card className="p-6 bg-neutral-900 border-neutral-800">
         <div>
           <h3 className="text-lg font-semibold text-white mb-2">
             Active Sessions

@@ -5,17 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card } from "@/components/ui/card";
 
+const SWITCH_CLASSES =
+  "data-[state=checked]:bg-blue-500 data-[state=unchecked]:bg-zinc-600 transition-all duration-300";
+
 export function PreferencesSection() {
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold text-white mb-2">Preferences</h2>
-        <p className="text-sm text-zinc-400">
-          Customize your Nexion experience
-        </p>
-      </div>
-
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-6">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 space-y-0.5">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
             <Label className="text-white">Dark Mode</Label>
@@ -23,7 +19,7 @@ export function PreferencesSection() {
               Use dark theme across the app
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -33,7 +29,7 @@ export function PreferencesSection() {
               Show more content in less space
             </p>
           </div>
-          <Switch />
+          <Switch className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -43,7 +39,7 @@ export function PreferencesSection() {
               Automatically play videos in feed
             </p>
           </div>
-          <Switch />
+          <Switch className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -53,11 +49,11 @@ export function PreferencesSection() {
               Let others see when you're online
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
       </Card>
 
-      <Card className="p-6 bg-zinc-900 border-zinc-800 space-y-6">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 space-y-0.5">
         <h3 className="text-lg font-semibold text-white">
           Content Preferences
         </h3>
@@ -69,7 +65,7 @@ export function PreferencesSection() {
               Display messages you've already read
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
 
         <div className="flex items-center justify-between">
@@ -79,7 +75,7 @@ export function PreferencesSection() {
               Show smooth transitions and effects
             </p>
           </div>
-          <Switch defaultChecked />
+          <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
       </Card>
     </div>

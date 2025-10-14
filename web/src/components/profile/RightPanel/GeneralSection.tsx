@@ -8,6 +8,9 @@ import { Card } from "@/components/ui/card";
 import { Camera } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
+const INPUT_BUTTON_CLASSES =
+  "bg-zinc-800 rounded border-zinc-700 text-white focus-visible:ring-0 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500";
+
 export function GeneralSection({
   onCopy,
   copied,
@@ -17,13 +20,6 @@ export function GeneralSection({
 }) {
   return (
     <div className="space-y-8">
-      <div>
-        <h2 className="text-xl font-semibold text-white mb-1">General</h2>
-        <p className="text-sm text-zinc-400">
-          Manage your profile information and public presence
-        </p>
-      </div>
-
       <Card className="p-6 bg-neutral-900 border-neutral-800">
         <div className="flex items-start gap-6">
           <div className="relative group rounded-2xl overflow-hidden">
@@ -48,7 +44,7 @@ export function GeneralSection({
               <Button
                 size="sm"
                 variant="ghost"
-                className="text-red-500 border border-red-700 hover:text-red-500 hover:bg-red-950/30 active:scale-95 transition-all rounded"
+                className="text-xs text-white hover:text-white bg-red-700 hover:bg-red-800 active:scale-95 transition-all rounded"
                 onClick={() => console.log("Remove clicked")}
               >
                 Remove
@@ -66,7 +62,7 @@ export function GeneralSection({
           <Input
             id="name"
             defaultValue="John Doe"
-            className="bg-zinc-800 rounded border-zinc-700 text-white focus-visible:ring-0 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500"
+            className={INPUT_BUTTON_CLASSES}
           />
         </div>
 
@@ -75,8 +71,8 @@ export function GeneralSection({
             Username
           </Label>
           <div className="flex gap-2">
-            <div className="flex-1 flex items-center bg-zinc-800 border border-zinc-700 rounded px-3 focus-within:ring-0 focus-within:ring-blue-500 focus-within:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500 text-base">
-              <span className="text-zinc-500">nexion.app/</span>
+            <div className="flex-1 flex items-center bg-zinc-800 border border-neutral-700 rounded px-3 focus-within:ring-0 focus-within:ring-blue-500 focus-within:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500 text-base">
+              <span className="text-neutral-500">nexion.app/</span>
               <input
                 id="username"
                 defaultValue="johndoe"
@@ -94,7 +90,7 @@ export function GeneralSection({
             id="email"
             type="email"
             defaultValue="john.doe@example.com"
-            className="bg-zinc-800 rounded border-zinc-700 text-white focus-visible:ring-0 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500"
+            className={INPUT_BUTTON_CLASSES}
           />
         </div>
 
@@ -106,9 +102,9 @@ export function GeneralSection({
             id="bio"
             rows={3}
             defaultValue="Educator and AI enthusiast. Building the future of learning."
-            className="w-full bg-zinc-800 rounded border-zinc-700 text-white focus-visible:ring-0 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500 resize-none"
+            className={`${INPUT_BUTTON_CLASSES} resize-none`}
           />
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-neutral-500">
             Brief description for your profile
           </p>
         </div>

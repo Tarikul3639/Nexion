@@ -26,6 +26,26 @@ export function ProfileRightPanel() {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-4xl mx-auto p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-white mb-1 capitalize">
+            {activeSection}
+          </h2>
+          <p className="text-sm text-zinc-400">
+            {activeSection === "general" &&
+              "Manage your profile information and public presence"}
+            {activeSection === "account" &&
+              "Manage your account settings and preferences"}
+            {activeSection === "preferences" &&
+              "Customize your Nexion experience"}
+            {activeSection === "security" &&
+              "Manage your security settings and authentication"}
+            {activeSection === "notifications" &&
+              "Control how you receive notifications"}
+            {activeSection === "integrations" &&
+              "Manage connected services and bots"}
+          </p>
+        </div>
         {activeSection === "general" && (
           <GeneralSection onCopy={handleCopy} copied={copied} />
         )}

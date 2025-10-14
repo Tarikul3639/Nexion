@@ -23,7 +23,7 @@ export default function ChatItem({ chat, isActive, onSelect }: IChatListProps) {
       : undefined;
   return (
     <div
-      className={`flex items-center md:px-2.5 py-2.5 cursor-pointer transition-colors duration-200 rounded-sm ${
+      className={`flex items-center md:px-2 py-2 cursor-pointer transition-colors duration-200 rounded-sm ${
         isActive ? "bg-[#323436]" : "hover:bg-[#323438] active:bg-[#1E1E1F]"
       }`}
       onClick={() => onSelect(chat)}

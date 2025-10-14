@@ -9,6 +9,7 @@ import Welcome from "./Welcome";
 export default function RightPanel() {
   const { activeTab, selectedChat, selectedProfile } = usePanel();
   console.log("active tab : ",activeTab);
+  console.log("selected chat : ",selectedChat);
 
   if (!selectedChat && !selectedProfile) {
     return <Welcome />;
