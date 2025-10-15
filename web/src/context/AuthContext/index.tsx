@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, use, useContext, useEffect, useState } from "react";
 import { IUser, AuthContextType } from "@/types/auth";
 import { useRouter } from "next/navigation";
 import { checkAuthStatus } from "./checkAuthStatus";
@@ -55,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // ---------- Context Value ----------
   const value = {
     user,
+    setUser,
     token,
     login,
     signup,
@@ -62,7 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     isLoading,
     isAuthenticated: !!user,
   };
-
+  
   // ---------- Render ----------
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

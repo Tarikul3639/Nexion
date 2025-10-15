@@ -29,8 +29,10 @@ export const checkAuthStatus = async (
         setUser({
           id: data.data.user.id,
           email: data.data.user.email,
+          name: data.data.user.name,
           username: data.data.user.username,
           avatar: data.data.user.avatar ?? undefined,
+          bio: data.data.user.bio ?? undefined,
         });
 
         document.cookie = `token=${storedToken}; path=/; max-age=${

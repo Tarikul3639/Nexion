@@ -1,12 +1,14 @@
 import { Router } from "express";
 import authRoutes from "./authRoutes";
-import UploadRoutes from "@/controllers/upload";
+// import UploadRoutes from "@/controllers/upload";
+import profileRoutes from "./profileRoutes";
 
 const router = Router();
 
 // Mount routes
 router.use("/auth", authRoutes);
-router.use("/upload", UploadRoutes);
+// router.use("/upload", UploadRoutes);
+router.use("/profile", profileRoutes);
 
 // Health check route
 router.get("/health", (req, res) => {

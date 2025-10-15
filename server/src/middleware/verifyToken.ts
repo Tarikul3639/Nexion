@@ -6,6 +6,8 @@ import config from "config";
 // JWT payload interface
 interface ITokenPayload {
   _id: string;
+  username: string;
+  name?: string;
   email: string;
   iat?: number;
   exp?: number;

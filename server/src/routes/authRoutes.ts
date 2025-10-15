@@ -5,7 +5,6 @@ import {
   login,
   logout,
   getProfile,
-  profileUpdate,
   ForgotPassword,
   VerifyOTP,
   passwordReset,
@@ -23,7 +22,6 @@ router.post("/reset-password", passwordReset);
 
 // Protected routes (require authentication)
 router.post("/logout", logout);
-router.get("/profile", getProfile);
-router.put("/profile", profileUpdate);
+// router.get("/profile", getProfile);
 
 export default router;

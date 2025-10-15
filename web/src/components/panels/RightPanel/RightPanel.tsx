@@ -10,6 +10,7 @@ import Welcome from "./Welcome";
 
 // Context
 import { usePanel } from "@/context/PanelContext";
+import { ProfileProvider } from "@/context/ProfileContext/index";
 
 export default function RightPanel() {
   // Extract active states from the panel context
@@ -34,7 +35,11 @@ export default function RightPanel() {
       return <ClassroomWindow />;
 
     case "profile":
-      return <ProfileRightPanel />;
+      return (
+        <ProfileProvider>
+          <ProfileRightPanel />
+        </ProfileProvider>
+      );
 
     default:
       return <div>Select a tab to see content</div>;
