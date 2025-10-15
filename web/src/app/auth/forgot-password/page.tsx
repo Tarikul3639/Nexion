@@ -26,6 +26,16 @@ const ForgotPassword: React.FC = () => {
 
   const [passwordResetToken, setPasswordResetToken] = useState<string | null>(null);
 
+  // Define a type for API errors
+  interface ApiErrorResponse {
+    response?: {
+      data?: {
+        success: boolean;
+        message?: string;
+      };
+    };
+  }
+
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -46,10 +56,11 @@ const ForgotPassword: React.FC = () => {
         setMessage(response.data.message || "Failed to send OTP. Try again.");
         setError(true);
       }
-    } catch (err: any) {
-      // Safely read an error message from the Axios error if present, otherwise use a fallback.
+    } catch (err: unknown) {
+      // Type guard to check if error matches our ApiErrorResponse structure
+      const apiError = err as ApiErrorResponse;
       setMessage(
-        err?.response?.data?.message || "Failed to send OTP. Try again."
+        apiError?.response?.data?.message || "Failed to send OTP. Try again."
       );
       setError(true);
     } finally {
@@ -77,8 +88,9 @@ const ForgotPassword: React.FC = () => {
         setMessage(response.data.message || "Invalid OTP. Try again.");
         setError(true);
       }
-    } catch (err: any) {
-      setMessage(err?.response?.data?.message || "Invalid OTP. Try again.");
+    } catch (err: unknown) {
+      const apiError = err as ApiErrorResponse;
+      setMessage(apiError?.response?.data?.message || "Invalid OTP. Try again.");
       setError(true);
     } finally {
       setIsSubmitting(false);
@@ -123,9 +135,10 @@ const ForgotPassword: React.FC = () => {
         );
         setError(true);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const apiError = err as ApiErrorResponse;
       setMessage(
-        err?.response?.data?.message || "Failed to reset password. Try again."
+        apiError?.response?.data?.message || "Failed to reset password. Try again."
       );
       setError(true);
     } finally {

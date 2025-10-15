@@ -94,7 +94,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       socket.off("newMessage");
       socket.off("messageStatusUpdate");
     };
-  }, [socket, activeChat?.id]);
+  }, [socket, activeChat]);
 
   const Value: ChatContextType = {
     showAISuggestions,

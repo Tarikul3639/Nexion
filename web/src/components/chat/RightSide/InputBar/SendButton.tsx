@@ -9,6 +9,22 @@ import { usePanel } from "@/context/PanelContext";
 import { useSocket } from "@/context/SocketContext";
 import { useAuth } from "@/context/AuthContext";
 import { v4 as uuid } from "uuid";
+import { MessageItem } from "@/types/message";
+
+// Define the attachment interface based on DraftMessage's attachment type
+interface MessageAttachment {
+  type: "image" | "video" | "file" | "audio/webm";
+  file?: File;
+  url?: string;
+  name?: string;
+  size?: number;
+  extension?: string;
+  alt?: string;
+  thumbnail?: string;
+  duration?: number;
+  waveform?: number[];
+  previewUrl?: string; // Used for local preview before upload
+}
 
 export default function SendButton() {
   const {
@@ -27,8 +43,8 @@ export default function SendButton() {
   if (!draftMessage?.text && !draftMessage?.attachments?.length) return null;
 
   // ---------------- Upload single attachment ----------------
-  const uploadAttachment = (att: any) => {
-    return new Promise<any>((resolve, reject) => {
+  const uploadAttachment = (att: MessageAttachment) => {
+    return new Promise<MessageAttachment>((resolve, reject) => {
       if (!att.file) return resolve(att);
 
       const formData = new FormData();
@@ -42,7 +58,7 @@ export default function SendButton() {
           const percent = Math.round((event.loaded / event.total) * 100);
           setUploadProgress((prev) => ({
             ...prev,
-            [att.name || att.file.name]: percent,
+            [att.name || (att.file ? att.file.name : 'unknown')]: percent,
           }));
         }
       };
@@ -65,7 +81,7 @@ export default function SendButton() {
     const tempId = uuid();
 
     // ---------- 1. Optimistic message ----------
-    const optimisticMessage: any = {
+    const optimisticMessage: MessageItem = {
       id: tempId,
       senderId: user.id,
       senderName: user.username || "Unknown",
@@ -86,7 +102,7 @@ export default function SendButton() {
     setAllMessages((prev) => [...prev, optimisticMessage]);
 
     // ---------- 2. Upload attachments ----------
-    let uploadedAttachments: any = [];
+    let uploadedAttachments: MessageAttachment[] = [];
     if (draftMessage.attachments?.length) {
       uploadedAttachments = await Promise.all(draftMessage.attachments.map(uploadAttachment));
     }

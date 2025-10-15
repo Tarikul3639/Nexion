@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import Image from "next/image";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChat } from "@/context/ChatContext";
@@ -8,7 +9,7 @@ import { useMemo } from "react";
 
 const ImagePreview: React.FC = () => {
   const { draftMessage, setDraftMessage } = useChat();
-  
+
   const attachments = useMemo(() => {
     return (
       draftMessage?.attachments?.filter((att) => att.type === "image") || []
@@ -40,10 +41,12 @@ const ImagePreview: React.FC = () => {
             className="relative group bg-background rounded-sm overflow-hidden border border-neutral-700/50 transition-all duration-200"
             style={{ width: "120px", height: "120px" }}
           >
-            <img
+            <Image
               src={attachment.url || "/placeholder.svg"}
               alt={attachment.name || `Preview ${index + 1}`}
-              className="w-full h-full object-cover"
+              width={120} // fixed size
+              height={120} // fixed size
+              className="object-cover w-full h-full"
             />
 
             {/* Overlay on hover */}

@@ -11,6 +11,15 @@ import Image from "next/image";
 import { DraftMessage } from "@/types/message";
 import { useChat } from "@/context/ChatContext";
 
+// Define the attachment type based on what's used in the code
+type ImageAttachment = {
+  type: "image";
+  file?: File;
+  url?: string;
+  name?: string;
+  alt?: string;
+};
+
 // -----------------------
 // ProgressButton Component
 // -----------------------
@@ -81,10 +90,10 @@ export default function ImageCard({ msg }: { msg: DraftMessage }) {
 
   // Filter images
   if (!msg.attachments?.some((att) => att.type === "image")) return null;
-  const images = msg.attachments.filter((att) => att.type === "image");
+  const images = msg.attachments.filter((att) => att.type === "image") as ImageAttachment[];
 
   // Download handler
-  const handleDownload = async (img: any, index: number) => {
+  const handleDownload = async (img: ImageAttachment, index: number) => {
     const filename = img.name || img.file?.name || `image-${index + 1}`;
     const url = img.url || (img.file ? URL.createObjectURL(img.file) : "");
 

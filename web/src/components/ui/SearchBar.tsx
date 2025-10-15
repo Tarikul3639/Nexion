@@ -29,7 +29,7 @@ export default function SearchBar({
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [searchValue, socket]);
+  }, [searchValue, socket, setSearchActive, setSearchResults]);
 
   return (
     <div className="relative group w-full">

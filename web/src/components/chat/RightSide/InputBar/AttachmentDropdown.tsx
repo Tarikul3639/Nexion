@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useChat } from "@/context/ChatContext";
-import { url } from "inspector";
 
 // Attachment types for messages
 export type AttachmentType = "image" | "video" | "file" | "audio";

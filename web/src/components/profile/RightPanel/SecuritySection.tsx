@@ -85,7 +85,7 @@ export function SecuritySection() {
             Active Sessions
           </h3>
           <p className="text-sm text-zinc-400">
-            Manage devices where you're currently logged in
+            Manage devices where you&apos;re currently logged in
           </p>
         </div>
 

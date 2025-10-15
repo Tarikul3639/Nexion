@@ -1,7 +1,7 @@
 import { useLeftPanelData } from "@/context/LeftPanelDataContext";
 import ChatListSkeleton from "./ChatListSkeleton";
 import { IChatList } from "@/types/message";
-import SearchBar from "./SearchBar";
+import SearchBar from "../../ui/SearchBar";
 import { Pin } from "lucide-react";
 import ChatItem from "./ChatItem";
 import React from "react";

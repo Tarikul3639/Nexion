@@ -45,7 +45,7 @@ export function PreferencesSection() {
           <div className="space-y-0.5">
             <Label className="text-white">Show Online Status</Label>
             <p className="text-sm text-zinc-400">
-              Let others see when you're online
+              Let others see when you&apos;re online
             </p>
           </div>
           <Switch defaultChecked className={SWITCH_CLASSES} />
@@ -61,7 +61,7 @@ export function PreferencesSection() {
           <div className="space-y-0.5">
             <Label className="text-white">Show Read Messages</Label>
             <p className="text-sm text-zinc-400">
-              Display messages you've already read
+              Display messages you&apos;ve already read
             </p>
           </div>
           <Switch defaultChecked className={SWITCH_CLASSES} />

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import SearchBar from "../../chat/LeftSide/SearchBar";
+import SearchBar from "../../ui/SearchBar";
 import { User, Settings, Sliders, Shield, Bell, Puzzle } from "lucide-react";
 import type { ProfileSection } from "@/types/profile";
 

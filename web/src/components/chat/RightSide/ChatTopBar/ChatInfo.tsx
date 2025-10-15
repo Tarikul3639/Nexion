@@ -36,7 +36,7 @@ export default function ChatInfo({ chat }: ChatInfoProps) {
     }
 
     return "Offline";
-  }, [chat.participants, user?.id]);
+  }, [chat.participants, user]);
 
   return (
     <div className="flex flex-col flex-1 min-w-0 overflow-hidden">

@@ -139,7 +139,7 @@ export const LeftPanelDataProvider = ({
       socket.off("initialBots");
       socket.off("updateBots");
     };
-  }, [socket, activeTab]);
+  }, [socket, activeTab, user?.id]);
 
   // Add this useEffect to LeftPanelDataProvider
   useEffect(() => {
