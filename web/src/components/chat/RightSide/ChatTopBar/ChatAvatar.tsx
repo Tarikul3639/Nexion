@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { IChatList } from "@/types/message/message";
+import { IChatList } from "@/types/message";
 
 export default function ChatAvatar({ chat }: { chat: IChatList }) {
   return (

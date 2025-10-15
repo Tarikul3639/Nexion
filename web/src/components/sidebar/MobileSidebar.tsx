@@ -5,10 +5,12 @@ import { usePanel } from "@/context/PanelContext";
 import { useResponsive } from "@/hooks/useResponsive";
 
 export function MobileSidebar() {
-  const { activeTab, setActiveTab, selectedChat } = usePanel();
+  const { activeTab, setActiveTab, activeChat, activeProfile, activeClassroom, activeBot } = usePanel();
   const { isDesktop } = useResponsive();
+  // Check if any panel is active
+  const isAnyPanelActive = activeChat || activeProfile || activeClassroom || activeBot;
   // Hide mobile sidebar if an item is selected
-  if (!isDesktop && selectedChat) return null;
+  if (!isDesktop && isAnyPanelActive) return null;
 
   return (
     <div className="md:hidden w-full  text-white flex justify-around items-center h-16 ">

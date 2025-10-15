@@ -1,10 +1,10 @@
-import React from "react";
+import { useLeftPanelData } from "@/context/LeftPanelDataContext";
+import ChatListSkeleton from "./ChatListSkeleton";
+import { IChatList } from "@/types/message";
+import SearchBar from "./SearchBar";
 import { Pin } from "lucide-react";
 import ChatItem from "./ChatItem";
-import { IChatList } from "@/types/message/message.messageList";
-import { useLeftPanelData } from "@/context/LeftPanelDataContext";
-import SearchBar from "./SearchBar";
-import ChatListSkeleton from "./ChatListSkeleton";
+import React from "react";
 
 interface ChatListProps {
   allChats: IChatList[];

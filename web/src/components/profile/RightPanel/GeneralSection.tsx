@@ -11,13 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 const INPUT_BUTTON_CLASSES =
   "bg-zinc-800 rounded border-zinc-700 text-white focus-visible:ring-0 focus-visible:ring-blue-500 focus-visible:border-blue-500 focus-within:shadow-xs focus-within:shadow-blue-500";
 
-export function GeneralSection({
-  onCopy,
-  copied,
-}: {
-  onCopy: (text: string) => void;
-  copied: boolean;
-}) {
+export function GeneralSection() {
   return (
     <div className="space-y-8">
       <Card className="p-6 bg-neutral-900 border-neutral-800">

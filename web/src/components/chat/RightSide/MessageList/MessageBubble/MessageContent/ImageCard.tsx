@@ -8,7 +8,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
-import { DraftMessage } from "@/types/message/message";
+import { DraftMessage } from "@/types/message";
 import { useChat } from "@/context/ChatContext";
 
 // -----------------------

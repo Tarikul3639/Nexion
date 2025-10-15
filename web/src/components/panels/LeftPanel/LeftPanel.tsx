@@ -1,36 +1,49 @@
 "use client";
 
 import React from "react";
-import ChatList from "@/components/chat/LeftSide";
+
+// Components
 import ClassroomList from "@/components/classroom/ClassroomList";
+import ChatList from "@/components/chat/LeftSide";
 import BotList from "@/components/bot/BotList";
-import { IChatList } from "@/types/message/message.messageList";
-import { Classroom } from "@/types/classroom";
-import { Bot } from "@/types/bot";
+import { ProfileLeftPanel } from "@/components/profile/LeftPanel";
+
+// Contexts
 import { usePanel } from "@/context/PanelContext";
 import { useLeftPanelData } from "@/context/LeftPanelDataContext";
-import { ProfileLeftPanel } from "@/components/profile/LeftPanel";
+
+// Types
 import type { ProfileSection } from "@/components/profile/types";
+import { Classroom } from "@/types/classroom";
+import { IChatList } from "@/types/message";
+import { Bot } from "@/types/bot";
 
 export default function LeftPanel() {
+  // Extract active states and their setters from the panel context
   const {
     activeTab,
-    selectedChat,
-    setSelectedChat,
-    selectedProfile,
-    setSelectedProfile,
+    activeChat,
+    setActiveChat,
+    activeProfile,
+    setActiveProfile,
+    activeClassroom,
+    setActiveClassroom,
+    activeBot,
+    setActiveBot,
   } = usePanel();
 
+  // Fetch left panel data such as chat lists
   const { allChats, loading } = useLeftPanelData();
 
+  // Renders the panel content depending on which tab is active
   const renderContent = () => {
     switch (activeTab) {
       case "chats":
         return (
           <ChatList
             allChats={allChats as IChatList[]}
-            selectedChat={selectedChat as IChatList | undefined}
-            onSelectChat={(chat) => setSelectedChat(chat as IChatList)}
+            selectedChat={activeChat as IChatList | undefined}
+            onSelectChat={(chat) => setActiveChat(chat as IChatList)}
             isLoading={loading as boolean}
           />
         );
@@ -39,8 +52,8 @@ export default function LeftPanel() {
         return (
           <ClassroomList
             classrooms={[]}
-            selectedClassroom={selectedChat as Classroom | undefined}
-            onSelectClassroom={(cls) => setSelectedChat(cls as Classroom)}
+            selectedClassroom={activeClassroom as Classroom | undefined}
+            onSelectClassroom={(cls) => setActiveClassroom(cls as Classroom)}
           />
         );
 
@@ -48,17 +61,17 @@ export default function LeftPanel() {
         return (
           <BotList
             bots={[]}
-            selectedBot={selectedChat as Bot | undefined}
-            onSelectBot={(bot) => setSelectedChat(bot as Bot)}
+            selectedBot={activeBot as Bot | undefined}
+            onSelectBot={(bot) => setActiveBot(bot as Bot)}
           />
         );
 
       case "profile":
         return (
           <ProfileLeftPanel
-            activeSection={selectedProfile as ProfileSection | undefined}
+            activeSection={activeProfile as ProfileSection | undefined}
             onSectionChange={(section: ProfileSection) =>
-              setSelectedProfile(section)
+              setActiveProfile(section)
             }
           />
         );
@@ -68,5 +81,6 @@ export default function LeftPanel() {
     }
   };
 
+  // Main container that renders left panel content
   return <div className="w-full h-full md:w-80 lg:w-96">{renderContent()}</div>;
 }

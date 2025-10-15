@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePanel } from "@/context/PanelContext";
-import { IChatList } from "@/types/message/message.messageList";
+import { IChatList } from "@/types/message/x";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { useSocket } from "@/context/SocketContext";

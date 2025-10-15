@@ -66,7 +66,8 @@ export interface IMessage {
 }
 
 export interface IChatList {
-  _id: string;
+  _id?: string;
+  id: string;
   name: string;
   type: "direct" | "group" | "classroom" | "user";
   avatar?: string;
@@ -77,9 +78,13 @@ export interface IChatList {
     _id: string;
     username: string;
     avatar?: string;
+    status?: "online" | "offline" | "away" | "busy";
+    lastSeen?: string;
   }[];
   updatedAt: string;
   unreadCount: number;
+  isPinned?: boolean;
+  lastActive?: string; 
 }
 
 export interface IChatListProps {

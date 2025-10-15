@@ -1,48 +1,55 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
+import { usePanel } from "@/context/PanelContext";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { usePanel } from "@/context/PanelContext";
 
 export default function BackButton() {
-  const { selectedChat, setSelectedChat, selectedProfile, setSelectedProfile } = usePanel();
+  const {
+    activeBot,
+    activeChat,
+    activeClassroom,
+    activeProfile,
+    setActiveBot,
+    setActiveChat,
+    setActiveClassroom,
+    setActiveProfile,
+  } = usePanel();
 
-  // Handle mobile browser back button
+  const isAnyPanelActive =
+    activeBot || activeChat || activeClassroom || activeProfile;
+
+  // Helper: Close all active panels
+  const closeAllPanels = useCallback(() => {
+    setActiveBot(null);
+    setActiveChat(null);
+    setActiveClassroom(null);
+    setActiveProfile(null);
+  }, [setActiveBot, setActiveChat, setActiveClassroom, setActiveProfile]);
+
   useEffect(() => {
-    // Push initial state when selectedChat is opened
-    if (selectedChat || selectedProfile) {
-      history.pushState({ chatOpen: true }, "");
-    }
+    if (isAnyPanelActive) history.pushState({ panelOpen: true }, "");
 
     const handlePopState = () => {
-      if (selectedChat || selectedProfile) {
-        // Close the chat instead of navigating back
-        setSelectedChat(null);
-        setSelectedProfile(undefined);
-        // Push state again to prevent leaving page
-        history.pushState({ chatOpen: false }, "");
+      if (isAnyPanelActive) {
+        closeAllPanels();
+        history.pushState({ panelOpen: false }, "");
       }
     };
 
     window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isAnyPanelActive, closeAllPanels]);
 
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [selectedChat, setSelectedChat]);
-
-  if (!selectedChat && !selectedProfile) return null;
+  if (!isAnyPanelActive) return null;
 
   return (
     <Button
       size="icon"
       variant="ghost"
       className="md:hidden text-gray-300 hover:text-white hover:bg-[#323438]"
-      onClick={() => {
-        setSelectedChat(null);
-        setSelectedProfile(undefined);
-      }}
+      onClick={closeAllPanels}
     >
       <ArrowLeft className="w-5 h-5" />
     </Button>

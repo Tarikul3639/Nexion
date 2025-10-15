@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { IMessage } from "@/types/message/message.messageList";
+import { IMessage } from "@/types/message/x";
 
 interface LastMessagePreviewProps {
   message?: IMessage;

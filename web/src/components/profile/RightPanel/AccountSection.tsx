@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Copy } from "lucide-react";
@@ -12,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useState } from "react";
 
 const SELECTED_ITEM_CLASSES =
   "focus:bg-zinc-700 rounded text-white focus:text-white";
@@ -19,6 +19,16 @@ const DANGER_BUTTON_CLASSES =
   "w-full justify-start text-red-500 hover:text-red-500 border-red-900/50 hover:bg-red-950/30 bg-transparent active:scale-99 transition-all rounded";
 
 export function AccountSection() {
+  // Local state for clipboard copy indicator
+  const [copied, setCopied] = useState(false);
+
+  // Copy helper with auto-reset for UI feedback
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="space-y-8">
       {/* Account Info */}
@@ -34,6 +44,9 @@ export function AccountSection() {
               size="icon"
               variant="outline"
               className="rounded border-zinc-700 text-white hover:text-zinc-300 hover:bg-zinc-800 bg-zinc-800 active:scale-95 transition-all"
+              onClick={() => handleCopy("usr_NWqN5Qzi9M7jSxriFoQwSJTwtF")}
+              disabled={copied}
+              title={copied ? "Copied!" : "Copy to clipboard"}
             >
               <Copy className="w-4 h-4" />
             </Button>

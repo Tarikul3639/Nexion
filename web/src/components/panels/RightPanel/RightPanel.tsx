@@ -1,27 +1,41 @@
 "use client";
+
 import React from "react";
-import { usePanel } from "@/context/PanelContext";
+
+// Components
 import ConversationWindow from "@/components/chat/RightSide";
 import ClassroomWindow from "@/components/classroom/ClassroomWindow";
 import { ProfileRightPanel } from "@/components/profile/RightPanel";
 import Welcome from "./Welcome";
 
-export default function RightPanel() {
-  const { activeTab, selectedChat, selectedProfile } = usePanel();
-  console.log("active tab : ",activeTab);
-  console.log("selected chat : ",selectedChat);
+// Context
+import { usePanel } from "@/context/PanelContext";
 
-  if (!selectedChat && !selectedProfile) {
+export default function RightPanel() {
+  // Extract active states from the panel context
+  const { activeTab, activeChat, activeProfile, activeBot, activeClassroom } =
+    usePanel();
+
+  // Determine if any panel is currently active
+  const isAnyPanelActive =
+    activeChat || activeProfile || activeClassroom || activeBot;
+
+  // If no panel is active, show the default Welcome screen
+  if (!isAnyPanelActive) {
     return <Welcome />;
   }
 
+  // Render content based on which tab is active
   switch (activeTab) {
     case "chats":
       return <ConversationWindow />;
+
     case "classroom":
       return <ClassroomWindow />;
+
     case "profile":
       return <ProfileRightPanel />;
+
     default:
       return <div>Select a tab to see content</div>;
   }

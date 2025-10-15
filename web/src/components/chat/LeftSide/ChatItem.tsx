@@ -2,9 +2,9 @@
 
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { IChatList } from "@/types/message/message.messageList";
 import LastMessagePreview from "./LastMessagePreview";
 import { useAuth } from "@/context/AuthContext";
+import { IChatList } from "@/types/message";
 
 export interface IChatListProps {
   chat: IChatList;

@@ -1,30 +1,50 @@
 "use client";
+
 import React, { createContext, useContext, useState } from "react";
 import { TabKey, TAB_KEYS } from "@/components/sidebar/navigationItems";
-import { IChatList } from "@/types/message/message.messageList";
 import { ProfileSection } from "@/components/profile/types";
-import { Bot } from "@/types/bot";
 import { Classroom } from "@/types/classroom";
+import { IChatList } from "@/types/message";
+import { Bot } from "@/types/bot";
 
 interface PanelContextProps {
   activeTab: TabKey;
   setActiveTab: (tab: TabKey) => void;
-  selectedChat: IChatList | Classroom | Bot | null;
-  setSelectedChat: (chat: IChatList | Classroom | Bot | null) => void;
-  selectedProfile: ProfileSection | undefined;
-  setSelectedProfile: (profile: ProfileSection | undefined) => void;
+  activeChat: IChatList | null;
+  setActiveChat: (chat: IChatList | null) => void;
+  activeProfile: ProfileSection | null;
+  setActiveProfile: (profile: ProfileSection | null) => void;
+  activeClassroom: Classroom | null;
+  setActiveClassroom: (classroom: Classroom | null) => void;
+  activeBot: Bot | null;
+  setActiveBot: (bot: Bot | null) => void;
 }
 
 const PanelContext = createContext<PanelContextProps | undefined>(undefined);
 
 export function PanelProvider({ children }: { children: React.ReactNode }) {
+  // Initialize state from sidebar "Chat | Classroom | Bot | Profile" selection
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.CHATS);
-  const [selectedChat, setSelectedChat] = useState<IChatList | Classroom | Bot | null>(null);
-  const [selectedProfile, setSelectedProfile] = useState<ProfileSection | undefined>(undefined);
-  
+  // Initialize state for active chat, profile, classroom, and bot
+  const [activeProfile, setActiveProfile] = useState<ProfileSection | null>(null);
+  const [activeClassroom, setActiveClassroom] = useState<Classroom | null>(null);
+  const [activeChat, setActiveChat] = useState<IChatList | null>(null);
+  const [activeBot, setActiveBot] = useState<Bot | null>(null);
+
   return (
     <PanelContext.Provider
-      value={{ activeTab, setActiveTab, selectedChat, setSelectedChat, selectedProfile, setSelectedProfile }}
+      value={{
+        activeTab,
+        setActiveTab,
+        activeChat,
+        setActiveChat,
+        activeProfile,
+        setActiveProfile,
+        activeClassroom,
+        setActiveClassroom,
+        activeBot,
+        setActiveBot,
+      }}
     >
       {children}
     </PanelContext.Provider>

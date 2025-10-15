@@ -9,7 +9,7 @@ import {
   AudioLines,
 } from "lucide-react";
 import { useChat } from "@/context/ChatContext";
-import { DraftMessage } from "@/types/message/message";
+import { DraftMessage } from "@/types/message";
 
 export default function ReplyPreview() {
   const { replyToId, setReplyToId, allMessages } = useChat();

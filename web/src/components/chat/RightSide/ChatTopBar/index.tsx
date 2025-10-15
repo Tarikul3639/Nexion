@@ -3,7 +3,7 @@
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { usePanel } from "@/context/PanelContext";
-import { IChatList } from "@/types/message/message.messageList";
+import { IChatList } from "@/types/message/x";
 import BackButton from "../../../ui/BackButton";
 import ChatAvatar from "./ChatAvatar";
 import ChatInfo from "./ChatInfo";
@@ -11,11 +11,11 @@ import ActionButtons from "./ActionButtons";
 import { useLeftPanelData } from "@/context/LeftPanelDataContext";
 
 export default function ChatHeader() {
-  const { selectedChat } = usePanel();
+  const { activeChat } = usePanel();
   const { allChats } = useLeftPanelData();
 
-  // Find the full chat details from allChats using selectedChat id for real-time updates
-  const chat = allChats.find((c) => c.id === selectedChat?.id) || selectedChat;
+  // Find the full chat details from allChats using activeChat id for real-time updates
+  const chat = allChats.find((c) => c.id === activeChat?.id) || activeChat;
 
   if (!chat) return null;
 

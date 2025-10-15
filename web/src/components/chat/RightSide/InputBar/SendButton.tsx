@@ -21,7 +21,7 @@ export default function SendButton() {
     setUploadProgress,
   } = useChat();
   const { socket } = useSocket();
-  const { selectedChat } = usePanel();
+  const { activeChat } = usePanel();
   const { user } = useAuth();
 
   if (!draftMessage?.text && !draftMessage?.attachments?.length) return null;
@@ -60,7 +60,7 @@ export default function SendButton() {
   };
 
   const handleMessageSend = async () => {
-    if (!socket || !selectedChat || !user || !draftMessage) return;
+    if (!socket || !activeChat || !user || !draftMessage) return;
 
     const tempId = uuid();
 
@@ -102,8 +102,8 @@ export default function SendButton() {
 
     // ---------- 4. Send message to socket ----------
     socket.emit("sendMessage", {
-      conversation: selectedChat.type !== "user" ? selectedChat.id : undefined,
-      receiverId: selectedChat.type === "user" ? selectedChat.id : undefined,
+      conversation: activeChat.type !== "user" ? activeChat.id : undefined,
+      receiverId: activeChat.type === "user" ? activeChat.id : undefined,
       sender: user.id,
       content: { ...draftMessage, attachments: uploadedAttachments },
       replyTo: replyToId,
