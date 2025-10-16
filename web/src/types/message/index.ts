@@ -24,6 +24,7 @@ export type MessageItem = {
   content: DraftMessage;
   readBy?: {
     id: string;
+    name: string;
     username: string;
     avatar?: string;
   }[];
@@ -53,6 +54,7 @@ export interface IMessage {
   _id: string;
   sender: {
     _id: string;
+    name: string;
     username: string;
     avatar?: string;
   };
@@ -76,6 +78,7 @@ export interface IChatList {
   lastMessage?: IMessage;
   participants: {
     _id: string;
+    name: string;
     username: string;
     avatar?: string;
     status?: "online" | "offline" | "away" | "busy";

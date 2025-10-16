@@ -5,13 +5,13 @@ import bcrypt from "bcryptjs";
 // Register user
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
 
     // Validation
-    if (!username || !email || !password) {
+    if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please provide username, email, and password",
+        message: "Please provide name, email, and password",
       });
     }
 
@@ -29,7 +29,7 @@ export const register = async (req: Request, res: Response) => {
 
     // TODO: Create user in database
     await User.create({
-      username,
+      name,
       email,
       password: hashedPassword,
     });

@@ -10,6 +10,7 @@ export const login = async (req: Request, res: Response) => {
     interface ILoginUser {
       _id: { toString(): string };
       email: string;
+      name: string;
       username: string;
       password: string;
     }
@@ -56,6 +57,7 @@ export const login = async (req: Request, res: Response) => {
         user: {
           id: user._id.toString(),
           email: user.email,
+          name: user.name,
           username: user.username,
         },
       },

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  verifyToken,
+  verifyLoggedInUser,
   register,
   login,
   logout,
@@ -13,7 +13,7 @@ import {
 const router = Router();
 
 // Public routes
-router.get("/verify", verifyToken);
+router.get("/verify", verifyLoggedInUser);
 router.post("/register", register);
 router.post("/login", login);
 router.post("/forgot-password", ForgotPassword);

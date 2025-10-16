@@ -84,7 +84,7 @@ export default function SendButton() {
     const optimisticMessage: MessageItem = {
       id: tempId,
       senderId: user.id,
-      senderName: user.username || "Unknown",
+      senderName: user.username || user.name || "Unknown",
       senderAvatar: user.avatar || "",
       content: {
         ...draftMessage,

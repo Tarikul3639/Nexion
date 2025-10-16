@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 import { setupSocket } from "./sockets/index";
 import { connectDB } from "./config/db";
 import routes from "./routes";
-import { requestLogger } from "./utils/middleware";
+import { requestLogger, errorHandler } from "@/utils/middleware";
 import config from "config";
 import fs from "fs";
 
@@ -68,6 +68,9 @@ APP.get("/", (req: Request, res: Response) => {
     protocol: protocol.toUpperCase(),
   });
 });
+
+// Error handling middleware should be last
+APP.use(errorHandler); // Centralized error handling
 
 server.listen(PORT, () => {
   console.log(

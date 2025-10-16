@@ -3,7 +3,7 @@ export * from "./auth/register";
 export * from "./auth/logout";
 export * from "./auth/getProfile";
 export * from "./profile/avatar";
-export * from "../middleware/verifyToken";
+export * from "./auth/verifyLoggedInUser";
 export * from "./auth/forgotPassword/forgotPassword";
 export * from "./auth/forgotPassword/verifyOTP";
 export * from "./auth/forgotPassword/passwordReset";

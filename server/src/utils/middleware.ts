@@ -7,60 +7,48 @@ declare global {
   namespace Express {
     interface Request {
       user?: {
-        userId: string;
+        id: string;
         email: string;
       };
     }
   }
 }
 
-// Middleware to authenticate JWT token
-export const authenticateToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Access token required",
-      });
-    }
-
-    const secret = config.get("jwt.secret") || "fallback-secret";
-    const decoded = jwt.verify(token, secret as string) as {
-      userId: string;
-      email: string;
-    };
-
-    req.user = decoded;
-    next();
-  } catch (error) {
-    console.error("Token verification error:", error);
-    return res.status(403).json({
-      success: false,
-      message: "Invalid or expired token",
-    });
-  }
-};
-
 // Middleware for error handling
 export const errorHandler = (
   err: Error,
-  req: Request,
+  _req: Request, // Underscore prefix indicates it's not used
   res: Response,
   next: NextFunction
 ) => {
-  console.error("Error:", err);
+  console.error("Error-:) ", err);
 
-  res.status(500).json({
+  // Check if headers already sent
+  if (res.headersSent) {
+    return next(err);
+  }
+  
+  // Set default status code and message
+  let statusCode = 500;
+  let message = "Internal server error";
+  
+  // Custom error types handling
+  if (err.name === "ValidationError") {
+    statusCode = 400;
+    message = "Validation Error";
+  } else if (err.name === "UnauthorizedError") {
+    statusCode = 401;
+    message = "Authentication Error";
+  } else if (err.name === "ForbiddenError") {
+    statusCode = 403;
+    message = "Forbidden";
+  }
+  
+  // Send error response
+  res.status(statusCode).json({
     success: false,
-    message: "Internal server error",
-    ...(process.env.NODE_ENV === "development" && { error: err.message }),
+    message: message,
+    ...(process.env.NODE_ENV === "development" && { error: err.message, stack: err.stack }),
   });
 };
 

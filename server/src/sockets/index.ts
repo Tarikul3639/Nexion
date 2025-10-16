@@ -25,14 +25,16 @@ export const setupSocket = (io: Server) => {
       const decoded = jwt.verify(token, key) as ITokenPayload;
 
       const user = await User.findById(decoded._id).select(
-        "_id email username"
+        "_id email name username avatar"
       );
       if (!user) return next(new Error("Authentication error: User not found"));
 
       socket.user = {
         _id: user._id.toString(),
         email: user.email,
+        name: user.name,
         username: user.username,
+        avatar: user.avatar,
       } as IUser;
 
       next();
@@ -54,7 +56,7 @@ export const setupSocket = (io: Server) => {
       "✅ New socket connected:",
       socket.id,
       "User:",
-      socket.user?.username
+      socket.user?.name
     );
 
     // Attach handlers
@@ -74,7 +76,7 @@ export const setupSocket = (io: Server) => {
         "❌ Socket disconnected:",
         socket.id,
         "User:",
-        socket.user?.username
+        socket.user?.name
       );
     });
   });

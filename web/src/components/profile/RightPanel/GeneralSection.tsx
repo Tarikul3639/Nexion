@@ -45,9 +45,9 @@ export function GeneralSection() {
     const file = event.target.files?.[0];
     if (!file || !file.type.startsWith("image/")) return null;
 
-    if (!user?.id || !token) {
+    if (!token) {
       setAvatarError(true);
-      setAvatarMessage("User information not available");
+      setAvatarMessage("Authentication token not available");
       return;
     }
 
@@ -55,7 +55,7 @@ export function GeneralSection() {
     setAvatarMessage(null);
 
     try {
-      const response = await uploadProfilePhoto(file, user.id, token);
+      const response = await uploadProfilePhoto(file, token);
 
       if (response.success) {
         setAvatarError(false);
@@ -161,7 +161,7 @@ export function GeneralSection() {
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-white mb-1">
-              Profile Picture
+              {user?.name || user?.username || "Profile Picture"}
             </h3>
             <p className="text-sm text-zinc-400 mb-3">
               Upload a new profile picture. Recommended size: 400x400px

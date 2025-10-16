@@ -10,6 +10,7 @@ export const getProfile = async (req: Request, res: Response) => {
       data: {
         user: {
           id: "mock-user-id",
+          name: "Mock User",
           username: "Mock User",
           email: "mock@example.com",
           createdAt: new Date(),

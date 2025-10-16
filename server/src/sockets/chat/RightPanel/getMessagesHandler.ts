@@ -6,8 +6,8 @@ export const getMessagesHandler = (socket: AuthenticatedSocket) => {
   socket.on("getMessages", async ({ chatId }: { chatId: string }) => {
     try {
       const messages = await Message.find({ conversation: chatId })
-        .populate("sender", "username avatar role")
-        .populate("readBy", "username avatar")
+        .populate("sender", "name username avatar role")
+        .populate("readBy", "name username avatar")
         .sort({ createdAt: 1 })
         .lean();
 
@@ -15,11 +15,12 @@ export const getMessagesHandler = (socket: AuthenticatedSocket) => {
         id: (msg._id as mongoose.Types.ObjectId).toString(),
         conversationId: msg.conversation.toString(),
         senderId: msg.sender._id.toString(),
-        senderName: msg.sender.username,
+        senderName: msg.sender.name,
         senderAvatar: msg.sender.avatar || "",
         content: msg.content as DraftMessage,
         readBy: msg.readBy.map((user: any) => ({
           id: user._id.toString(),
+          name: user.name,
           username: user.username,
           avatar: user.avatar || "",
         })),

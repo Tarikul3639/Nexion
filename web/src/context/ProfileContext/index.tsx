@@ -7,6 +7,7 @@ import axios from "axios";
 interface IUser {
   id: string;
   email: string;
+  name?: string;
   username?: string;
   avatar?: string;
 }
@@ -17,6 +18,7 @@ interface IUpdateResponse {
   user: {
     id: string;
     email: string;
+    name: string;
     username: string;
     avatar?: string | null;
   };
@@ -36,7 +38,6 @@ interface ProfileContextType {
   ) => Promise<{ success: boolean; message: string }>;
   uploadProfilePhoto: (
     file: File,
-    userId: string,
     token: string
   ) => Promise<{ success: boolean; message: string; url?: string }>;
   isLoading: boolean;
@@ -104,7 +105,6 @@ export const useProfile = () => {
   // ---------- Upload Profile Photo ----------
   const uploadProfilePhoto = async (
     file: File,
-    userId: string,
     token: string
   ): Promise<{ success: boolean; message: string; url?: string }> => {
     try {

@@ -1,27 +1,51 @@
-import { Request, Response } from "express";
+// 📁 middleware/verifyToken.ts
+
+import { Request, Response, NextFunction } from "express";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import config from "config";
 
+// Extend Express Request to include user data
+export interface AuthenticatedRequest extends Request {
+  user?: any;
+}
+
 // JWT payload interface
 interface ITokenPayload {
   _id: string;
-  username: string;
+  username?: string;
   name?: string;
   email: string;
   iat?: number;
   exp?: number;
 }
 
-// Token verify route
-export const verifyToken = async (req: Request, res: Response) => {
+export const verifyToken = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    // 1️⃣ Get token from Authorization header
-    const token = req.headers.authorization?.split(" ")[1];
+    console.log("verifying....");
+    // Get token from header
+    const authHeader = req.headers.authorization;
+    console.log("header: ", authHeader);
+    const token = authHeader?.split(" ")[1]; // "Bearer <token>"
+
+    // If no token found
     if (!token) {
-      return res
-        .status(401)
-        .json({ success: false, message: "No token provided" });
+      return res.status(401).json({
+        success: false,
+        message: "Access denied. No token provided.",
+      });
+    }
+
+    // Check if token is a valid JWT (has three parts separated by dots)
+    if (!token.includes('.') || token.split('.').length !== 3) {
+      return res.status(401).json({ 
+        success: false, 
+        message: "Invalid token format" 
+      });
     }
 
     // 2️⃣ Verify JWT signature
@@ -47,34 +71,21 @@ export const verifyToken = async (req: Request, res: Response) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // 5️⃣ Optional: token blacklist check
-    // const blacklisted = await TokenBlacklist.findOne({ token });
-    // if (blacklisted) return res.status(401).json({ success: false, message: "Token revoked" });
+    // Attach user info to request object
+    req.user = {
+      id: user._id.toString(),
+      email: user.email
+    };
 
-    // 6️⃣ Respond with sanitized user data
-    res.status(200).json({
-      success: true,
-      message: "Token is valid",
-      data: {
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          avatar: user.avatar || null,
-        },
-      },
-    });
+    // Authenticate user console
+    console.log("Authentication success! ", "ID:", user._id, "Email:", user.email);
+
+    next(); // proceed to next middleware/route
   } catch (error) {
-    console.error("Token verification error:", error);
-
-    // 7️⃣ Handle JWT errors specifically
-    if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).json({ success: false, message: "Token expired" });
-    }
-    if (error instanceof jwt.JsonWebTokenError) {
-      return res.status(401).json({ success: false, message: "Invalid token" });
-    }
-
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Token verification failed:", error);
+    return res.status(403).json({
+      success: false,
+      message: "Invalid or expired token.",
+    });
   }
 };

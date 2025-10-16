@@ -2,8 +2,8 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
-  name?: string;
-  username: string;
+  name: string;
+  username?: string;
   email: string;
   password: string;
   avatar?: string;
@@ -21,8 +21,8 @@ export interface IUser extends Document {
 
 const UserSchema: Schema<IUser> = new Schema(
   {
-    name: { type: String, maxLength: 50, trim: true },
-    username: { type: String, required: true, unique: true, trim: true },
+    name: { type: String, required: true, maxLength: 50, trim: true },
+    username: { type: String, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6, select: false },
     avatar: { type: String, default: "https://example.com/default-avatar.png" },

@@ -42,8 +42,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // ---------- Signup ----------
-  const signup = (email: string, password: string, username: string) => {
-    return signupUser(email, password, username, setIsLoading);
+  const signup = (email: string, password: string, name: string) => {
+    return signupUser(email, password, name, setIsLoading);
   };
 
   // ---------- Logout ----------

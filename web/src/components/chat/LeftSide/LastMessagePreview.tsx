@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { IMessage } from "@/types/message/x";
+import { IMessage } from "@/types/message";
 
 interface LastMessagePreviewProps {
   message?: IMessage;
@@ -15,7 +15,7 @@ export default function LastMessagePreview({ message }: LastMessagePreviewProps)
   if (content?.text) {
     return (
       <span>
-        <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
+        <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
         {content.text}
       </span>
     );
@@ -27,28 +27,28 @@ export default function LastMessagePreview({ message }: LastMessagePreviewProps)
       case "image":
         return (
           <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
             [Image: {att.alt ?? "unknown"}]
           </span>
         );
       case "video":
         return (
           <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
             [Video: {att.duration ?? "unknown"}s]
           </span>
         );
       case "audio":
         return (
           <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
             [Audio: {att.duration ?? "unknown"}s]
           </span>
         );
       case "file":
         return (
           <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.username}:</span>{" "}
+            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
             [File: {att.name ?? "unknown"}]
           </span>
         );

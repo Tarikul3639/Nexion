@@ -4,7 +4,7 @@
 import { useMemo } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/context/AuthContext";
-import { IChatList } from "@/types/message/x";
+import { IChatList } from "@/types/message";
 
 interface ChatInfoProps {
   chat: IChatList;

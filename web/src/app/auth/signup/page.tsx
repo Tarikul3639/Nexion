@@ -74,7 +74,7 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -97,7 +97,7 @@ export default function SignupPage() {
 
     setIsSubmitting(true);
     try {
-      const { success, message } = await signup(email, password, username);
+      const { success, message } = await signup(email, password, name);
       if (success) {
         router.push("/auth/login");
       } else {
@@ -182,8 +182,8 @@ export default function SignupPage() {
                       id="name"
                       type="text"
                       placeholder="Enter your full name"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       required
                       className="h-11 px-10 bg-neutral-800/80 border-neutral-600/50 text-neutral-100 placeholder:text-neutral-500 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500/70 rounded transition-colors"
                     />

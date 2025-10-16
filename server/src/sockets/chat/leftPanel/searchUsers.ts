@@ -4,6 +4,7 @@ import User from "@/models/User";
 import Conversation from "@/models/Conversation";
 import Message from "@/models/Message";
 import { IConversation } from "@/models/Conversation";
+import { userInfo } from "os";
 
 export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
   socket.on("search", async ({ search }) => {
@@ -28,9 +29,9 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
         .populate({
           path: "lastMessage",
           select: "content type sender createdAt isPinned",
-          populate: { path: "sender", select: "username avatar" },
+          populate: { path: "sender", select: "name username avatar" },
         })
-        .populate("participants", "username avatar status lastSeen")
+        .populate("participants", "name username avatar status lastSeen")
         .sort({ updatedAt: -1 })
         .lean();
 
@@ -66,14 +67,15 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
 
       // ---- Search Users ----
       const userResults = await User.find({
-        username: { $regex: search, $options: "i" },
+        name: { $regex: search, $options: "i" },
         _id: { $nin: Array.from(directUserIds) }, // exclude existing direct users + self if needed
-      }).select("username avatar status");
+      }).select("name username avatar status");
 
       const mappedUsers = userResults.map(user => ({
         id: user._id.toString(),
         type: "user",
-        name: user.username,
+        name: user.name,
+        username: user.username,
         avatar: user.avatar,
         status: user.status,
       }));

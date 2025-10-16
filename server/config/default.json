@@ -7,7 +7,7 @@
     "useHttps": false
   },
   "db": {
-    "url": "mongodb+srv://tarikulislam3639:TarikulislaM2002@cluster0.lb7vp.mongodb.net/ChatFly?retryWrites=true&w=majority&appName=Cluster0",
+    "url": "mongodb+srv://tarikulislam3639:TarikulislaM2002@cluster0.lb7vp.mongodb.net/Nexion?retryWrites=true&w=majority&appName=Cluster0",
     "options": {
       "useNewUrlParser": true,
       "useUnifiedTopology": true

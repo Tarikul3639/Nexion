@@ -5,7 +5,7 @@ import { ISignupResponse } from "@/types/auth";
 export const signupUser = async (
   email: string,
   password: string,
-  username: string,
+  name: string,
   setIsLoading: (val: boolean) => void
 ): Promise<{ success: boolean; message: string }> => {
   try {
@@ -13,7 +13,7 @@ export const signupUser = async (
 
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/register`,
-      { email, password, username }
+      { email, password, name }
     );
 
     const data = response.data as ISignupResponse;

@@ -24,11 +24,11 @@ export const getChatListHandler = (io: Server, socket: AuthenticatedSocket) => {
         .populate<{ lastMessage: IMessage }>({
           path: "lastMessage",
           select: "content type sender createdAt isPinned",
-          populate: { path: "sender", select: "username avatar" },
+          populate: { path: "sender", select: "name username avatar" },
         })
         .populate<{ participants: IUser[] }>({
           path: "participants",
-          select: "username avatar status lastSeen",
+          select: "name username avatar status lastSeen",
         })
         .sort({ updatedAt: -1 })
         .lean();
@@ -45,7 +45,7 @@ export const getChatListHandler = (io: Server, socket: AuthenticatedSocket) => {
           if (!convName) {
             const participants = conv.participants;
             const other = participants.find((p) => p._id.toString() !== userId);
-            convName = other?.username || "Unknown";
+            convName = other?.name || "Unknown";
           }
 
           // --- Generate avatar(s) dynamically ---

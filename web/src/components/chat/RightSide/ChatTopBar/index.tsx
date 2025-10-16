@@ -3,7 +3,7 @@
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { usePanel } from "@/context/PanelContext";
-import { IChatList } from "@/types/message/x";
+import { IChatList } from "@/types/message";
 import BackButton from "../../../ui/BackButton";
 import ChatAvatar from "./ChatAvatar";
 import ChatInfo from "./ChatInfo";

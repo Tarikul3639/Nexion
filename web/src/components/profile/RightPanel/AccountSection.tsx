@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 const SELECTED_ITEM_CLASSES =
   "focus:bg-zinc-700 rounded text-white focus:text-white";
@@ -19,6 +20,7 @@ const DANGER_BUTTON_CLASSES =
   "w-full justify-start text-red-500 hover:text-red-500 border-red-900/50 hover:bg-red-950/30 bg-transparent active:scale-99 transition-all rounded";
 
 export function AccountSection() {
+  const { user, logout } = useAuth();
   // Local state for clipboard copy indicator
   const [copied, setCopied] = useState(false);
 
@@ -38,13 +40,13 @@ export function AccountSection() {
           <Label className="text-white">Account ID</Label>
           <div className="flex items-center gap-2">
             <code className="flex-1 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-white font-mono">
-              usr_NWqN5Qzi9M7jSxriFoQwSJTwtF
+              Nexion_{user?.id}
             </code>
             <Button
               size="icon"
               variant="outline"
               className="rounded border-zinc-700 text-white hover:text-zinc-300 hover:bg-zinc-800 bg-zinc-800 active:scale-95 transition-all"
-              onClick={() => handleCopy("usr_NWqN5Qzi9M7jSxriFoQwSJTwtF")}
+              onClick={() => handleCopy(`Nexion_${user?.id || ""}`)}
               disabled={copied}
               title={copied ? "Copied!" : "Copy to clipboard"}
             >
@@ -132,7 +134,7 @@ export function AccountSection() {
           <Button variant="outline" className={DANGER_BUTTON_CLASSES}>
             Delete Account
           </Button>
-          <Button variant="outline" className={DANGER_BUTTON_CLASSES}>
+          <Button variant="outline" onClick={logout} className={DANGER_BUTTON_CLASSES}>
             Log Out
           </Button>
         </div>

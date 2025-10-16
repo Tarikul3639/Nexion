@@ -8,6 +8,7 @@ export interface AuthenticatedSocket extends Socket {
 export interface ITokenPayload {
   _id: string;
   email?: string;
+  name?: string;
   username: string;
   iat?: number;
   exp?: number;
@@ -17,6 +18,7 @@ export interface ITokenPayload {
 export interface IUser {
   _id: string;
   email?: string;
+  name?: string;
   username: string;
   avatar?: string;
   online?: boolean;

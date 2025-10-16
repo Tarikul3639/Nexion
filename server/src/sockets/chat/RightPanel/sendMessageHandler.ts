@@ -58,14 +58,14 @@ export const sendMessageHandler = (
 
         const populated = await newMessage.populate(
           "sender",
-          "username avatar role"
+          "name avatar role"
         );
 
         const baseMsgObj: MessageItem = {
           id: (newMessage._id as mongoose.Types.ObjectId).toString(),
           conversationId: conversationId,
           senderId: (populated.sender as any)._id.toString(),
-          senderName: (populated.sender as any).username,
+          senderName: (populated.sender as any).name,
           senderAvatar: (populated.sender as any).avatar || "",
           content: populated.content as DraftMessage,
           updatedAt: populated.createdAt.toISOString(),
@@ -101,7 +101,7 @@ export const sendMessageHandler = (
                 createdAt: baseMsgObj.updatedAt,
                 sender: {
                   _id: baseMsgObj.senderId,
-                  username: baseMsgObj.senderName,
+                  name: baseMsgObj.senderName,
                   avatar: baseMsgObj.senderAvatar || "",
                 },
               },

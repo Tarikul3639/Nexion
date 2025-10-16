@@ -3,9 +3,10 @@ import { Request, Response } from "express";
 import { uploadToCloud } from "@/utils/uploadToCloud";
 
 export const Avatar = async (req: Request, res: Response) => {
+  
   try {
     // Get user ID from auth middleware instead of form data for security
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     
     if (!userId) {
       return res.status(401).json({

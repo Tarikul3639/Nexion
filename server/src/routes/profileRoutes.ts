@@ -3,13 +3,13 @@ import {
   Avatar,
   Me
 } from "@/controllers";
-import { authenticateToken } from "@/utils/middleware";
+import { verifyToken } from "@/middleware/verifyToken";
 import { upload } from "@/middleware/multerConfig";
 
 const router = Router();
 
-router.post("/avatar", authenticateToken, upload.single("avatar"), Avatar);
-router.get("/me", authenticateToken, Me);
-router.put("/me", authenticateToken, Me);
+router.post("/avatar", verifyToken, upload.single("avatar"), Avatar);
+router.get("/me", verifyToken, Me);
+router.put("/me", verifyToken, Me);
 
 export default router;

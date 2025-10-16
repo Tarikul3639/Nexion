@@ -1,10 +1,10 @@
 "use client";
 
 interface WelcomeProps {
-  userName?: string;
+  name?: string;
 }
 
-export default function Welcome({ userName }: WelcomeProps) {
+export default function Welcome({ name }: WelcomeProps) {
   return (
     <div className="flex-1 flex items-center justify-center p-4">
       <div className="text-center max-w-md">
@@ -20,7 +20,7 @@ export default function Welcome({ userName }: WelcomeProps) {
           Select a conversation from the sidebar to start chatting with your
           friends or teachers.
         </p>
-        <p className="text-gray-600 text-sm md:text-base">{userName}</p>
+        <p className="text-gray-600 text-sm md:text-base">{name}</p>
       </div>
     </div>
   );
