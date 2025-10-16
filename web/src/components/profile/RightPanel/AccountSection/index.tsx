@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { AccountDeleteDialog } from "./AccountDeleteDialog";
 
 const SELECTED_ITEM_CLASSES =
   "focus:bg-zinc-700 rounded text-white focus:text-white";
@@ -23,6 +24,7 @@ export function AccountSection() {
   const { user, logout } = useAuth();
   // Local state for clipboard copy indicator
   const [copied, setCopied] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   // Copy helper with auto-reset for UI feedback
   const handleCopy = (text: string) => {
@@ -131,10 +133,19 @@ export function AccountSection() {
           <Button variant="outline" className={DANGER_BUTTON_CLASSES}>
             Export Account Data
           </Button>
-          <Button variant="outline" className={DANGER_BUTTON_CLASSES}>
-            Delete Account
-          </Button>
-          <Button variant="outline" onClick={logout} className={DANGER_BUTTON_CLASSES}>
+
+          {/* Delete Account Dialog */}
+          <AccountDeleteDialog
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+          />
+
+          {/* Logout Button */}
+          <Button
+            variant="outline"
+            onClick={logout}
+            className={DANGER_BUTTON_CLASSES}
+          >
             Log Out
           </Button>
         </div>

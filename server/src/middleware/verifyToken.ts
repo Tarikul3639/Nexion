@@ -26,10 +26,9 @@ export const verifyToken = async (
   next: NextFunction
 ) => {
   try {
-    console.log("verifying....");
+
     // Get token from header
     const authHeader = req.headers.authorization;
-    console.log("header: ", authHeader);
     const token = authHeader?.split(" ")[1]; // "Bearer <token>"
 
     // If no token found

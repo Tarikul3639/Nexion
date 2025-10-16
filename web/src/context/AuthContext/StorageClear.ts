@@ -1,6 +1,6 @@
 // utils/clearAuthData.ts
 
-export const clearAuthData = (): void => {
+export const StorageClear = (): void => {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
 

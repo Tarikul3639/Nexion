@@ -7,6 +7,7 @@ import { SocketProvider } from "@/context/SocketContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { LeftPanelDataProvider } from "@/context/LeftPanelDataContext";
 import { PanelProvider } from "@/context/PanelContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "sonner";
 import React from "react";
 import "./globals.css";
@@ -52,13 +53,15 @@ export default function RootLayout({
         <Toaster position="top-center" richColors />
         <RegisterServiceWorker />
         {/* <AppProtection /> */}
-        <AuthProvider>
-          <SocketProvider>
-            <PanelProvider>
-              <LeftPanelDataProvider>{children}</LeftPanelDataProvider>
-            </PanelProvider>
-          </SocketProvider>
-        </AuthProvider>
+        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID!}>
+          <AuthProvider>
+            <SocketProvider>
+              <PanelProvider>
+                <LeftPanelDataProvider>{children}</LeftPanelDataProvider>
+              </PanelProvider>
+            </SocketProvider>
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

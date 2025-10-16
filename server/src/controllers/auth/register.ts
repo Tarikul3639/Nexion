@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import User from "@/models/User";
-import bcrypt from "bcryptjs";
 
 // Register user
 export const register = async (req: Request, res: Response) => {
@@ -24,14 +23,12 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    // TODO: Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     // TODO: Create user in database
     await User.create({
       name,
       email,
-      password: hashedPassword,
+      username: email.split("@")[0], // Simple username from email
+      password, 
     });
 
     // For now, return success response

@@ -1,5 +1,9 @@
 import axios from "axios";
-import { ISignupResponse } from "@/types/auth";
+
+interface ISignupResponse {
+  success: boolean;
+  message: string;
+}
 
 // Signup function
 export const signupUser = async (

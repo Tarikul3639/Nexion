@@ -1,5 +1,20 @@
 import axios from "axios";
-import { ILoginResponse, IUser } from "@/types/auth";
+import { IUser } from "@/types/auth";
+
+interface ILoginResponseUser {
+  id: string;
+  email: string;
+  username: string;
+}
+
+interface ILoginResponse {
+  success: boolean;
+  message: string;
+  data: {
+    token: string;
+    user: ILoginResponseUser;
+  };
+}
 
 // Login function
 export const loginUser = async (
@@ -7,14 +22,11 @@ export const loginUser = async (
   password: string,
   rememberMe: boolean,
   setUser: (user: IUser | null) => void,
-  setIsLoading: (val: boolean) => void
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    setIsLoading(true);
-
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/login`,
-      { email, password }
+      { email, password, device: navigator.userAgent },
     );
 
     const data = response.data as ILoginResponse;
@@ -49,7 +61,5 @@ export const loginUser = async (
       success: false,
       message: err.response?.data?.message || err.message || message,
     };
-  } finally {
-    setIsLoading(false);
   }
 };

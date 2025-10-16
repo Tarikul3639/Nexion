@@ -1,6 +1,23 @@
 import axios from "axios";
-import { IVerifyResponse, IUser } from "@/types/auth";
-import { clearAuthData } from "./clearAuthData";
+import { IUser } from "@/types/auth";
+import { StorageClear } from "./StorageClear";
+
+interface IVerifyUser {
+  id: string;
+  name?: string;
+  username: string;
+  email: string;
+  avatar?: string | null;
+  bio?: string | null;
+}
+
+interface IVerifyResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: IVerifyUser;
+  };
+}
 
 export const ValidationCheck = async (
   storedUser: string | null,
@@ -39,12 +56,12 @@ export const ValidationCheck = async (
           7 * 24 * 60 * 60
         }; Secure; SameSite=Strict`;
       } else {
-        clearAuthData();
+        StorageClear();
       }
-    } 
+    }
   } catch (error) {
     console.error("Auth check failed:", error);
-    clearAuthData();
+    StorageClear();
   } finally {
     setIsLoading(false);
   }

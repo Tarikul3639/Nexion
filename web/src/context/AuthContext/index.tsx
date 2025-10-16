@@ -1,10 +1,17 @@
 "use client";
 
-import React, { createContext, use, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  use,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { IUser, AuthContextType } from "@/types/auth";
 import { useRouter } from "next/navigation";
 import { ValidationCheck } from "./ValidationCheck";
-import { clearAuthData } from "./clearAuthData";
+import { StorageClear } from "./StorageClear";
+import { useGoogleAuth } from "./useGoogleAuth";
 import { loginUser } from "./login";
 import { signupUser } from "./SignUp";
 
@@ -38,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // ---------- Login ----------
   const login = (email: string, password: string, rememberMe: boolean) => {
-    return loginUser(email, password, rememberMe, setUser, setIsLoading);
+    return loginUser(email, password, rememberMe, setUser);
   };
 
   // ---------- Signup ----------
@@ -48,9 +55,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // ---------- Logout ----------
   const logout = () => {
-    clearAuthData();
+    StorageClear();
     router.push("/auth/login");
   };
+  // ---------- Login with Google ----------
+  const { loginWithGoogle } = useGoogleAuth({
+    setUser,
+    setToken
+  });
 
   // ---------- Context Value ----------
   const value = {
@@ -58,12 +70,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setUser,
     token,
     login,
+    loginWithGoogle,
     signup,
     logout,
     isLoading,
     isAuthenticated: !!user,
   };
-  
+
   // ---------- Render ----------
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

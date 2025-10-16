@@ -4,6 +4,7 @@ export * from "./auth/logout";
 export * from "./auth/getProfile";
 export * from "./profile/avatar";
 export * from "./auth/verifyLoggedInUser";
+export * from "./auth/deleteAccount";
 export * from "./auth/forgotPassword/forgotPassword";
 export * from "./auth/forgotPassword/verifyOTP";
 export * from "./auth/forgotPassword/passwordReset";

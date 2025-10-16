@@ -35,40 +35,5 @@ export interface AuthContextType {
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
-}
-
-export interface IVerifyUser {
-  id: string;
-  name?: string;
-  username: string;
-  email: string;
-  avatar?: string | null;
-  bio?: string | null;
-}
-
-export interface IVerifyResponse {
-  success: boolean;
-  message: string;
-  data: {
-    user: IVerifyUser;
-  };
-}
-
-export interface ILoginResponseUser {
-  id: string;
-  email: string;
-  username: string;
-}
-export interface ILoginResponse {
-  success: boolean;
-  message: string;
-  data: {
-    token: string;
-    user: ILoginResponseUser;
-  };
-}
-
-export interface ISignupResponse {
-  success: boolean;
-  message: string;
+  loginWithGoogle: () => void;
 }
