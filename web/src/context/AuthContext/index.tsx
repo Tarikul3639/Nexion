@@ -3,10 +3,10 @@
 import React, { createContext, use, useContext, useEffect, useState } from "react";
 import { IUser, AuthContextType } from "@/types/auth";
 import { useRouter } from "next/navigation";
-import { checkAuthStatus } from "./checkAuthStatus";
+import { ValidationCheck } from "./ValidationCheck";
 import { clearAuthData } from "./clearAuthData";
-import { loginUser } from "./loginUser";
-import { signupUser } from "./signupUser";
+import { loginUser } from "./login";
+import { signupUser } from "./SignUp";
 
 // -------------------- Context & Hook --------------------
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
-    checkAuthStatus(storedUser, storedToken, setUser, setToken, setIsLoading);
+    ValidationCheck(storedUser, storedToken, setUser, setToken, setIsLoading);
   }, []);
 
   // ---------- Login ----------
@@ -42,8 +42,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   // ---------- Signup ----------
-  const signup = (email: string, password: string, name: string) => {
-    return signupUser(email, password, name, setIsLoading);
+  const signup = (email: string, password: string, username: string) => {
+    return signupUser(email, password, username, setIsLoading);
   };
 
   // ---------- Logout ----------

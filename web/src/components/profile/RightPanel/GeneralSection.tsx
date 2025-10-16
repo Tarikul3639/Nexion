@@ -16,7 +16,7 @@ const INPUT_BUTTON_CLASSES =
 
 export function GeneralSection() {
   const { user, setUser, token } = useAuth();
-  const { uploadProfilePhoto, updateProfile } = useProfile();
+  const { AvatarUpdate, ProfileFromUpdate } = useProfile();
   
   // Avatar states
   const [avatarError, setAvatarError] = useState<boolean>(false);
@@ -38,7 +38,7 @@ export function GeneralSection() {
   //  Avatar input button ref
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Handle avatar uploading
+  //! Handle avatar uploading
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -55,7 +55,7 @@ export function GeneralSection() {
     setAvatarMessage(null);
 
     try {
-      const response = await uploadProfilePhoto(file, token);
+      const response = await AvatarUpdate(file, token);
 
       if (response.success) {
         setAvatarError(false);
@@ -87,7 +87,7 @@ export function GeneralSection() {
     }
   };
 
-  // Handle profile info update
+  //! Handle profile info update
   const handleInfoChange = async () => {
     if (!token) {
       setProfileError(true);
@@ -107,8 +107,8 @@ export function GeneralSection() {
         bio: userData.bio,
       };
 
-      // Call the updateProfile method from ProfileContext
-      const response = await updateProfile(profileData, token);
+      // Call the ProfileFromUpdate method from ProfileContext
+      const response = await ProfileFromUpdate(profileData, token);
 
       if (response.success) {
         setProfileError(false);

@@ -2,7 +2,7 @@ import axios from "axios";
 import { IVerifyResponse, IUser } from "@/types/auth";
 import { clearAuthData } from "./clearAuthData";
 
-export const checkAuthStatus = async (
+export const ValidationCheck = async (
   storedUser: string | null,
   storedToken: string | null,
   setUser: (user: IUser | null) => void,
