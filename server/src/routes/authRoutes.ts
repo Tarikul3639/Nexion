@@ -11,6 +11,7 @@ import {
 } from "@/controllers";
 import { verifyToken } from "@/middleware/verifyToken";
 import { googleLogin } from "@/controllers/auth/googleLogin";
+import { githubLogin } from "@/controllers/auth/githubLogin";
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.get("/verify", verifyLoggedInUser);
 router.post("/register", register);
 router.post("/login", login);
 router.post("/google-login", googleLogin);
+router.post("/github-login", githubLogin);
 router.post("/forgot-password", ForgotPassword);
 router.post("/verify-otp", VerifyOTP);
 router.post("/reset-password", passwordReset);

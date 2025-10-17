@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -36,7 +36,17 @@ export default function SignupPage() {
   const [error, setError] = useState("");
 
   const router = useRouter();
-  const { signup, isLoading, loginWithGoogle } = useAuth();
+  const { signup, isLoading, loginWithGoogle, loginWithGithub } =
+    useAuth();
+
+  useEffect(() => {
+    // If token exists, redirect to home or previous page
+    const token = localStorage.getItem("token");
+    if (token) {
+      // redirect back to previous page
+      router.replace("/"); // replace makes back button not go to login page
+    }
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +78,7 @@ export default function SignupPage() {
     }
   };
 
-    const SOCIALS = [
+  const SOCIALS = [
     {
       label: "Google",
       icon: (
@@ -95,18 +105,44 @@ export default function SignupPage() {
         loginWithGoogle();
       },
     },
+    // {
+    //   label: "Facebook",
+    //   icon: (
+    //     <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
+    //       <path
+    //         fill="#1877F2" // Facebook blue
+    //         d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+    //       />
+    //     </svg>
+    //   ),
+    //   onClick: () => {
+    //     // Facebook sign-in logic
+    //   },
+    // },
     {
-      label: "Facebook",
+      label: "Github",
       icon: (
-        <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
+        <svg
+          className="w-4 h-4 mr-2"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
-            fill="#1877F2" // Facebook blue
-            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+            fill="#FFFFFF" // GitHub white
+            d="M12 0.297C5.373 0.297 0 5.67 0 12.297c0 5.302 3.438 9.8 8.205 11.387.6.111.82-.261.82-.58 
+       0-.287-.011-1.244-.017-2.255-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756
+       -1.09-.745.083-.729.083-.729 1.205.085 1.84 1.238 1.84 1.238 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.304.76-1.604
+       -2.665-.303-5.466-1.332-5.466-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23
+       .957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23
+       .655 1.652.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.805 5.625-5.478 5.921.43.372.814 1.102.814 2.222
+       0 1.604-.015 2.896-.015 3.289 0 .322.217.697.825.579C20.565 22.092 24 17.594 24 12.297
+       24 5.67 18.627.297 12 .297z"
           />
         </svg>
       ),
       onClick: () => {
-        // Facebook sign-in logic
+        loginWithGithub();
       },
     },
   ];

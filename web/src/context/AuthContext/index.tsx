@@ -2,7 +2,6 @@
 
 import React, {
   createContext,
-  use,
   useContext,
   useEffect,
   useState,
@@ -12,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { ValidationCheck } from "./ValidationCheck";
 import { StorageClear } from "./StorageClear";
 import { useGoogleAuth } from "./useGoogleAuth";
+import { useGithubAuth } from "./useGithubAuth";
 import { loginUser } from "./login";
 import { signupUser } from "./SignUp";
 
@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // ---------- Login ----------
   const login = (email: string, password: string, rememberMe: boolean) => {
-    return loginUser(email, password, rememberMe, setUser);
+    return loginUser(email, password, rememberMe, setUser, setToken);
   };
 
   // ---------- Signup ----------
@@ -64,6 +64,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setToken
   });
 
+  // ---------- Login with GitHub ----------
+  const { loginWithGithub } = useGithubAuth({
+    setUser,
+    setToken
+  });
+
   // ---------- Context Value ----------
   const value = {
     user,
@@ -71,6 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     token,
     login,
     loginWithGoogle,
+    loginWithGithub,
     signup,
     logout,
     isLoading,

@@ -71,7 +71,7 @@ export const UserSchema: Schema<IUser> = new Schema(
         userAgent: String,
         loginMethod: {
           type: String,
-          enum: ["email", "google", "facebook", "twitter"],
+          enum: ["email", "google", "facebook", "twitter", "github"],
           default: "email",
         },
         status: {
@@ -100,7 +100,7 @@ export const UserSchema: Schema<IUser> = new Schema(
       {
         provider: {
           type: String,
-          enum: ["email", "google", "facebook", "twitter"],
+          enum: ["email", "google", "facebook", "twitter", "github"],
           default: "email",
           required: true,
         },

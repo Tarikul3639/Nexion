@@ -22,6 +22,7 @@ export const loginUser = async (
   password: string,
   rememberMe: boolean,
   setUser: (user: IUser | null) => void,
+  setToken: (token: string | null) => void,
 ): Promise<{ success: boolean; message: string }> => {
   try {
     const response = await axios.post(
@@ -47,6 +48,7 @@ export const loginUser = async (
       }; Secure; SameSite=Strict`;
 
       setUser(user);
+      setToken(token); // Also set the token in the context
       return { success: true, message: data.message };
     }
 

@@ -102,6 +102,10 @@ export const login = async (req: Request, res: Response) => {
           email: user.email,
           name: user.name,
           username: user.username,
+          avatar: user.avatar,
+          status: user.status,
+          bio: user.bio,
+          // Include any other fields needed by the frontend
           sessions: user.sessions, // Optional: show active sessions
         },
       },

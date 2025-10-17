@@ -40,6 +40,11 @@
     "auth": {
       "user": "tarikulislam3639@gmail.com",
       "pass": "epbwkloaqtfjbxxr"
+    },
+    "github": {
+      "clientId": "Ov23liPjePP7brXOlU8g",
+      "clientSecret": "9d54e660f042a9ac09bc7f964e5c1a978ae4fdc0",
+      "redirectUri": "http://localhost:5000/api/auth/github/callback"
     }
   }
 }

@@ -36,4 +36,5 @@ export interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   loginWithGoogle: () => void;
+  loginWithGithub: () => void;
 }

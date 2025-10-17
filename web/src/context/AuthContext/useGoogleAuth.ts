@@ -34,7 +34,7 @@ export const useGoogleAuth = ({ setUser, setToken }: UseGoogleAuthProps) => {
         );
 
         const userInfo = googleUserInfo.data as GoogleUserInfo;
-        console.log("Google user info fetched:", userInfo);
+        // console.log("Google user info fetched:", userInfo);
 
         // Send token to backend for verification/login
         try {
