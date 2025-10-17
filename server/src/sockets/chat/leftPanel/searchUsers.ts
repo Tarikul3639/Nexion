@@ -3,8 +3,9 @@ import mongoose from "mongoose";
 import { AuthenticatedSocket } from "@/types/chat"; // Assuming AuthenticatedSocket is correctly defined
 import User from "@/models/User"; // Assuming User is the default export
 import Conversation from "@/models/Conversation/Conversation"; // Assuming Conversation is the default export
-import Message from "@/models/Message";
+import Message, { IMessage } from "@/models/Message";
 import { IConversation } from "@/models/Conversation/Conversation"; // Using your provided IConversation
+import { IConversationResult, ILastMessage } from "./types";
 
 /**
  * Handles user search requests over WebSocket.
@@ -23,8 +24,8 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
         return;
       }
 
-      const currentUserId = socket.user._id;
-      const currentUserIdStr = currentUserId.toString();
+      const currentUserId = socket.user._id; // Assuming user ID is stored here
+      const currentUserIdStr = currentUserId.toString(); // ID as string
 
       // --- 1. Search Conversations (Groups + Existing Direct) ---
       // 💡 Optimization: Only search direct chats where participant's name/username match the search term.
@@ -37,14 +38,12 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
           { username: { $regex: search, $options: "i" } },
         ],
         _id: { $ne: currentUserId },
-        isDeleted: false,
       }).select("_id").lean();
 
       const matchedUserIds = matchedUsers.map(u => u._id);
       
       const conversationQuery = {
           participants: currentUserId,
-          isDeleted: false,
           $or: [
               // 1. Group/Classroom search by name
               { type: { $in: ["group", "classroom"] }, name: { $regex: search, $options: "i" } },
@@ -69,7 +68,7 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
 
       directConversations.forEach((conv) => {
         // Find the other participant's ID
-        const partner = conv.participants.find((p: any) => p.toString() !== currentUserIdStr);
+        const partner = conv.participants.find((p: mongoose.Types.ObjectId) => p.toString() !== currentUserIdStr);
         if (partner) {
           existingDirectPartners.add(partner.toString());
         }
@@ -80,31 +79,38 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
       
       // --- 3. Map Conversations and calculate Unread Count ---
       const mappedConversations = await Promise.all(
-        conversationResults.map(async (conv: any) => {
+        conversationResults.map(async (conv: IConversation): Promise<IConversationResult> => {
           const unreadCount = await Message.countDocuments({
             conversation: conv._id,
             readBy: { $ne: currentUserId },
           });
-
-          const result: any = {
+          
+          // 💡 Better structure for Last Message
+          const lastMessage: ILastMessage | any =
+          conv.lastMessage
+            ? {
+                content: (conv.lastMessage as unknown as IMessage).content,
+                type: (conv.lastMessage as unknown as IMessage).type,
+                createdAt: (conv.lastMessage as unknown as IMessage).createdAt,
+                sender: (conv.lastMessage as unknown as IMessage).sender,
+              }
+            : null;
+                
+          //Final result mapping
+          const result: IConversationResult = {
             id: conv._id.toString(),
             name: conv.name,
             type: conv.type,
             avatar: conv.avatar,
-            isPinned: conv.isPinned,
+            isPinned: conv.isPinned ?? false,
             updatedAt: conv.updatedAt,
-            unreadCount,
-            // 💡 Better structure for Last Message
-            lastMessage: conv.lastMessage ? {
-              content: conv.lastMessage.content,
-              type: conv.lastMessage.type,
-              createdAt: conv.lastMessage.createdAt,
-              sender: conv.lastMessage.sender,
-            } : null,
+            unreadCount: unreadCount,
+            lastMessage: lastMessage,
+            displayType: "conversation", // Default, may be overridden below
           };
           
           if (conv.type === "direct") {
-            const partnerId = conv.participants.find((p: any) => p.toString() !== currentUserIdStr)?.toString();
+            const partnerId = conv.participants.find((p: mongoose.Types.ObjectId) => p.toString() !== currentUserIdStr)?.toString(); // Find partner ID
 
             // 💡 Reroute the name/avatar logic to the partner's details on frontend
             result.displayType = "conversation"; // 💡 New field to differentiate from 'user' type
@@ -126,7 +132,6 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
         _id: {
           $nin: Array.from(excludedUserIds).map(id => new mongoose.Types.ObjectId(id)),
         },
-        isDeleted: false,
       })
         .select("name username avatar status friends blockedUsers")
         .limit(20)
@@ -135,7 +140,7 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
       // --- 5. Map Users (as potential new contacts) ---
       const mappedUsers = potentialNewUsers.map(user => {
         // Determine relationship status (e.g., if already a friend)
-        const isFriend = !!(user.friends && user.friends.some((f: any) => f.toString() === currentUserIdStr));
+        const isFriend = !!(user.friends && user.friends.some((f: mongoose.Types.ObjectId) => f.toString() === currentUserIdStr));
 
         return {
           id: user._id.toString(),
