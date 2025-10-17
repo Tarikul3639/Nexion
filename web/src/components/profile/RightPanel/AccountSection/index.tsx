@@ -36,7 +36,7 @@ export function AccountSection() {
   return (
     <div className="space-y-8">
       {/* Account Info */}
-      <Card className="p-6 bg-neutral-900 border-neutral-800">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 gap-4">
         {/* Account ID */}
         <div className="space-y-2">
           <Label className="text-white">Account ID</Label>
@@ -124,7 +124,7 @@ export function AccountSection() {
       </Card>
 
       {/* Danger Zone */}
-      <Card className="p-6 bg-neutral-900 border-red-900/50">
+      <Card className="p-6 bg-neutral-900 border-red-900/50 gap-4">
         <h3 className="text-lg font-semibold text-white">Danger Zone</h3>
         <p className="text-sm text-neutral-400">
           Irreversible actions that affect your account

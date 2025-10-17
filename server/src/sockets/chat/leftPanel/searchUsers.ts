@@ -1,15 +1,19 @@
 import { Server } from "socket.io";
-import { AuthenticatedSocket, IChatList } from "@/types/chat";
-import User from "@/models/User";
-import Conversation from "@/models/Conversation";
+import mongoose from "mongoose";
+import { AuthenticatedSocket } from "@/types/chat"; // Assuming AuthenticatedSocket is correctly defined
+import User from "@/models/User"; // Assuming User is the default export
+import Conversation from "@/models/Conversation/Conversation"; // Assuming Conversation is the default export
 import Message from "@/models/Message";
-import { IConversation } from "@/models/Conversation";
-import { userInfo } from "os";
+import { IConversation } from "@/models/Conversation/Conversation"; // Using your provided IConversation
 
+/**
+ * Handles user search requests over WebSocket.
+ * Merges existing conversations (including direct chats) and potential new users.
+ */
 export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
   socket.on("search", async ({ search }) => {
     try {
-      if (!search || search.trim().length === 0) {
+      if (!search || search.trim().length < 2) {
         socket.emit("searchResults", []);
         return;
       }
@@ -19,69 +23,137 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
         return;
       }
 
-      const currentUserId = socket.user._id.toString();
+      const currentUserId = socket.user._id;
+      const currentUserIdStr = currentUserId.toString();
 
-      // ---- Search Conversations (groups + existing direct) ----
-      const conversationResults = await Conversation.find({
-        name: { $regex: search, $options: "i" },
-        participants: currentUserId,
-      })
+      // --- 1. Search Conversations (Groups + Existing Direct) ---
+      // 💡 Optimization: Only search direct chats where participant's name/username match the search term.
+      // MongoDB Aggregation is the ideal solution here, but for simplicity, we first search by name in group and then all users.
+      
+      // Get the IDs of all users whose name/username matches the search term
+      const matchedUsers = await User.find({
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { username: { $regex: search, $options: "i" } },
+        ],
+        _id: { $ne: currentUserId },
+        isDeleted: false,
+      }).select("_id").lean();
+
+      const matchedUserIds = matchedUsers.map(u => u._id);
+      
+      const conversationQuery = {
+          participants: currentUserId,
+          isDeleted: false,
+          $or: [
+              // 1. Group/Classroom search by name
+              { type: { $in: ["group", "classroom"] }, name: { $regex: search, $options: "i" } },
+              // 2. Direct chat where the partner's ID is one of the matched users
+              { type: "direct", participants: { $in: matchedUserIds } }
+          ]
+      };
+
+      const conversationResults: IConversation[] = await Conversation.find(conversationQuery as any)
         .populate({
           path: "lastMessage",
-          select: "content type sender createdAt isPinned",
-          populate: { path: "sender", select: "name username avatar" },
+          select: "content type sender createdAt",
         })
-        .populate("participants", "name username avatar status lastSeen")
+        .select("name type lastMessage participants updatedAt avatar isPinned")
         .sort({ updatedAt: -1 })
-        .lean();
+        .limit(20)
+        .lean() as IConversation[];
 
+      // --- 2. Collect IDs of existing direct chat partners ---
+      const existingDirectPartners = new Set<string>();
+      const directConversations = conversationResults.filter(c => c.type === "direct");
+
+      directConversations.forEach((conv) => {
+        // Find the other participant's ID
+        const partner = conv.participants.find((p: any) => p.toString() !== currentUserIdStr);
+        if (partner) {
+          existingDirectPartners.add(partner.toString());
+        }
+      });
+      
+      // Combine all matched users and existing partners to exclude from the final user search
+      const excludedUserIds = new Set<string>([currentUserIdStr, ...existingDirectPartners]);
+      
+      // --- 3. Map Conversations and calculate Unread Count ---
       const mappedConversations = await Promise.all(
-        conversationResults.map(async (conv: IConversation) => {
+        conversationResults.map(async (conv: any) => {
           const unreadCount = await Message.countDocuments({
             conversation: conv._id,
             readBy: { $ne: currentUserId },
           });
 
-          return {
-            id: conv._id,
+          const result: any = {
+            id: conv._id.toString(),
             name: conv.name,
             type: conv.type,
             avatar: conv.avatar,
             isPinned: conv.isPinned,
-            lastMessage: conv.lastMessage,
-            participants: conv.participants,
             updatedAt: conv.updatedAt,
             unreadCount,
+            // 💡 Better structure for Last Message
+            lastMessage: conv.lastMessage ? {
+              content: conv.lastMessage.content,
+              type: conv.lastMessage.type,
+              createdAt: conv.lastMessage.createdAt,
+              sender: conv.lastMessage.sender,
+            } : null,
           };
+          
+          if (conv.type === "direct") {
+            const partnerId = conv.participants.find((p: any) => p.toString() !== currentUserIdStr)?.toString();
+
+            // 💡 Reroute the name/avatar logic to the partner's details on frontend
+            result.displayType = "conversation"; // 💡 New field to differentiate from 'user' type
+            result.partnerId = partnerId; 
+            // result.name remains undefined for direct chat, frontend will fetch partner name
+          } else {
+             result.displayType = "conversation";
+          }
+          return result;
         })
       );
 
-      // ---- Collect userIds from direct conversations to avoid duplicates ----
-      const directConversations = conversationResults.filter(c => c.type === "direct");
-      const directUserIds = new Set<string>();
-      directConversations.forEach(conv => {
-        conv.participants.forEach((p: any) => {
-          directUserIds.add(p._id.toString());
-        });
+      // --- 4. Search Users (Excluding Self and Existing Direct Partners) ---
+      const potentialNewUsers = await User.find({
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { username: { $regex: search, $options: "i" } },
+        ],
+        _id: {
+          $nin: Array.from(excludedUserIds).map(id => new mongoose.Types.ObjectId(id)),
+        },
+        isDeleted: false,
+      })
+        .select("name username avatar status friends blockedUsers")
+        .limit(20)
+        .lean();
+
+      // --- 5. Map Users (as potential new contacts) ---
+      const mappedUsers = potentialNewUsers.map(user => {
+        // Determine relationship status (e.g., if already a friend)
+        const isFriend = !!(user.friends && user.friends.some((f: any) => f.toString() === currentUserIdStr));
+
+        return {
+          id: user._id.toString(),
+          displayType: "user", // 💡 New field for UI logic
+          name: user.name,
+          username: user.username,
+          avatar: user.avatar,
+          status: user.status,
+          isFriend: isFriend,
+          // 💡 Default fields for user results
+          type: "direct", // Potential conversation type
+          isPinned: false,
+          unreadCount: 0,
+        };
       });
 
-      // ---- Search Users ----
-      const userResults = await User.find({
-        name: { $regex: search, $options: "i" },
-        _id: { $nin: Array.from(directUserIds) }, // exclude existing direct users + self if needed
-      }).select("name username avatar status");
-
-      const mappedUsers = userResults.map(user => ({
-        id: user._id.toString(),
-        type: "user",
-        name: user.name,
-        username: user.username,
-        avatar: user.avatar,
-        status: user.status,
-      }));
-
-      // ---- Merge Users + Conversations ----
-      const results = [...mappedUsers, ...mappedConversations];
+      // --- 6. Merge and Final Emitter (Conversations prioritized) ---
+      const results = [...mappedConversations, ...mappedUsers];
 
       socket.emit("searchResults", results);
     } catch (err) {

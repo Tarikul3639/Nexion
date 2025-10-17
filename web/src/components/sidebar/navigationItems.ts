@@ -7,17 +7,11 @@ export interface NavigationItem {
 }
 
 // Desktop sidebar items
-export const desktopNavigationItems: NavigationItem[] = [
+export const NavigationItems: NavigationItem[] = [
   { id: "chats", icon: MessagesSquare , label: "All chats" },
   { id: "classroom", icon: GraduationCap, label: "Classroom" },
   { id: "work", icon: Briefcase, label: "Work" },
   { id: "calendar", icon: Calendar, label: "Calendar" },
-]
-
-// Mobile sidebar items
-export const mobileNavigationItems: NavigationItem[] = [
-  { id: "chats", icon: MessagesSquare , label: "Chats" },
-  { id: "profile", icon: GraduationCap, label: "Profile" },
 ]
 
 // Tab keys for easy reference

@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import Conversation from "@/models/Conversation";
+import Conversation from "@/models/Conversation/Conversation";
 import Message from "@/models/Message";
 import { AuthenticatedSocket } from "@/types/chat";
 import mongoose from "mongoose";

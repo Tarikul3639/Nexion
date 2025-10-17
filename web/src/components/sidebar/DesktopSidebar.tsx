@@ -2,10 +2,11 @@
 
 import React from "react";
 import { User } from "lucide-react";
-import { desktopNavigationItems, TAB_KEYS, TabKey } from "./navigationItems";
+import { NavigationItems, TAB_KEYS, TabKey } from "./navigationItems";
 import { usePanel } from "@/context/PanelContext";
 
 export function DesktopSidebar() {
+
   const { activeTab, setActiveTab } = usePanel();
   return (
     <div className="hidden md:flex h-full w-18 flex-col items-center py-4">
@@ -16,7 +17,7 @@ export function DesktopSidebar() {
       </div>
 
       <div className="flex flex-col space-y-4 flex-1">
-        {desktopNavigationItems.map((item) => {
+        {NavigationItems.map((item) => {
           const Icon = item.icon;
           return (
             <button

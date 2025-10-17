@@ -52,7 +52,7 @@ export function ProfileRightPanel() {
   }, [activeSection]);
 
   return (
-    <div className="flex-1 max-w-4xl mx-auto overflow-y-auto px-6 pb-6 mt-6">
+    <div className="flex-1 max-w-4xl mx-auto overflow-y-auto px-2 lg:px-6 pb-6 mt-2 lg:mt-6">
       {/* Header section */}
       <div className="sticky top-0 bg-neutral-900 z-10 flex items-center gap-3 pb-2 mb-6 border-b border-neutral-800">
         <BackButton />

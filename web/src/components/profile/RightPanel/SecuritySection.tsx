@@ -11,7 +11,7 @@ const INPUT_BUTTON_CLASSES =
 export function SecuritySection() {
   return (
     <div className="space-y-8">
-      <Card className="p-6 bg-neutral-900 border-neutral-800">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 gap-4">
         <div className="space-y-2">
           <Label htmlFor="current-password" className="text-white">
             Current Password

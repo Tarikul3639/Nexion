@@ -199,7 +199,7 @@ export function GeneralSection() {
         </div>
       </Card>
 
-      <Card className="p-6 bg-neutral-900 border-neutral-800">
+      <Card className="p-6 bg-neutral-900 border-neutral-800 gap-4">
         <div className="space-y-2">
           <Label htmlFor="name" className="text-white">
             Full Name

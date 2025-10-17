@@ -2,19 +2,30 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePanel } from "@/context/PanelContext";
-import { IChatList } from "@/types/message";
+import { IChatList } from "@/types/message"; // Assuming IChatList is imported from here
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { useSocket } from "@/context/SocketContext";
 import { useAuth } from "@/context/AuthContext";
 
+// 💡 NEW: Define a stub for user data required for the front-end lookup
+interface IUserProfileStub {
+  id: string;
+  name: string;
+  username: string;
+  avatar: string;
+  status: "online" | "offline" | "away" | "busy";
+}
+
 interface LeftPanelDataContextType {
   allChats: IChatList[];
   allClassrooms: Classroom[];
   allBots: Bot[];
+  allUsers: IUserProfileStub[]; // 💡 ADDED: State to store user stubs for lookups
   setAllChats: React.Dispatch<React.SetStateAction<IChatList[]>>;
   setAllClassrooms: React.Dispatch<React.SetStateAction<Classroom[]>>;
   setAllBots: React.Dispatch<React.SetStateAction<Bot[]>>;
+  setAllUsers: React.Dispatch<React.SetStateAction<IUserProfileStub[]>>; // 💡 ADDED Setter
   searchActive: boolean;
   setSearchActive: React.Dispatch<React.SetStateAction<boolean>>;
   searchResults: IChatList[];
@@ -49,12 +60,23 @@ export const LeftPanelDataProvider = ({
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<IChatList[]>([]);
   const [allBots, setAllBots] = useState<Bot[]>([]);
+  const [allUsers, setAllUsers] = useState<IUserProfileStub[]>([]); // 💡 NEW STATE
   const [loading, setLoading] = useState<boolean>(true);
 
+  // 💡 LATER: You'd want a separate useEffect to load all required user stubs (e.g., friends/contacts)
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !user) return;
+    
+    // --- Initial User Stubs Load (PLACEHOLDER) ---
+    // In a real app, you would emit a socket event here to get the list of all friends/contacts
+    // and store them in allUsers state for quick lookup in ChatItem.
+    // socket.emit("getRequiredUserStubs"); 
+    // socket.on("requiredUserStubs", (users: IUserProfileStub[]) => {
+    //   setAllUsers(users);
+    // });
+    
+    // For now, let's proceed with the chat/search logic.
 
-    // Loading true until first data arrives
     setLoading(true);
 
     // --- Chats ---
@@ -63,25 +85,38 @@ export const LeftPanelDataProvider = ({
     socket.on("chatList", (chats: IChatList[]) => {
       setAllChats(chats);
       setLoading(false);
+      
+      // 💡 LOGIC INTEGRATION: Extract all unique user IDs from direct chats
+      // and load their profiles into allUsers (if not already there).
+      // For this solution, we assume necessary user stubs are available in allUsers.
     });
-
-    // Chat list update
+    
     socket.on("chatListUpdate", (update) => {
-      // Show notification (if allowed)
+      // Notification logic (kept as is)
       if (
         "Notification" in window &&
         Notification.permission === "granted" &&
         update.lastMessage.sender._id !== user?.id
       ) {
         new Notification(update.lastMessage?.sender.username || "Nexion", {
-          body: `Message: ${update.lastMessage?.content.text}` ||  "You received a new message",
-          icon: update.lastMessage?.sender.avatar || "/Nexion.svg", // messenger style
+          body: `Message: ${update.lastMessage?.content.text}` || "You received a new message",
+          icon: update.lastMessage?.sender.avatar || "/Nexion.svg",
         });
       }
 
       // Update chat state
-      setAllChats((prev) =>
-        prev.map((chat) =>
+      setAllChats((prev) => {
+        const chatExists = prev.some(chat => chat.id === update.conversationId);
+        
+        // If it's a new conversation, add it to the top.
+        if (!chatExists) {
+            // 💡 You'll need to fetch the full IChatList item for the new conversation
+            // For now, this is a simplified update logic:
+            // return [{ id: update.conversationId, ...update, displayType: 'conversation', type: 'direct' }, ...prev];
+        }
+
+        // Existing chat update logic
+        return prev.map((chat) =>
           chat.id === update.conversationId
             ? {
                 ...chat,
@@ -93,11 +128,17 @@ export const LeftPanelDataProvider = ({
                 updatedAt: update.updatedAt,
               }
             : chat
-        )
-      );
+        );
+      });
     });
 
     socket.on("userStatusUpdate", ({ userId, status }) => {
+      // 💡 Update allUsers state first, then map over chats/search results if needed
+      setAllUsers(prev => prev.map(u => u.id === userId ? {...u, status} : u));
+      
+      // The logic below is for old chat structure where participants were fully populated
+      // Since we rely on allUsers for status lookup now, this block might be redundant:
+      /*
       setAllChats((prev) =>
         prev.map((chat) => ({
           ...chat,
@@ -106,13 +147,14 @@ export const LeftPanelDataProvider = ({
           ),
         }))
       );
+      */
     });
 
     socket.on("searchResults", (results: IChatList[]) => {
       setSearchResults(results);
     });
 
-    // Classrooms
+    // Classrooms/Bots logic (kept as is)
     socket.on("initialClassrooms", (classrooms: Classroom[]) => {
       setAllClassrooms(classrooms);
     });
@@ -121,7 +163,6 @@ export const LeftPanelDataProvider = ({
       setAllClassrooms(classrooms);
     });
 
-    // Bots
     socket.on("initialBots", (bots: Bot[]) => {
       setAllBots(bots);
     });
@@ -131,9 +172,11 @@ export const LeftPanelDataProvider = ({
     });
 
     return () => {
-      socket.off("initialChats");
-      socket.off("searchUsersResult");
-      socket.off("newMessage");
+      // Clean up socket listeners
+      socket.off("chatList");
+      socket.off("chatListUpdate");
+      socket.off("userStatusUpdate");
+      socket.off("searchResults");
       socket.off("initialClassrooms");
       socket.off("updateClassrooms");
       socket.off("initialBots");
@@ -141,27 +184,10 @@ export const LeftPanelDataProvider = ({
     };
   }, [socket, activeTab, user?.id]);
 
-  // Add this useEffect to LeftPanelDataProvider
+  // Request Notification permission on mount (kept as is)
   useEffect(() => {
-    if ("Notification" in window) {
-      // Check if permission is denied and inform the user
-      if (Notification.permission === "denied") {
-        console.warn(
-          "Notification permission is denied. Please enable it in your browser settings."
-        );
-      }
-
-      // If permission is not 'granted', try to request it.
-      // NOTE: Direct requests without a user gesture are often blocked or ignored by browsers.
-      if (Notification.permission !== "granted") {
-        // It's best practice to tie this to a user action,
-        // but for initial setup, you can try this (it might not work on all browsers):
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-            console.log("Notification permission granted on load.");
-          }
-        });
-      }
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
     }
   }, []);
 
@@ -171,9 +197,11 @@ export const LeftPanelDataProvider = ({
         allChats,
         allClassrooms,
         allBots,
+        allUsers, // 💡 ADDED to context value
         setAllChats,
         setAllClassrooms,
         setAllBots,
+        setAllUsers, // 💡 ADDED to context value
         searchActive,
         setSearchActive,
         searchResults,

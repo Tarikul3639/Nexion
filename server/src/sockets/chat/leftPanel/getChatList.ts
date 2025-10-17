@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat";
-import Conversation, { IConversation } from "@/models/Conversation";
+import Conversation, { IConversation } from "@/models/Conversation/Conversation";
 import Message from "@/models/Message";
 import { IUser } from "@/models/User/User";
 import { IMessage } from "@/models/Message";

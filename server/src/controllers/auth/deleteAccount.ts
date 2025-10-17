@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User from "@/models/User";
-import Conversation from "@/models/Conversation";
+import Conversation from "@/models/Conversation/Conversation";
 
 export const DeleteAccount = async (req: Request, res: Response) => {
   try {
