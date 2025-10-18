@@ -2,20 +2,20 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import { AuthenticatedSocket } from "@/types/chat"; // Assuming AuthenticatedSocket is correctly defined
 import User from "@/models/User"; // Assuming User is the default export
-import Conversation from "@/models/Conversation/Conversation"; // Assuming Conversation is the default export
+import Conversation, { IConversation } from "@/models/Conversation"; // Assuming Conversation is the default export
 import Message, { IMessage } from "@/models/Message";
-import { IConversation } from "@/models/Conversation/Conversation"; // Using your provided IConversation
-import { IConversationResult, ILastMessage } from "./types";
+import { IConversationResult, ILastMessage, ISearchResult } from "./types";
 
 /**
  * Handles user search requests over WebSocket.
  * Merges existing conversations (including direct chats) and potential new users.
  */
 export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
-  socket.on("search", async ({ search }) => {
+  socket.on("search_user_and_conversations", async ({ search }: { search: string }) => {
+    console.log("Search value: ", search);
     try {
       if (!search || search.trim().length < 2) {
-        socket.emit("searchResults", []);
+        socket.emit("search_user_and_conversations_results", []);
         return;
       }
 
@@ -52,10 +52,11 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
           ]
       };
 
-      const conversationResults: IConversation[] = await Conversation.find(conversationQuery as any)
+      const conversationResults: IConversation[] = await Conversation.find(conversationQuery)
         .populate({
           path: "lastMessage",
           select: "content type sender createdAt",
+          populate: { path: "sender", select: "name username avatar" },
         })
         .select("name type lastMessage participants updatedAt avatar isPinned")
         .sort({ updatedAt: -1 })
@@ -89,12 +90,14 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
           const lastMessage: ILastMessage | any =
           conv.lastMessage
             ? {
+                _id: conv.lastMessage._id,
                 content: (conv.lastMessage as unknown as IMessage).content,
                 type: (conv.lastMessage as unknown as IMessage).type,
                 createdAt: (conv.lastMessage as unknown as IMessage).createdAt,
                 sender: (conv.lastMessage as unknown as IMessage).sender,
               }
             : null;
+            console.log("lastMessage:", lastMessage);
                 
           //Final result mapping
           const result: IConversationResult = {
@@ -160,7 +163,7 @@ export const searchUsersHandler = (io: Server, socket: AuthenticatedSocket) => {
       // --- 6. Merge and Final Emitter (Conversations prioritized) ---
       const results = [...mappedConversations, ...mappedUsers];
 
-      socket.emit("searchResults", results);
+      socket.emit("search_user_and_conversations_results", results);  
     } catch (err) {
       console.error("Search error:", err);
       socket.emit("searchError", "Failed to search");

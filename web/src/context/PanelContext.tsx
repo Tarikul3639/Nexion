@@ -4,14 +4,15 @@ import React, { createContext, useContext, useState } from "react";
 import { TabKey, TAB_KEYS } from "@/components/sidebar/navigationItems";
 import { ProfileSection } from "@/components/profile/types";
 import { Classroom } from "@/types/classroom";
-import { IChatList } from "@/types/message";
 import { Bot } from "@/types/bot";
 
 interface PanelContextProps {
   activeTab: TabKey;
   setActiveTab: (tab: TabKey) => void;
-  activeChat: IChatList | null;
-  setActiveChat: (chat: IChatList | null) => void;
+  // State for active chat by its ID
+  activeChat: string | null;
+  setActiveChat: (chat: string | null) => void;
+  // State for active search result profile, classroom, or bot
   activeProfile: ProfileSection | null;
   setActiveProfile: (profile: ProfileSection | null) => void;
   activeClassroom: Classroom | null;
@@ -28,8 +29,10 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
   // Initialize state for active chat, profile, classroom, and bot
   const [activeProfile, setActiveProfile] = useState<ProfileSection | null>(null);
   const [activeClassroom, setActiveClassroom] = useState<Classroom | null>(null);
-  const [activeChat, setActiveChat] = useState<IChatList | null>(null);
   const [activeBot, setActiveBot] = useState<Bot | null>(null);
+
+  // State for active chat by its ID
+  const [activeChat, setActiveChat] = useState<string | null>(null);
 
   return (
     <PanelContext.Provider

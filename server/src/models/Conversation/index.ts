@@ -42,11 +42,6 @@ const conversationSchema = new Schema<IConversation>(
       type: String,
       trim: true,
     },
-    unread: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
     participants: [
       {
         type: Schema.Types.ObjectId,

@@ -1,36 +1,42 @@
-import { useLeftPanelData } from "@/context/LeftPanelDataContext";
-import ChatListSkeleton from "./ChatListSkeleton";
-import { IChatList } from "@/types/message";
-import SearchBar from "../../ui/SearchBar";
+"use client";
+
+import React, { useState } from "react";
 import { Pin } from "lucide-react";
+
+// Components
+import ChatListSkeleton from "./ChatListSkeleton";
+import SearchBar from "@/components/ui/SearchBar";
 import ChatItem from "./ChatItem";
-import React from "react";
 
-interface ChatListProps {
-  allChats: IChatList[];
-  selectedChat?: IChatList;
-  onSelectChat: (chat: IChatList) => void;
-  isLoading: boolean;
-}
+// Hooks
+import { useSearchUserAndConversations } from "./hooks/SearchUserAndConversations";
+import { useInitialConversations } from "./hooks/useInitialConversations";
 
-export default function ChatList({
-  allChats = [],
-  selectedChat,
-  onSelectChat,
-  isLoading,
-}: ChatListProps) {
-  const { searchActive, searchResults } = useLeftPanelData();
+export default function ChatList() {
+  // State for search
+  const [searchValue, setSearchValue] = useState("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
-  const chatsToShow = searchActive ? searchResults : allChats;
+  // Hooks to fetch data
+  const searchResults = useSearchUserAndConversations(searchValue);
+  const { data: initialConversations, loading: isLoading } =
+    useInitialConversations();
 
-  // console.log("Chats to show:", chatsToShow);
+  // Determine which chats to show based on search state
+  const displayItems =
+    (isSearching ? searchResults : initialConversations) ?? [];
 
-  const filteredPinnedChats = chatsToShow.filter(
+  // console.log("Current conversations:", displayItems);
+
+  // Separate pinned chats
+  const pinnedChats = displayItems?.filter(
     (chat) => chat.isPinned && chat.name?.toLowerCase().includes("")
   );
 
-  const filteredAllChats = chatsToShow.filter((chat) => !chat.isPinned);
+  // Separate unpinned chats
+  const unpinnedChats = displayItems?.filter((chat) => !chat.isPinned);
 
+  // Loading state
   if (isLoading) {
     return <ChatListSkeleton />;
   }
@@ -39,44 +45,38 @@ export default function ChatList({
     <div className="w-full h-full flex flex-col">
       {/* Search */}
       <div className="px-2 md:px-4 pt-4">
-        <SearchBar />
+        <SearchBar
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          setIsSearching={setIsSearching}
+        />
       </div>
 
       {/* Chat List */}
       <div className="flex-1 overflow-y-auto">
         {/* Pinned Chats */}
-        {filteredPinnedChats.length > 0 && (
+        {pinnedChats?.length > 0 && (
           <div className="mt-4 px-4">
             <h2 className="text-xs font-medium text-[#67676D] tracking-wide mb-3 flex items-center gap-2">
               <Pin size={12} /> PINNED CHATS
             </h2>
             <div className="space-y-1">
-              {filteredPinnedChats.map((chat) => (
-                <ChatItem
-                  key={chat.id}
-                  chat={chat}
-                  isActive={selectedChat?.id === chat.id}
-                  onSelect={onSelectChat}
-                />
+              {pinnedChats?.map((chat) => (
+                <ChatItem key={chat.id.toString()} chat={chat} />
               ))}
             </div>
           </div>
         )}
 
         {/* All Chats */}
-        {filteredAllChats.length > 0 && (
+        {unpinnedChats?.length > 0 && (
           <div className="mt-6 px-4">
             <h2 className="text-xs font-medium text-[#67676D] tracking-wide mb-3">
               ALL CONVERSATIONS
             </h2>
             <div className="space-y-1">
-              {filteredAllChats.map((chat) => (
-                <ChatItem
-                  key={chat.id}
-                  chat={chat}
-                  isActive={selectedChat?.id === chat.id}
-                  onSelect={onSelectChat}
-                />
+              {unpinnedChats?.map((chat) => (
+                <ChatItem key={chat.id.toString()} chat={chat} />
               ))}
             </div>
           </div>

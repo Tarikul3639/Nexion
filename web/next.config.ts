@@ -2,8 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
-    images: {
-    domains: ["placehold.co", "i.pravatar.cc", "images.unsplash.com", "res.cloudinary.com"],
+  images: {
+    domains: [
+      "avatars.githubusercontent.com",
+      "lh3.googleusercontent.com",
+      "cdn-icons-png.flaticon.com",
+      "res.cloudinary.com",
+    ],
   },
 };
 

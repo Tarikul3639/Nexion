@@ -16,7 +16,7 @@ export default function ChatListSkeleton() {
       {/* Dummy chat items skeleton */}
       {Array.from({ length: 10 }).map((_, i) => (
         <div key={i} className="flex items-center space-x-3 px-4 space-y-2">
-          <Skeleton className="h-12 w-12 rounded-sm bg-[#2c2c2c]" />
+          <Skeleton className="h-12 w-12 rounded-xl bg-[#2c2c2c]" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-5 w-full rounded bg-[#2c2c2c]" />
             <Skeleton className="h-4 w-2/3 rounded bg-[#2c2c2c]" />

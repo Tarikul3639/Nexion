@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat";
-import Conversation, { IConversation } from "@/models/Conversation/Conversation";
+import Conversation, { IConversation } from "@/models/Conversation";
 import Message from "@/models/Message";
-import { IUser } from "@/models/User/User";
+import { IUser } from "@/models/User";
 import { IMessage } from "@/models/Message";
 
 // Extended type after population
@@ -15,7 +15,7 @@ type PopulatedConversation = Omit<
 };
 
 export const getChatListHandler = (io: Server, socket: AuthenticatedSocket) => {
-  socket.on("getChatList", async () => {
+  socket.on("get_initial_conversations", async () => {
     try {
       const userId = socket.user?._id;
       if (!userId) return;
@@ -73,7 +73,7 @@ export const getChatListHandler = (io: Server, socket: AuthenticatedSocket) => {
         })
       );
 
-      socket.emit("chatList", chatList);
+      socket.emit("initial_conversations_results", chatList);
     } catch (error) {
       console.error(error);
       socket.emit("chatListError", "Failed to fetch chat list");

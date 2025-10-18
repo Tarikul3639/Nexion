@@ -1,15 +1,18 @@
-import mongoose from "mongoose";
+// Client-safe types: avoid importing server-only libs (like mongoose) in frontend
+// Use plain string ids for compatibility with browser bundles.
 
 // --- 1. Message/Sender Stub (Must match frontend's IMessage) ---
 
 /**
  * Basic details of the message sender, as populated from the User model.
+ * Use string ids on the client side for simplicity and to avoid bundling server libs.
  */
 export interface IUserStub {
-  _id: mongoose.Types.ObjectId | string;
+  _id: string;
   name: string;
   username?: string;
   avatar?: string;
+  status?: string;
 }
 
 /**
@@ -31,14 +34,14 @@ export interface IAttachment {
  * This ensures compatibility with the frontend's IMessage structure in IChatList.
  */
 export interface ILastMessage {
-  _id: mongoose.Types.ObjectId | string;
+  _id: string;
   sender: IUserStub;
   content: {
     text?: string;
     attachments?: IAttachment[];
   };
   type: "text" | "image" | "video" | "file" | "audio" | string;
-  createdAt: Date;
+  createdAt: Date | string;
 }
 
 // --- 2. Result Mapping (Must match frontend's IChatList) ---
@@ -48,7 +51,7 @@ export interface ILastMessage {
  * This directly maps to the frontend's IChatList interface.
  */
 export interface IConversationResult {
-  id: string | mongoose.Types.ObjectId;
+  id: string;
   displayType: "conversation" | "user";
   type: "direct" | "group" | "classroom";
   name?: string;
@@ -58,7 +61,7 @@ export interface IConversationResult {
   status?: "online" | "offline" | "away" | "busy" | string;
   lastMessage: ILastMessage | null;
   unreadCount: number;
-  updatedAt: Date;
+  updatedAt: Date | string;
   isPinned: boolean;
   isTyping?: boolean;
   isFriend?: boolean;
@@ -68,7 +71,7 @@ export interface IConversationResult {
  * User result (when returning 'people' suggestions).
  */
 export interface IUserResult {
-  id: string | mongoose.Types.ObjectId;
+  id: string;
   displayType: "user";
   name: string;
   username: string;
@@ -78,9 +81,28 @@ export interface IUserResult {
   type: "direct";
   isPinned: false;
   unreadCount: 0;
+  // Make optional fields available so UI can render a "user" result using the same
+  // components as conversations without TypeScript errors. These should be undefined
+  // or empty for pure "user" search results.
+  isTyping?: boolean;
+  lastMessage?: ILastMessage | null;
+  partnerId?: string;
 }
 
 /**
  * Final union type sent to client
  */
 export type ISearchResult = IConversationResult | IUserResult;
+
+
+// --- 3. Partner Details Interface for usePartnerDetails Hook ---
+/**
+ * Return shape for partner details used by ChatItem
+ */
+export interface IPartnerDetails {
+    id?: string;
+    name?: string;
+    avatar?: string;
+    status?: string;
+    isLoading: boolean;
+}

@@ -67,31 +67,31 @@ export interface IMessage {
   isPinned?: boolean;
 }
 
-export interface IChatList {
-  _id?: string;
-  id: string;
-  name: string;
-  type: "direct" | "group" | "classroom" | "user";
-  avatar?: string;
-  status?: "online" | "offline" | "away" | "busy";
-  isTyping?: boolean;
-  lastMessage?: IMessage;
-  participants: {
-    _id: string;
-    name: string;
-    username: string;
-    avatar?: string;
-    status?: "online" | "offline" | "away" | "busy";
-    lastSeen?: string;
-  }[];
-  updatedAt: string;
-  unreadCount: number;
-  isPinned?: boolean;
-  lastActive?: string; 
-}
+// export interface IChatList {
+//   _id?: string;
+//   id: string;
+//   name: string;
+//   type: "direct" | "group" | "classroom" | "user";
+//   avatar?: string;
+//   status?: "online" | "offline" | "away" | "busy";
+//   isTyping?: boolean;
+//   lastMessage?: IMessage;
+//   participants: {
+//     _id: string;
+//     name: string;
+//     username: string;
+//     avatar?: string;
+//     status?: "online" | "offline" | "away" | "busy";
+//     lastSeen?: string;
+//   }[];
+//   updatedAt: string;
+//   unreadCount: number;
+//   isPinned?: boolean;
+//   lastActive?: string; 
+// }
 
-export interface IChatListProps {
-  chat: IChatList;
-  isActive: boolean;
-  onSelect: (chat: IChatList) => void;
-}
+// export interface IChatListProps {
+//   chat: IChatList;
+//   isActive: boolean;
+//   onSelect: (chat: IChatList) => void;
+// }

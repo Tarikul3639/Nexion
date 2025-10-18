@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePanel } from "@/context/PanelContext";
-import { IChatList } from "@/types/message"; // Assuming IChatList is imported from here
+import { ISearchResult } from "@/components/chat/LeftSide/types";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { useSocket } from "@/context/SocketContext";
@@ -18,18 +18,14 @@ interface IUserProfileStub {
 }
 
 interface LeftPanelDataContextType {
-  allChats: IChatList[];
+  allChats: ISearchResult[];
   allClassrooms: Classroom[];
   allBots: Bot[];
   allUsers: IUserProfileStub[]; // 💡 ADDED: State to store user stubs for lookups
-  setAllChats: React.Dispatch<React.SetStateAction<IChatList[]>>;
+  setAllChats: React.Dispatch<React.SetStateAction<ISearchResult[]>>;
   setAllClassrooms: React.Dispatch<React.SetStateAction<Classroom[]>>;
   setAllBots: React.Dispatch<React.SetStateAction<Bot[]>>;
   setAllUsers: React.Dispatch<React.SetStateAction<IUserProfileStub[]>>; // 💡 ADDED Setter
-  searchActive: boolean;
-  setSearchActive: React.Dispatch<React.SetStateAction<boolean>>;
-  searchResults: IChatList[];
-  setSearchResults: React.Dispatch<React.SetStateAction<IChatList[]>>;
   loading: boolean;
 }
 
@@ -55,10 +51,8 @@ export const LeftPanelDataProvider = ({
   const { socket } = useSocket();
   const { user } = useAuth();
 
-  const [allChats, setAllChats] = useState<IChatList[]>([]);
+  const [allChats, setAllChats] = useState<ISearchResult[]>([]);
   const [allClassrooms, setAllClassrooms] = useState<Classroom[]>([]);
-  const [searchActive, setSearchActive] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<IChatList[]>([]);
   const [allBots, setAllBots] = useState<Bot[]>([]);
   const [allUsers, setAllUsers] = useState<IUserProfileStub[]>([]); // 💡 NEW STATE
   const [loading, setLoading] = useState<boolean>(true);
@@ -82,7 +76,7 @@ export const LeftPanelDataProvider = ({
     // --- Chats ---
     socket.emit("getChatList");
 
-    socket.on("chatList", (chats: IChatList[]) => {
+    socket.on("chatList", (chats: ISearchResult[]) => {
       setAllChats(chats);
       setLoading(false);
       
@@ -150,10 +144,6 @@ export const LeftPanelDataProvider = ({
       */
     });
 
-    socket.on("searchResults", (results: IChatList[]) => {
-      setSearchResults(results);
-    });
-
     // Classrooms/Bots logic (kept as is)
     socket.on("initialClassrooms", (classrooms: Classroom[]) => {
       setAllClassrooms(classrooms);
@@ -201,11 +191,7 @@ export const LeftPanelDataProvider = ({
         setAllChats,
         setAllClassrooms,
         setAllBots,
-        setAllUsers, // 💡 ADDED to context value
-        searchActive,
-        setSearchActive,
-        searchResults,
-        setSearchResults,
+        setAllUsers, // 💡 ADDED to context value,
         loading,
       }}
     >

@@ -1,61 +1,39 @@
-"use client";
-
-import React from "react";
-import { IMessage } from "@/types/message";
+import type { ILastMessage } from "./types"
 
 interface LastMessagePreviewProps {
-  message?: IMessage;
+  message: ILastMessage | null | undefined
 }
 
 export default function LastMessagePreview({ message }: LastMessagePreviewProps) {
-  if (!message) return null;
+  if (!message) {
+    return <span className="text-slate-500">No messages yet</span>
+  }
 
-  const { sender, content } = message;
+  const { sender, content, type } = message
 
-  if (content?.text) {
+  if (type === "image") {
+    return <span className="text-slate-400">📷 Image</span>
+  }
+
+  if (type === "video") {
+    return <span className="text-slate-400">🎥 Video</span>
+  }
+
+  if (type === "audio") {
+    return <span className="text-slate-400">🎵 Audio</span>
+  }
+
+  if (type === "file") {
+    return <span className="text-slate-400">📎 File</span>
+  }
+
+  if (content.text) {
     return (
       <span>
-        <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
-        {content.text}
+        <strong className="text-slate-300">{sender.name}:</strong> {content.text}
       </span>
-    );
+    )
   }
 
-  if (content?.attachments?.length) {
-    const att = content.attachments[0];
-    switch (att.type) {
-      case "image":
-        return (
-          <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
-            [Image: {att.alt ?? "unknown"}]
-          </span>
-        );
-      case "video":
-        return (
-          <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
-            [Video: {att.duration ?? "unknown"}s]
-          </span>
-        );
-      case "audio":
-        return (
-          <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
-            [Audio: {att.duration ?? "unknown"}s]
-          </span>
-        );
-      case "file":
-        return (
-          <span>
-            <span className="text-gray-300 font-semibold capitalize">{sender.name || sender.username}:</span>{" "}
-            [File: {att.name ?? "unknown"}]
-          </span>
-        );
-      default:
-        return null;
-    }
-  }
-
-  return <span>[No content]</span>;
+  return <span className="text-slate-500">Message</span>
 }

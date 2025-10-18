@@ -1,35 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Search } from "lucide-react";
-import { useLeftPanelData } from "@/context/LeftPanelDataContext";
-import { useSocket } from "@/context/SocketContext";
 import { Input } from "@/components/ui/input";
 
 interface SearchBarProps {
   placeholder?: string;
+  searchValue: string;
+  setIsSearching: (value: boolean) => void;
+  setSearchValue: (value: string) => void;
 }
 
 export default function SearchBar({
   placeholder = "Search chats or people...",
+  searchValue,
+  setSearchValue,
+  setIsSearching
 }: SearchBarProps) {
-  const { socket } = useSocket();
-  const { setSearchActive, setSearchResults } = useLeftPanelData();
-  const [searchValue, setSearchValue] = useState("");
 
   // Debounce search
   useEffect(() => {
-    if (!socket) return;
     const timeout = setTimeout(() => {
       if (searchValue.trim().length > 1) {
-        socket.emit("search", { search: searchValue.trim() });
-        setSearchActive(true);
+        setIsSearching(true);
       } else {
-        setSearchActive(false);
-        setSearchResults([]);
+        setIsSearching(false);
       }
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [searchValue, socket, setSearchActive, setSearchResults]);
+  }, [searchValue, setIsSearching]);
 
   return (
     <div className="relative group w-full">

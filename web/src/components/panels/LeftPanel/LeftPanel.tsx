@@ -10,20 +10,16 @@ import { ProfileLeftPanel } from "@/components/profile/LeftPanel";
 
 // Contexts
 import { usePanel } from "@/context/PanelContext";
-import { useLeftPanelData } from "@/context/LeftPanelDataContext";
 
 // Types
 import type { ProfileSection } from "@/components/profile/types";
 import { Classroom } from "@/types/classroom";
-import { IChatList } from "@/types/message";
 import { Bot } from "@/types/bot";
 
 export default function LeftPanel() {
   // Extract active states and their setters from the panel context
   const {
     activeTab,
-    activeChat,
-    setActiveChat,
     activeProfile,
     setActiveProfile,
     activeClassroom,
@@ -32,20 +28,12 @@ export default function LeftPanel() {
     setActiveBot,
   } = usePanel();
 
-  // Fetch left panel data such as chat lists
-  const { allChats, loading } = useLeftPanelData();
-
   // Renders the panel content depending on which tab is active
   const renderContent = () => {
     switch (activeTab) {
       case "chats":
         return (
-          <ChatList
-            allChats={allChats as IChatList[]}
-            selectedChat={activeChat as IChatList | undefined}
-            onSelectChat={(chat) => setActiveChat(chat as IChatList)}
-            isLoading={loading as boolean}
-          />
+          <ChatList/>
         );
 
       case "classroom":
