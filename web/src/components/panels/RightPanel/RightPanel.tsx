@@ -14,12 +14,12 @@ import { ProfileProvider } from "@/context/ProfileContext/index";
 
 export default function RightPanel() {
   // Extract active states from the panel context
-  const { activeTab, activeChat, activeProfile, activeBot, activeClassroom } =
+  const { activeTab, selectedConversation, activeProfile, activeBot, activeClassroom } =
     usePanel();
 
   // Determine if any panel is currently active
   const isAnyPanelActive =
-    activeChat || activeProfile || activeClassroom || activeBot;
+    selectedConversation || activeProfile || activeClassroom || activeBot;
 
   // If no panel is active, show the default Welcome screen
   if (!isAnyPanelActive) {

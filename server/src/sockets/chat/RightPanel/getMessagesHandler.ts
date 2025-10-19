@@ -1,5 +1,5 @@
 import { AuthenticatedSocket, MessageItem, DraftMessage } from "@/types/chat";
-import Message from "@/models/Message";
+import Message from "@/models/Message/Message";
 import mongoose from "mongoose";
 
 export const getMessagesHandler = (socket: AuthenticatedSocket) => {

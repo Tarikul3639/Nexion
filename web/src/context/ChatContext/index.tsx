@@ -1,8 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { MessageItem } from "@/types/message";
-import { DraftMessage } from "@/types/message";
+import { MessageItem } from "@/types/message/indexs";
+import { DraftMessage } from "@/types/message/indexs";
 import { useSocket } from "@/context/SocketContext";
 import { usePanel } from "@/context/PanelContext";
 

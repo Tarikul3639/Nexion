@@ -6,12 +6,17 @@ import { ProfileSection } from "@/components/profile/types";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 
+interface IConversation {
+  id: string;
+  type: "conversation" | "user";
+}
+
 interface PanelContextProps {
   activeTab: TabKey;
   setActiveTab: (tab: TabKey) => void;
   // State for active chat by its ID
-  activeChat: string | null;
-  setActiveChat: (chat: string | null) => void;
+  selectedConversation: IConversation | null;
+  setSelectedConversation: (chat: IConversation | null) => void;
   // State for active search result profile, classroom, or bot
   activeProfile: ProfileSection | null;
   setActiveProfile: (profile: ProfileSection | null) => void;
@@ -27,20 +32,24 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
   // Initialize state from sidebar "Chat | Classroom | Bot | Profile" selection
   const [activeTab, setActiveTab] = useState<TabKey>(TAB_KEYS.CHATS);
   // Initialize state for active chat, profile, classroom, and bot
-  const [activeProfile, setActiveProfile] = useState<ProfileSection | null>(null);
-  const [activeClassroom, setActiveClassroom] = useState<Classroom | null>(null);
+  const [activeProfile, setActiveProfile] = useState<ProfileSection | null>(
+    null
+  );
+  const [activeClassroom, setActiveClassroom] = useState<Classroom | null>(
+    null
+  );
   const [activeBot, setActiveBot] = useState<Bot | null>(null);
 
   // State for active chat by its ID
-  const [activeChat, setActiveChat] = useState<string | null>(null);
+  const [selectedConversation, setSelectedConversation] = useState<IConversation | null>(null);
 
   return (
     <PanelContext.Provider
       value={{
         activeTab,
         setActiveTab,
-        activeChat,
-        setActiveChat,
+        selectedConversation,
+        setSelectedConversation,
         activeProfile,
         setActiveProfile,
         activeClassroom,

@@ -8,7 +8,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import Image from "next/image";
-import { DraftMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message/indexs";
 import { useChat } from "@/context/ChatContext";
 
 // Define the attachment type based on what's used in the code

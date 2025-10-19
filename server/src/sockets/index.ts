@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import { getChatListHandler } from "./chat/LeftPanel/useInitialConversations";
 import { searchUsersHandler } from "./chat/LeftPanel/searchUsers";
 import { fetchPartnerDetailsHandler } from "./chat/LeftPanel/hook/fetchPartnerDetailsHandler";
+import { chatPartnerInfoHandler } from "./chat/RightPanel/useChatPartnerInfo";
 import { messageHandler } from "./chat/RightPanel";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
@@ -65,6 +66,7 @@ export const setupSocket = (io: Server) => {
     searchUsersHandler(io, socket);
     messageHandler(io, socket, userSockets);
     fetchPartnerDetailsHandler(io, socket);
+    chatPartnerInfoHandler(io, socket);
 
     socket.on("disconnect", () => {
       // Remove socket from map

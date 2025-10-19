@@ -1,5 +1,5 @@
 import React from "react";
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/indexs";
 import MessageDropdown from "./MessageDropdown";
 import ImageCard from "./ImageCard";
 import AudioCard from "./AudioCard";

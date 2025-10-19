@@ -1,4 +1,4 @@
-import { DraftMessage } from "@/types/message";
+import { DraftMessage } from "@/types/message/indexs";
 import { FileIcon } from "lucide-react";
 
 export default function FileCard({ msg }: { msg: DraftMessage }) {

@@ -1,5 +1,5 @@
 import { AuthenticatedSocket } from "@/types/chat";
-import Message from "@/models/Message";
+import Message from "@/models/Message/Message";
 
 export const deleteMessageHandler = (socket: AuthenticatedSocket) => {
   socket.on("deleteMessage", async ({ messageId }: { messageId: string }) => {

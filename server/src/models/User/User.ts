@@ -1,12 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import { IUser } from "./UserTypes";
+import { IUser } from "./Types";
 import {
   hashPasswordMiddleware,
   softDeleteMiddleware,
   filterDeletedUsersMiddleware,
   postSoftDeleteCleanup,
-} from "./UserMiddlewares";
+} from "./Middlewares";
 
 // Create the schema
 export const UserSchema: Schema<IUser> = new Schema(

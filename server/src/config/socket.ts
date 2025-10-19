@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import jwt from "jsonwebtoken";
-import Message from "@/models/Message";
+import Message from "@/models/Message/Message";
 import { socketEvents } from "@/constants/socket";
 import config from "config";
 

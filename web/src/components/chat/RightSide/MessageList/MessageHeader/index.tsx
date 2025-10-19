@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/indexs";
 
 export default function MessageHeader({ message }: { message: MessageItem }) {
   // console.log(message);

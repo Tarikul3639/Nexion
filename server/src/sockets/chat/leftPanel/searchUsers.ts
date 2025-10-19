@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 import { AuthenticatedSocket } from "@/types/chat"; // Assuming AuthenticatedSocket is correctly defined
 import User from "@/models/User"; // Assuming User is the default export
 import Conversation, { IConversation } from "@/models/Conversation"; // Assuming Conversation is the default export
-import Message, { IMessage } from "@/models/Message";
-import { IConversationResult, ILastMessage, ISearchResult } from "./types";
+import Message, { IMessage } from "@/models/Message/Message";
+import { IConversationResult, ILastMessage } from "./types";
 
 /**
  * Handles user search requests over WebSocket.

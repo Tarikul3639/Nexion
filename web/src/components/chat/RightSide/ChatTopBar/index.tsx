@@ -3,31 +3,32 @@
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { usePanel } from "@/context/PanelContext";
-import { IChatList } from "@/types/message";
 import BackButton from "../../../ui/BackButton";
 import ChatAvatar from "./ChatAvatar";
 import ChatInfo from "./ChatInfo";
 import ActionButtons from "./ActionButtons";
-import { useLeftPanelData } from "@/context/LeftPanelDataContext";
+import { useChatPartnerInfo } from "../Hooks/useChatPartnerInfo";
 
 export default function ChatHeader() {
-  const { activeChat } = usePanel();
-  const { allChats } = useLeftPanelData();
+  const { selectedConversation } = usePanel();
+  const { conversationUserInfo, isLoading } =
+    useChatPartnerInfo(selectedConversation);
 
-  // Find the full chat details from allChats using activeChat id for real-time updates
-  const chat = allChats.find((c) => c.id === activeChat?.id) || activeChat;
+  if (!conversationUserInfo) return null;
 
-  if (!chat) return null;
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Card className="w-full py-0 border-none shadow-none rounded-none bg-transparent">
       <CardHeader className="flex px-1 md:px-3 py-2 flex-row items-center justify-between">
-
+        
         {/* Left Side */}
         <div className="flex items-center space-x-2 md:space-x-3 flex-1 min-w-0">
           <BackButton />
-          <ChatAvatar chat={chat as IChatList} />
-          <ChatInfo chat={chat as IChatList} />
+          <ChatAvatar conversationUserInfo={conversationUserInfo} />
+          <ChatInfo conversationUserInfo={conversationUserInfo} />
         </div>
 
         {/* Right Side */}

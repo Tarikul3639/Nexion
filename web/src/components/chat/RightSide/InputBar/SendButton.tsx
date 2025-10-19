@@ -9,7 +9,7 @@ import { usePanel } from "@/context/PanelContext";
 import { useSocket } from "@/context/SocketContext";
 import { useAuth } from "@/context/AuthContext";
 import { v4 as uuid } from "uuid";
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/indexs";
 
 // Define the attachment interface based on DraftMessage's attachment type
 interface MessageAttachment {
@@ -37,7 +37,7 @@ export default function SendButton() {
     setUploadProgress,
   } = useChat();
   const { socket } = useSocket();
-  const { activeChat } = usePanel();
+  const { selectedConversation } = usePanel();
   const { user } = useAuth();
 
   if (!draftMessage?.text && !draftMessage?.attachments?.length) return null;
@@ -76,7 +76,7 @@ export default function SendButton() {
   };
 
   const handleMessageSend = async () => {
-    if (!socket || !activeChat || !user || !draftMessage) return;
+    if (!socket || !selectedConversation || !user || !draftMessage) return;
 
     const tempId = uuid();
 
@@ -118,8 +118,8 @@ export default function SendButton() {
 
     // ---------- 4. Send message to socket ----------
     socket.emit("sendMessage", {
-      conversation: activeChat.type !== "user" ? activeChat.id : undefined,
-      receiverId: activeChat.type === "user" ? activeChat.id : undefined,
+      conversation: selectedConversation.type !== "user" ? selectedConversation.id : undefined,
+      partner: selectedConversation.type === "user" ? selectedConversation.id : undefined,
       sender: user.id,
       content: { ...draftMessage, attachments: uploadedAttachments },
       replyTo: replyToId,

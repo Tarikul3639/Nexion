@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "@/models/User";
+import { getAvatarUrl } from "@/hooks/useAvatar";
 
 // Register user
 export const register = async (req: Request, res: Response) => {
@@ -28,6 +29,7 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       username: email.split("@")[0], // Simple username from email
+      avatar: getAvatarUrl(email),
       password, 
     });
 

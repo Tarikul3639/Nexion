@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import LastMessagePreview from "./LastMessagePreview"
 import type { ISearchResult, IPartnerDetails } from "./types"
@@ -8,7 +7,7 @@ import { usePartnerDetails } from "./hooks/usePartnerDetails"
 import { usePanel } from "@/context/PanelContext"
 
 export default function ChatItem({ chat }: { chat: ISearchResult }) {
-  const { activeChat, setActiveChat } = usePanel();
+  const { selectedConversation, setSelectedConversation } = usePanel();
   const lastMsg = chat.lastMessage;
 
   // 1. Get the partner's display details if it's a direct conversation (and exists)
@@ -25,7 +24,7 @@ export default function ChatItem({ chat }: { chat: ISearchResult }) {
   const displayStatus = partnerDetails?.status || chat.status;
 
   // 4. Check if this chat is the active one
-  const isActive = activeChat === chat.id;
+  const isActive = selectedConversation?.id === chat.id;
 
   return (
     <div
@@ -38,7 +37,7 @@ export default function ChatItem({ chat }: { chat: ISearchResult }) {
             : "hover:bg-zinc-800/60 border border-transparent hover:border-neutral-700/50"
         }
       `}
-      onClick={() => setActiveChat(chat.id)}
+      onClick={() => setSelectedConversation({id:chat.id, type:chat.displayType})}
     >
       {/* Avatar with enhanced styling */}
       <div className="relative flex-shrink-0">

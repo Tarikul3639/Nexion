@@ -1,3 +1,3 @@
-import UserModel from "./UserModel";
-export { IUser } from "./UserTypes";
+import UserModel from "./User";
+export { IUser } from "./Types";
 export default UserModel;

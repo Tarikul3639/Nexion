@@ -1,4 +1,4 @@
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/indexs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function MessageSeenStatus({

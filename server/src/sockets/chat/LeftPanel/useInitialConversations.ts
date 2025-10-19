@@ -1,15 +1,12 @@
 import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat";
 import Conversation, { IConversation } from "@/models/Conversation";
-import Message from "@/models/Message";
+import Message, { IMessage } from "@/models/Message/Message";
 import { IUser } from "@/models/User";
-import { IMessage } from "@/models/Message";
+import { getAvatarUrl } from "@/hooks/useAvatar";
+import { IConversationResult, ILastMessage } from "./types"; 
 
-// Extended type after population
-type PopulatedConversation = Omit<
-  IConversation,
-  "participants" | "lastMessage"
-> & {
+type PopulatedConversation = Omit<IConversation, "participants" | "lastMessage"> & {
   participants: IUser[];
   lastMessage?: IMessage;
 };
@@ -18,12 +15,18 @@ export const getChatListHandler = (io: Server, socket: AuthenticatedSocket) => {
   socket.on("get_initial_conversations", async () => {
     try {
       const userId = socket.user?._id;
-      if (!userId) return;
+      if (!userId) {
+        socket.emit("chatListError", "Unauthorized");
+        return;
+      }
 
+      const userIdStr = userId.toString();
+
+      // --- 1. Fetch all conversations where user is a participant ---
       const conversations = await Conversation.find({ participants: userId })
         .populate<{ lastMessage: IMessage }>({
           path: "lastMessage",
-          select: "content type sender createdAt isPinned",
+          select: "content type sender createdAt",
           populate: { path: "sender", select: "name username avatar" },
         })
         .populate<{ participants: IUser[] }>({
@@ -31,51 +34,79 @@ export const getChatListHandler = (io: Server, socket: AuthenticatedSocket) => {
           select: "name username avatar status lastSeen",
         })
         .sort({ updatedAt: -1 })
-        .lean();
+        .lean() as PopulatedConversation[];
 
-      const chatList = await Promise.all(
-        (conversations as PopulatedConversation[]).map(async (conv) => {
+      // --- 2. Map results into frontend-friendly format ---
+      const chatList: IConversationResult[] = await Promise.all(
+        conversations.map(async (conv) => {
           const unreadCount = await Message.countDocuments({
             conversation: conv._id,
             readBy: { $ne: userId },
           });
 
-          // --- Generate name dynamically for direct chats ---
+          // --- Prepare last message ---
+          const lastMessage: ILastMessage | any = conv.lastMessage
+            ? {
+                _id: conv.lastMessage._id,
+                content: conv.lastMessage.content,
+                type: conv.lastMessage.type,
+                createdAt: conv.lastMessage.createdAt,
+                sender: conv.lastMessage.sender,
+              }
+            : null;
+
+          // --- Handle name & avatar ---
           let convName = conv.name;
-          if (!convName) {
-            const participants = conv.participants;
-            const other = participants.find((p) => p._id.toString() !== userId);
-            convName = other?.name || "Unknown";
-          }
+          let avatars: string = "";
+          let displayType: "conversation" | "user" = "conversation";
+          let partnerId: string | undefined;
 
-          // --- Generate avatar(s) dynamically ---
-          let avatars: string[] = [];
-          if (conv.avatar) {
-            avatars = [conv.avatar];
+          if (conv.type === "direct") {
+            const partner = conv.participants.find(
+              (p) => p._id.toString() !== userIdStr
+            );
+            if (partner) {
+              partnerId = partner._id.toString();
+              convName = partner.name;
+              avatars = partner.avatar || "";
+            } else {
+              convName = "Deleted User";
+              avatars = getAvatarUrl('deleted-user');
+            }
           } else {
-            const participants = conv.participants;
-            avatars = participants
-              .filter((p) => p._id.toString() !== userId) // self excluded
-              .map((p) => p.avatar || "");
+            // Group or classroom chat
+            if (!convName) {
+              convName = conv.participants
+                .filter((p) => p._id.toString() !== userIdStr)
+                .map((p) => p.name)
+                .join(", ");
+            }
+            avatars = getAvatarUrl(conv._id.toString());
           }
 
-          return {
-            id: conv._id,
+          // --- Structure result ---
+          const result: IConversationResult = {
+            id: conv._id.toString(),
+            displayType,
             name: convName,
             type: conv.type,
             avatar: avatars,
-            isPinned: conv.isPinned,
-            lastMessage: conv.lastMessage,
-            participants: conv.participants,
+            isPinned: conv.isPinned ?? false,
             updatedAt: conv.updatedAt,
             unreadCount,
+            lastMessage,
           };
+
+          if (partnerId) result.partnerId = partnerId;
+
+          return result;
         })
       );
 
+      // --- 3. Send to client ---
       socket.emit("initial_conversations_results", chatList);
     } catch (error) {
-      console.error(error);
+      console.error("getChatListHandler error:", error);
       socket.emit("chatListError", "Failed to fetch chat list");
     }
   });

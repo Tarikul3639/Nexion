@@ -30,7 +30,7 @@ export default function LastMessagePreview({ message }: LastMessagePreviewProps)
   if (content.text) {
     return (
       <span>
-        <strong className="text-slate-300">{sender.name}:</strong> {content.text}
+        <strong className="text-slate-300">{sender?.name || "Deleted User"}:</strong> {content.text}
       </span>
     )
   }

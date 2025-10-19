@@ -1,4 +1,4 @@
-import { MessageItem } from "@/types/message";
+import { MessageItem } from "@/types/message/indexs";
 
 export const messages: MessageItem[] = [
   // 📝 Text message

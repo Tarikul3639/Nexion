@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       "lh3.googleusercontent.com",
       "cdn-icons-png.flaticon.com",
       "res.cloudinary.com",
+      "api.dicebear.com",
     ],
   },
 };

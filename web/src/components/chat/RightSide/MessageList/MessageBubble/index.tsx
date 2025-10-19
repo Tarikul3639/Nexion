@@ -8,7 +8,7 @@ import MessageAvatar from "./MessageAvatar";
 import MessageHeader from "../MessageHeader";
 import MessageContent from "./MessageContent";
 import MessageStatus from "./MessageStatus";
-import type { MessageItem } from "@/types/message";
+import type { MessageItem } from "@/types/message/indexs";
 import { useChat } from "@/context/ChatContext";
 import { useSocket } from "@/context/SocketContext";
 import { useAuth } from "@/context/AuthContext";
