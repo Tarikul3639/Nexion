@@ -3,6 +3,10 @@ import User from "@/models/User";
 import { IUser } from "@/models/User/Types";
 import jwt from "jsonwebtoken";
 import config from "config";
+// 🔥 Import sub-schema types for cleaner tracking data handling
+import { ISession, ILoginHistory } from "@/models/User/UserTrackingSchema"; 
+import { IAuthProvider } from "@/models/User/UserOAuthSchema";
+
 
 // Google login handler
 export const googleLogin = async (req: Request, res: Response) => {
@@ -16,22 +20,35 @@ export const googleLogin = async (req: Request, res: Response) => {
       });
     }
 
-    // 🔹 Find existing user by email or OAuth providerId
+    // --- 1. User Retrieval ---
     let user = (await User.findOne({
       $or: [
         { email },
-        { "oauth.provider": "google", "oauth.providerId": googleId },
+        // 🔥 Updated path from 'oauth' to 'authProviders'
+        { "authProviders.provider": "google", "authProviders.providerId": googleId },
       ],
     })) as IUser | null;
 
-    // 🔹 If user doesn't exist, create a new one
+    // --- 2. Request Info ---
+    const ipRaw =
+      req.headers["x-forwarded-for"] ||
+      req.socket.remoteAddress ||
+      "Unknown IP";
+    const ip = Array.isArray(ipRaw) ? ipRaw[0] : String(ipRaw);
+    const userAgent = (req.headers['user-agent'] as string) || "Unknown Device";
+    const now = new Date();
+
+
+    // --- 3. Create or Update User ---
     if (!user) {
+      // 🔹 Create a new user (with 'authProviders' array)
       user = new User({
         name,
         email,
         username: email.split("@")[0],
         avatar,
-        oauth: [
+        // 🔥 Use 'authProviders' instead of 'oauth'
+        authProviders: [
           {
             provider: "google",
             providerId: googleId,
@@ -40,24 +57,23 @@ export const googleLogin = async (req: Request, res: Response) => {
           },
         ],
       });
-
-      await user.save();
     } else {
       // 🔹 If user exists but OAuth not linked, add provider
-      const alreadyLinked = user.oauth.some(
+      // 🔥 Check 'authProviders' instead of 'oauth'
+      const alreadyLinked = user.authProviders.some(
         (o) => o.provider === "google" && o.providerId === googleId
       );
       if (!alreadyLinked) {
-        user.oauth.push({
+        user.authProviders.push({
           provider: "google",
           providerId: googleId,
           email,
           avatar,
-        });
+        } as IAuthProvider); // Type assertion for safety
       }
     }
 
-    // 🔹 Generate JWT token
+    // --- 4. Generate JWT token ---
     const key = config.get("jwt.secret") as string;
     if (!key) throw new Error("JWT secret key not found");
 
@@ -67,34 +83,38 @@ export const googleLogin = async (req: Request, res: Response) => {
       { expiresIn: "7d" }
     );
 
-    // 🔹 Add session
-    const ip =
-      req.headers["x-forwarded-for"] ||
-      req.socket.remoteAddress ||
-      "Unknown IP";
-    const ipString = Array.isArray(ip) ? ip[0] : String(ip);
 
-    const newSession = {
-      userAgent: req.headers["user-agent"] || "Unknown Device",
-      ipAddress: ipString,
-      createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    // --- 5. 🔥 Update Tracking & Session Data (SCHEME CHANGE APPLIED) ---
+    
+    // 🔹 Add session (to tracking.sessions)
+    const newSession: Partial<ISession> = {
+      userAgent: userAgent,
+      ipAddress: ip,
       token: jwtToken,
+      createdAt: now,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     };
-    user.sessions.push(newSession);
+    user.tracking.sessions.push(newSession as ISession);
 
-    // 🔹 Update login history
-    user.loginHistory.push({
-      userAgent: req.headers["user-agent"] || "Unknown Device",
-      ipAddress: ipString,
+    // 🔹 Update login history (to tracking.loginHistory)
+    const loginEntry: Partial<ILoginHistory> = {
+      userAgent: userAgent,
+      ipAddress: ip,
       loginMethod: "google",
       status: "success",
-      loginAt: new Date(),
-    });
+      loginAt: now,
+    };
+    user.tracking.loginHistory.push(loginEntry as ILoginHistory);
 
-    await user.save();
+    // 🔹 Update last seen, last active and status
+    user.tracking.lastSeen = now;
+    user.tracking.lastActiveAt = now;
+    user.tracking.status = "online"; // Set user status to 'online'
 
-    // 🔹 Send response
+    // The pre('save') middleware will cap the tracking arrays here!
+    await user.save(); 
+
+    // --- 6. Send response ---
     res.status(200).json({
       success: true,
       message: "Google login successful",
@@ -106,8 +126,11 @@ export const googleLogin = async (req: Request, res: Response) => {
           email: user.email,
           username: user.username,
           avatar: user.avatar,
-          sessions: user.sessions,
-          oauth: user.oauth,
+          // Send current tracking status
+          status: user.tracking.status,
+          // Send current session info
+          session: newSession, 
+          authProviders: user.authProviders,
         },
       },
     });

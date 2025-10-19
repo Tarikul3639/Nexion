@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "ChatFly",
+    "name": "Nexion",
     "version": "1.0.0",
     "port": 5000,
     "host": "localhost",

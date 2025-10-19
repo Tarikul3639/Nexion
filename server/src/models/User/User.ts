@@ -70,7 +70,6 @@ UserSchema.index({ "tracking.loginHistory.loginAt": -1 });
 UserSchema.index({ "social.friends": 1 });
 UserSchema.index({ "tracking.status": 1 }); // Status field is assumed to be moved under 'tracking' for better structure
 
-
 // 🧠 Middlewares
 UserSchema.pre("save", hashPasswordMiddleware);
 // @ts-ignore: Mongoose 8.x/TypeScript 5.x type conflict workaround.

@@ -61,7 +61,7 @@ APP.use("/api", routes);
 
 APP.get("/", (req: Request, res: Response) => {
   res.json({
-    message: "Welcome to ChatFly API",
+    message: "Welcome to Nexion API",
     app: config.get("app.name"),
     version: config.get("app.version"),
     environment: process.env.NODE_ENV,
