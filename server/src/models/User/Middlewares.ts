@@ -1,6 +1,8 @@
-import mongoose, { Document } from "mongoose";
+// Middlewares.ts
+
+import mongoose, { Document, Types } from "mongoose";
 import bcrypt from "bcryptjs";
-import { IUser } from "./Types";
+import { IUser } from "./Types"; // Assuming IUser is imported here
 
 type NextFunction = (err?: Error) => void;
 
@@ -9,7 +11,6 @@ type NextFunction = (err?: Error) => void;
  * -----------------------------------------------
  * This middleware automatically hashes a user's password
  * before saving it to the database, using bcrypt.
- * It runs only when the password field has been modified.
  */
 export const hashPasswordMiddleware = async function (
   this: Document & IUser,
@@ -23,18 +24,17 @@ export const hashPasswordMiddleware = async function (
 };
 
 /* -----------------------------------------------
- * 🧩 Soft Delete Middleware
+ * 🧩 Soft Delete Middleware (UPDATED)
  * -----------------------------------------------
- * Instead of permanently deleting a user from the database,
- * this middleware performs a "soft delete" — marking the user
- * as deleted while preserving their data for recovery or logging.
+ * Performs a "soft delete" by updating the user document.
  */
 export const softDeleteMiddleware = async function (
   this: mongoose.Query<IUser | null, IUser>,
   next: NextFunction
 ) {
   const query = this.getQuery();
-  const user = await this.model.findOne(query);
+  // Ensure we are finding the user model
+  const user = await (this.model as mongoose.Model<IUser>).findOne(query);
 
   if (user) {
     // Backup original username and email
@@ -47,8 +47,11 @@ export const softDeleteMiddleware = async function (
     user.username = user.username ? `deleted_${user._id}` : undefined;
     user.email = user.email ? `deleted_${user._id}` : undefined;
 
-    // Invalidate all active sessions
-    user.sessions = [];
+    // 🔥 Invalidate all active sessions (UPDATED PATH)
+    // Assuming 'sessions' is now nested under 'tracking'
+    if (user.tracking) {
+      user.tracking.sessions = [];
+    }
 
     await user.save();
 
@@ -65,8 +68,7 @@ export const softDeleteMiddleware = async function (
 /* -----------------------------------------------
  * 🚫 Filter Deleted Users Middleware
  * -----------------------------------------------
- * Automatically excludes soft-deleted users from
- * query results unless explicitly overridden.
+ * Automatically excludes soft-deleted users from query results.
  */
 export const filterDeletedUsersMiddleware = function (
   this: mongoose.Query<IUser[] | IUser | null, IUser>,
@@ -77,11 +79,9 @@ export const filterDeletedUsersMiddleware = function (
 };
 
 /* -----------------------------------------------
- * 🧹 Post-Soft Delete Cleanup Logic
+ * 🧹 Post-Soft Delete Cleanup Logic (UPDATED)
  * -----------------------------------------------
- * This function performs cleanup tasks after a user
- * has been soft-deleted — updating related conversations
- * and messages while preserving recovery capability.
+ * Performs cleanup tasks on related models (Conversation, Message).
  */
 export const postSoftDeleteCleanup = async function (doc: IUser & Document) {
   // Run only if the user was actually soft-deleted
@@ -92,41 +92,40 @@ export const postSoftDeleteCleanup = async function (doc: IUser & Document) {
   const docId = doc._id;
 
   // 1️⃣ Handle Group/Classroom Chats
-  // Remove the deleted user from all group/classroom participants
   await Conversation.updateMany(
     {
       participants: docId,
-      type: { $in: ["group", "classroom"] }, // Select 'group' and 'classroom' chats
+      type: { $in: ["group", "classroom"] },
     },
-    { $pull: { participants: docId } } // Remove user from participants array
+    { $pull: { participants: docId } }
   );
 
   // 2️⃣ Handle Direct Chats
-  // Instead of removing the user, mark them as inactive
-  // so the chat remains accessible for history or recovery.
   await Conversation.updateMany(
     {
       participants: docId,
-      type: "direct", // Select only direct chats
+      type: "direct",
     },
     {
-      $addToSet: { inactiveParticipants: docId }, // Add to inactive list (avoids duplicates)
+      $addToSet: { inactiveParticipants: docId },
     }
   );
 
-  // 3️⃣ Update Messages
-  // Replace sender references with a placeholder while
-  // keeping a backup of the original sender ID.
+  // 3️⃣ Update Messages (UPDATED SENDER FIELD)
   await Message.updateMany(
-    { sender: docId },
+    { senderId: docId }, // Assuming Message schema uses senderId now
     {
       $set: {
         senderName: "Deleted User",
-        sender: null, // Remove MongoDB reference to the user
-        senderIdBackup: docId, // Preserve ID for potential recovery
+        senderId: null, // 🔥 Corrected: Changed from 'sender' to 'senderId'
+        senderIdBackup: docId,
+        senderAvatar: undefined, // Clear the avatar cache
       },
+      $pull: { 
+        reactions: { reactedBy: docId } // Remove any reactions made by the deleted user
+      }
     }
   );
-
+  
   console.log(`🧹 Soft-deleted user cleanup completed for: ${doc.email}`);
 };

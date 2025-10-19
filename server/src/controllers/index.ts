@@ -1,4 +1,4 @@
-export * from "./auth/login";
+export * from "./login/login";
 export * from "./auth/register";
 export * from "./auth/logout";
 export * from "./auth/getProfile";

@@ -1,68 +1,38 @@
-import mongoose, { Document } from "mongoose";
+// models/Types.ts (or at the top of User.ts)
 
-// 🔹 Interface (TypeScript)
+import mongoose, { Document, Types } from "mongoose";
+
+// 🔥 Import all necessary Sub-Schema Interfaces
+// Assuming these are exported from their respective subSchema files
+import { IUserSocial } from "./UserSocialSchema";
+import { IUserTracking } from "./UserTrackingSchema";
+import { IAuthProvider } from "./UserOAuthSchema"; 
+import { IUserSecurity } from "./UserSecuritySchema";
+
+// 🔹 Main User Interface
 export interface IUser extends Document {
-  _id: mongoose.Types.ObjectId;
+  _id: Types.ObjectId;
   name: string;
-  username: string;
+  username: string | undefined;
   usernameBackup?: string;
-  email: string;
+  email: string | undefined;
   emailBackup?: string;
-  password: string;
+  password: string; // select: false in schema
   avatar?: string;
-  status: "online" | "offline" | "away" | "busy";
   bio?: string;
+  
+  // 🔥 REFACTORED SECTIONS (Using Sub-Schema Interfaces)
+  social: IUserSocial;
+  tracking: IUserTracking; 
+  authProviders: IAuthProvider[]; // Renamed from 'oauth'
+  security: IUserSecurity;
 
-  // 🔹 Social & Privacy
-  friends: mongoose.Types.ObjectId[];
-  blockedUsers: mongoose.Types.ObjectId[];
-  blockedBy: mongoose.Types.ObjectId[];
-  friendRequests: {
-    from: mongoose.Types.ObjectId;
-    status: "pending" | "accepted" | "rejected";
-    createdAt: Date;
-  }[];
-
-  // 🔹 Activity & Tracking
-  lastSeen?: Date;
-  lastActiveAt?: Date;
-  loginHistory: {
-    ipAddress?: string;
-    userAgent?: string;
-    loginMethod?: string;
-    status?: string;
-    loginAt?: Date;
-  }[];
-  sessions: {
-    createdAt?: Date;
-    expiresAt?: Date;
-    userAgent?: string;
-    ipAddress?: string;
-    token?: string;
-  }[];
-
-  // 🔹 OAuth
-  oauth: {
-    provider: "google" | "github";
-    providerId: string;
-    email?: string;
-    avatar?: string;
-  }[];
-
-  // 🔹 Security & Verification
-  otp?: string;
-  otpExpires?: Date;
-  otpVerified?: boolean;
-  emailVerified?: boolean;
-  verificationToken?: string;
-  verificationExpires?: Date;
-
-  // 🔹 Account Management
+  // 🔹 Role & Management
   role: "admin" | "teacher" | "student" | "user";
   isDeleted: boolean;
   deletedAt?: Date;
 
-  // 🔹 Privacy Settings
+  // 🔹 Privacy Settings (Kept inline as it is small)
   privacy: {
     showLastSeen: boolean;
     showStatus: boolean;
@@ -71,7 +41,7 @@ export interface IUser extends Document {
 
   recoveryEmail?: string;
 
-  // 🔹 Timestamps
+  // 🔹 Timestamps (Automatically added by { timestamps: true })
   createdAt: Date;
   updatedAt: Date;
 

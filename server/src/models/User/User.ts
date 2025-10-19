@@ -1,136 +1,59 @@
-import mongoose, { Schema } from "mongoose";
+// models/User.ts (Main User Model)
+
+import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
-import { IUser } from "./Types";
-import {
+
+// 🔥 Import all necessary types and schemas
+import { IUser } from "./Types"; // Assuming IUser is defined in ./Types.ts
+import { UserSocialSchema } from "./UserSocialSchema";
+import { limitTrackingArrayMiddleware, UserTrackingSchema } from "./UserTrackingSchema";
+import { UserOAuthSchema } from "./UserOAuthSchema";
+import { UserSecuritySchema } from "./UserSecuritySchema";
+
+// 🔥 Import Middlewares (as per your structure)
+import { 
   hashPasswordMiddleware,
   softDeleteMiddleware,
   filterDeletedUsersMiddleware,
   postSoftDeleteCleanup,
+  // Assuming postAccountRestoreCleanup is defined in Middlewares.ts
 } from "./Middlewares";
 
-// Create the schema
+
+// Create the main User schema
 export const UserSchema: Schema<IUser> = new Schema(
   {
+    // 1. CORE IDENTITY & AUTH
     name: { type: String, required: true, trim: true, maxLength: 50 },
     username: {
-      type: String,
-      trim: true,
-      required: true,
-      unique: true,
-      sparse: true,
-      minLength: 3,
+      type: String, trim: true, required: true, unique: true, sparse: true, minLength: 3,
     },
     email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
+      type: String, required: true, unique: true, lowercase: true, trim: true,
     },
     usernameBackup: { type: String, select: false },
     emailBackup: { type: String, select: false },
     password: { type: String, minlength: 6, select: false },
 
-    avatar: { type: String, default: "https://example.com/default-avatar.png" },
+    // 2. PROFILE INFO
+    avatar: { type: String, default: "https://api.dicebear.com/9.x/thumbs/svg?seed=Nexion" },
     bio: { type: String, maxLength: 150 },
-    status: {
-      type: String,
-      enum: ["online", "offline", "away", "busy"],
-      default: "offline",
-    },
 
-    // 🔹 Social
-    friends: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
-    ],
-    blockedUsers: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
-    ],
-    blockedBy: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
-    ],
+    // 3. 🔹 REFACTORED SECTIONS (Using Sub-Schemas)
+    social: { type: UserSocialSchema, default: {} },
+    tracking: { type: UserTrackingSchema, default: {} },
+    authProviders: [UserOAuthSchema], // sub-document array for OAuth providers
+    security: { type: UserSecuritySchema, default: {} },
 
-    friendRequests: [
-      {
-        from: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        status: {
-          type: String,
-          enum: ["pending", "accepted", "rejected"],
-          default: "pending",
-        },
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
-
-    // 🔹 Tracking
-    lastSeen: { type: Date },
-    lastActiveAt: { type: Date, default: Date.now },
-    loginHistory: [
-      {
-        ipAddress: String,
-        userAgent: String,
-        loginMethod: {
-          type: String,
-          enum: ["email", "google", "facebook", "twitter", "github"],
-          default: "email",
-        },
-        status: {
-          type: String,
-          enum: ["success", "failed"],
-          default: "success",
-        },
-        loginAt: { type: Date, default: Date.now },
-      },
-    ],
-    sessions: [
-      {
-        createdAt: { type: Date, default: Date.now },
-        expiresAt: {
-          type: Date,
-          default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        }, // 7 days later
-        userAgent: String,
-        ipAddress: String,
-        token: { type: String, select: false },
-      },
-    ],
-
-    // 🔹 OAuth
-    oauth: [
-      {
-        provider: {
-          type: String,
-          enum: ["email", "google", "facebook", "twitter", "github"],
-          default: "email",
-          required: true,
-        },
-        providerId: { type: String },
-        email: { type: String },
-        avatar: { type: String },
-      },
-    ],
-
-    // 🔹 Security
-    otp: { type: String, select: false },
-    otpExpires: { type: Date, select: false },
-    otpVerified: { type: Boolean, default: false, select: false },
-    emailVerified: { type: Boolean, default: false },
-    verificationToken: { type: String, select: false },
-    verificationExpires: { type: Date, select: false },
-
-    // 🔹 Role & Management
-    role: {
-      type: String,
-      enum: ["admin", "teacher", "student", "user"],
-      default: "user",
-    },
+    // 4. ROLE & SOFT DELETE
+    role: { type: String, enum: ["admin", "teacher", "student", "user"], default: "user" },
     isDeleted: { type: Boolean, default: false },
     deletedAt: { type: Date },
 
-    // 🔹 Privacy
+    // 5. PRIVACY (Kept inline as it is small)
     privacy: {
-      showLastSeen: { type: Boolean, default: true },
-      showStatus: { type: Boolean, default: true },
+      showLastSeen: { type: Boolean, default: true }, // This setting controls whether other users can see when that user was last active (lastSeen timestamp).
+      showStatus: { type: Boolean, default: true }, // This setting controls whether other users can see the user's current status (online, offline, busy, etc.).
       allowFriendRequests: { type: Boolean, default: true },
     },
 
@@ -139,18 +62,35 @@ export const UserSchema: Schema<IUser> = new Schema(
   { timestamps: true }
 );
 
-// ⚡ Index Optimization
+// ⚡ Index Optimization (Paths updated for the new structure)
 UserSchema.index({ email: 1 });
 UserSchema.index({ username: 1 });
-UserSchema.index({ status: 1 });
-UserSchema.index({ lastActiveAt: -1 });
-UserSchema.index({ "loginHistory.time": -1 });
+UserSchema.index({ "tracking.lastActiveAt": -1 }); 
+UserSchema.index({ "tracking.loginHistory.loginAt": -1 }); 
+UserSchema.index({ "social.friends": 1 });
+UserSchema.index({ "tracking.status": 1 }); // Status field is assumed to be moved under 'tracking' for better structure
+
 
 // 🧠 Middlewares
 UserSchema.pre("save", hashPasswordMiddleware);
+// @ts-ignore: Mongoose 8.x/TypeScript 5.x type conflict workaround.
+UserSchema.pre("save", limitTrackingArrayMiddleware);
 UserSchema.pre("findOneAndDelete", softDeleteMiddleware);
 UserSchema.pre(/^find/, filterDeletedUsersMiddleware);
-UserSchema.post("save", postSoftDeleteCleanup);
+
+// Post-save hook for soft-delete/restore logic
+UserSchema.post("save", async function (doc: IUser & Document) {
+    if (doc.isModified('isDeleted')) {
+        if (doc.isDeleted) {
+            await postSoftDeleteCleanup(doc);
+        }
+        // Assuming there will be a postAccountRestoreCleanup middleware too
+        // else if (!doc.isDeleted) {
+        //     await postAccountRestoreCleanup(doc); 
+        // }
+    }
+});
+
 
 // Methods
 UserSchema.methods.comparePassword = async function (enteredPassword: string) {

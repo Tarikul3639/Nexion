@@ -10,8 +10,8 @@ import {
   DeleteAccount,
 } from "@/controllers";
 import { verifyToken } from "@/middleware/verifyToken";
-import { googleLogin } from "@/controllers/auth/googleLogin";
-import { githubLogin } from "@/controllers/auth/githubLogin";
+import { googleLogin } from "@/controllers/login/googleLogin";
+import { githubLogin } from "@/controllers/login/githubLogin";
 
 const router = Router();
 
