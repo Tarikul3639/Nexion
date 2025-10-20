@@ -2,86 +2,113 @@ import mongoose, { Document, Schema, Model, Types } from "mongoose";
 import { AttachmentSchema, IAttachment } from "./Attachment";
 import { ReactionSchema, IReaction } from "./Reaction";
 
-// 🔥 Updated and Expanded Interface (IMessage)
+/** 
+ * 🔥 IMessage Interface
+ * Represents a chat message with support for text, attachments, reactions,
+ * soft deletion, system events, and read/delivery tracking.
+ */
 export interface IMessage extends Document {
   conversationId: Types.ObjectId; 
   senderId: Types.ObjectId | null; 
-  senderName?: string; // 🔥 Made non-required for soft delete handling
+
+  /** 
+   * IMPORTANT: Cached sender info at the time of sending.
+   * Use this for UI display to maintain historical consistency.
+   */
+  senderName?: string; 
   senderAvatar?: string;
-  senderIdBackup?: Types.ObjectId; // For account recovery
+
+  /** Backup ID for account recovery scenarios */
+  senderIdBackup?: Types.ObjectId; 
   
   content: {
     text?: string;
     attachments?: IAttachment[];
- };
- 
+  };
+  
   type: "text" | "image" | "video" | "file" | "audio" | "system" | "notification"; 
- 
-  // Message Threading/Reply
+  
+  /** Threading / reply reference */
   replyToId?: Types.ObjectId; 
- 
-  // Actions & Status
+  
+  /** Actions & Status */
   reactions: IReaction[];
   isPinned: boolean;
   isEdited: boolean;
   
-  // Soft Delete & Visibility Fields
+  /** Soft Delete & Visibility */
   isGloballyDeleted: boolean; 
   deletedForUsers: Types.ObjectId[]; 
   
-  // System Message Fields
+  /** System Message Fields */
   isSystemMessage: boolean;
   systemEventType?: "user_joined" | "user_left" | "group_renamed" | "chat_created"; 
- 
-  // Read Status
+  
+  /** Read Status */
   readBy: Types.ObjectId[];
   deliveryStatus: "sending" | "sent" | "delivered" | "seen"; 
- 
-  // Time Tracking
+  
+  /** Time Tracking */
   createdAt: Date;
   updatedAt: Date;
 }
 
-
 const messageSchema: Schema<IMessage> = new Schema(
   {
-    // 1. Core Identification
+    // --------------------------
+    // 1️⃣ Core Identification
+    // --------------------------
     conversationId: { type: Schema.Types.ObjectId, ref: "Conversation", required: true, index: true }, 
     senderId: { type: Schema.Types.ObjectId, ref: "User", default: null, index: true }, 
     senderIdBackup: { type: Schema.Types.ObjectId, ref: "User", select: false }, 
-  
-   // 2. Display Cache (Sender info at the time of sending)
-    senderName: { type: String }, // 🔥 'required: true' removed
+
+    // --------------------------
+    // 2️⃣ Display Cache (IMPORTANT)
+    // --------------------------
+    senderName: { type: String }, 
     senderAvatar: { type: String },
 
-    // 3. Content
+    // --------------------------
+    // 3️⃣ Content
+    // --------------------------
     content: { 
       text: String,
       attachments: [AttachmentSchema],
     },
- 
-    // 4. Message Type & Threading
-    type: { type: String, 
-        enum: ["text", "image", "video", "file", "audio", "system", "notification"], 
-        default: "text", 
-        index: true 
-   },
-   replyToId: { type: Schema.Types.ObjectId, ref: "Message" }, 
 
-    // 5. Actions & Status
-    reactions: { type: [ReactionSchema], default: [] }, // 🔥 Added default: []
+    // --------------------------
+    // 4️⃣ Message Type & Threading
+    // --------------------------
+    type: { 
+      type: String, 
+      enum: ["text", "image", "video", "file", "audio", "system", "notification"], 
+      default: "text", 
+      index: true 
+    },
+    replyToId: { type: Schema.Types.ObjectId, ref: "Message" }, 
+
+    // --------------------------
+    // 5️⃣ Actions & Status
+    // --------------------------
+    reactions: { type: [ReactionSchema], default: [] }, // NOTE: Default empty array for easier push()
     isPinned: { type: Boolean, default: false },
     isEdited: { type: Boolean, default: false },
- 
-    // 6. System Message Handling
+
+    // --------------------------
+    // 6️⃣ System Message Handling
+    // --------------------------
     isSystemMessage: { type: Boolean, default: false },
     systemEventType: { type: String, enum: ["user_joined", "user_left", "group_renamed", "chat_created"] },
- 
-    // 7. Deletion & Visibility
+
+    // --------------------------
+    // 7️⃣ Deletion & Visibility
+    // --------------------------
     isGloballyDeleted: { type: Boolean, default: false, index: true }, 
     deletedForUsers: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }], 
 
-    // 8. Read Status
+    // --------------------------
+    // 8️⃣ Read Status
+    // --------------------------
     readBy: [{ type: Schema.Types.ObjectId, ref: "User", index: true }],
     deliveryStatus: { 
         type: String, 
@@ -90,18 +117,23 @@ const messageSchema: Schema<IMessage> = new Schema(
         index: true 
     },
   },
-  { timestamps: true }
+  { timestamps: true } // NOTE: createdAt & updatedAt auto-managed
 );
 
-// --- Middleware ---
+// --------------------------
+// Middleware
+// --------------------------
 /**
- * Middleware: Auto Filter Out Globally Deleted Messages
- */
+ * IMPORTANT: Auto filter out globally deleted messages in all find queries
+ * Regex /^find/ matches find, findOne, findOneAndUpdate, etc.
+ */
 messageSchema.pre<mongoose.Query<IMessage[] | IMessage | null, IMessage>>(/^find/, function (next) {
     this.where({ isGloballyDeleted: { $ne: true } }); 
     next();
 });
 
-// --- Export Model ---
+// --------------------------
+// Export Model
+// --------------------------
 const Message: Model<IMessage> = mongoose.model<IMessage>("Message", messageSchema);
 export default Message;

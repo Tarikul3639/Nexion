@@ -9,7 +9,7 @@ export interface IConversation extends Document {
   type: "direct" | "group" | "classroom";
   lastMessage?: Types.ObjectId;
   avatar?: string;
-  unread?: number;
+  unread?: number; // Just for Searching, Initial conversation [Left Side]
   participants: Types.ObjectId[];
   inactiveParticipants?: Types.ObjectId[];
   isPinned?: boolean;

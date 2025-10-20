@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
-// --- 1. Message/Sender Stub (Must match frontend's IMessage) ---
-
-/**
- * Basic details of the message sender, as populated from the User model.
- */
+/* --- Message / sender stubs --- */
 export interface IUserStub {
   _id: mongoose.Types.ObjectId | string;
   name: string;
@@ -12,9 +8,6 @@ export interface IUserStub {
   avatar?: string;
 }
 
-/**
- * Interface for message attachments (Backend structure for lastMessage preview).
- */
 export interface IAttachment {
   type: "text" | "image" | "video" | "file" | "audio" | string;
   url: string;
@@ -26,10 +19,6 @@ export interface IAttachment {
   waveform?: number[];
 }
 
-/**
- * Defines the minimum required message structure for a LAST MESSAGE PREVIEW.
- * This ensures compatibility with the frontend's IMessage structure in IChatList.
- */
 export interface ILastMessage {
   _id: mongoose.Types.ObjectId | string;
   sender: IUserStub;
@@ -41,46 +30,41 @@ export interface ILastMessage {
   createdAt: Date;
 }
 
-// --- 2. Result Mapping (Must match frontend's IChatList) ---
+/* --- Search result types --- */
 
 /**
- * Defines the structure of a single search result item emitted back to the client.
- * This directly maps to the frontend's IChatList interface.
+ * Conversation result (for existing conversations)
  */
-export interface IConversationResult {
+export interface ISearchResult {
   id: string | mongoose.Types.ObjectId;
-  displayType: "conversation" | "user";
+  displayType: "conversation" | "user"; // client can treat separately
   type: "direct" | "group" | "classroom";
+
+  // group/classroom fields
   name?: string;
-  username?: string;
   avatar?: string;
-  partnerId?: string;
-  status?: "online" | "offline" | "away" | "busy" | string;
+
+  /*
+  IMPORTANT: 'Status', 'username', 'lastSeen', 'lastActiveAt' field for direct conversations and potential new user results.
+  */
+  status?: "online" | "offline" | "away" | "busy" | string
+  username?: string;
+  lastSeen?: string;
+  lastActiveAt?: Date | null;
+
+  // direct-specific
+  partnerId?: string;                // other participant id (for direct)
+  partnerName?: string;              // optional convenience
+  partnerAvatar?: string;
+  partnerStatus?: "online" | "offline" | "away" | "busy" | string;
+
+  isFriend?: boolean;
+  isBlocked?: boolean;               // I blocked them
+  hasBlockedMe?: boolean;            // they blocked me
+
   lastMessage: ILastMessage | null;
   unreadCount: number;
   updatedAt: Date;
   isPinned: boolean;
   isTyping?: boolean;
-  isFriend?: boolean;
 }
-
-/**
- * User result (when returning 'people' suggestions).
- */
-export interface IUserResult {
-  id: string | mongoose.Types.ObjectId;
-  displayType: "user";
-  name: string;
-  username: string;
-  avatar?: string;
-  status?: string;
-  isFriend: boolean;
-  type: "direct";
-  isPinned: false;
-  unreadCount: 0;
-}
-
-/**
- * Final union type sent to client
- */
-export type ISearchResult = IConversationResult | IUserResult;
