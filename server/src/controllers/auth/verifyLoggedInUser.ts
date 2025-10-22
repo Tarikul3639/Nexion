@@ -1,17 +1,9 @@
 import { Request, Response } from "express";
+import { ITokenPayload } from "@/types/auth";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import config from "config";
 
-// JWT payload interface
-interface ITokenPayload {
-  _id: string;
-  username?: string;
-  name?: string;
-  email: string;
-  iat?: number;
-  exp?: number;
-}
 
 // Token verify route
 export const verifyLoggedInUser = async (req: Request, res: Response) => {
@@ -30,21 +22,20 @@ export const verifyLoggedInUser = async (req: Request, res: Response) => {
 
     const decoded = jwt.verify(token, key) as ITokenPayload;
 
-    // 3️⃣ Optional: check token expiry manually
-    if (decoded.exp && Date.now() >= decoded.exp * 1000) {
-      return res.status(401).json({ success: false, message: "Token expired" });
-    }
-
-    // 4️⃣ Database check by _id + email + username
+    // 4️⃣ Database check: Match user AND check if the token exists in their active sessions
     const user = await User.findOne({
       _id: decoded._id,
       email: decoded.email,
-    }).select("-password"); // sensitive data exclude
+      // 🔑 CRITICAL: Check the token against the sessions array
+      "tracking.sessions.token": token,
+    }).select("username name email avatar bio privacy tracking.status _id"); // Select required fields
 
     if (!user) {
+      // 🛑 Error can be: User not found, OR Token not found in active sessions.
+      // Both cases result in an unauthorized response.
       return res
         .status(401)
-        .json({ success: false, message: "User not found" });
+        .json({ success: false, message: "Invalid or revoked token/session" });
     }
 
     // 5️⃣ Optional: token blacklist check
@@ -62,6 +53,9 @@ export const verifyLoggedInUser = async (req: Request, res: Response) => {
           name: user.name || null,
           email: user.email,
           avatar: user.avatar || null,
+          bio: user.bio || null,
+          privacy: user.privacy || null,
+          status: user.tracking.status,
         },
       },
     });

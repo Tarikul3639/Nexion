@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSocket } from '@/context/SocketContext';
-import { ISearchResult } from '../types';
+import { ISearchResult } from '@/types/message/types';
 
 export const useSearchUserAndConversations = (searchValue: string): ISearchResult[] | null => {
     const { socket } = useSocket();
@@ -15,6 +15,7 @@ export const useSearchUserAndConversations = (searchValue: string): ISearchResul
         }
 
         const handleSearchResults = (results: ISearchResult[]) => {
+            console.log("Search results: ",results);
             setSearchResults(results);
         };
 

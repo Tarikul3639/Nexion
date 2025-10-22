@@ -3,13 +3,14 @@
 import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat"; 
 import { searchConversations } from "./searchConversations"; // New Service 1
-import { mapConversations } from "./mapConversations";       // New Service 2
+import { mapConversations } from "../controller/mapConversations";       // New Service 2
 
 /**
  * Socket.IO handler for fetching the initial chat list (recent conversations)
  */
 export const getInitialConversations = (io: Server, socket: AuthenticatedSocket) => {
     socket.on("get_initial_conversations", async () => {
+        console.log("Call for initial conversations");
         try {
             //  IMPORTANT: Check for user authentication before proceeding
             const userId = socket.user?._id; 

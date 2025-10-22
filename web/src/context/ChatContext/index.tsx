@@ -33,7 +33,7 @@ const suggestion = ["AI Suggestion 1", "AI Suggestion 2", "AI Suggestion 3"];
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const { socket } = useSocket();
-  const { activeChat } = usePanel();
+  const { selectedConversation } = usePanel();
 
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [aiSuggestions, setAISuggestions] = useState<string[]>(suggestion);
@@ -59,10 +59,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   // ---------------- Fetch messages from server ----------------
   useEffect(() => {
-    if (!socket || !activeChat) return;
+    if (!socket || !selectedConversation) return;
 
     // Request initial messages
-    socket.emit("getMessages", { chatId: activeChat?.id });
+    socket.emit("getMessages", { chatId: selectedConversation.id });
 
     // Listen for incoming messages
     socket.on("messages", (messages: MessageItem[]) => {
@@ -72,7 +72,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
     socket.on("newMessage", (message) => {
       setAllMessages((prev) => {
-        const isInCurrentChat = message.conversationId === activeChat?.id;
+        const isInCurrentChat = message.conversationId === selectedConversation.id;
         if (!isInCurrentChat) return prev; // ignore messages for other chats
 
         if (message.tempId) {
@@ -94,7 +94,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       socket.off("newMessage");
       socket.off("messageStatusUpdate");
     };
-  }, [socket, activeChat]);
+  }, [socket, selectedConversation]);
 
   const Value: ChatContextType = {
     showAISuggestions,

@@ -4,8 +4,8 @@ import { metadata, viewport } from "@/components/core/metadata";
 // import AppProtection from "@/components/core/AppProtection";
 // import RouteGuard from "@/components/core/RouteGuard";
 import { SocketProvider } from "@/context/SocketContext";
+import { ChatDataProvider } from "@/context/ChatContext/ChatDataProvider";
 import { AuthProvider } from "@/context/AuthContext";
-import { LeftPanelDataProvider } from "@/context/LeftPanelDataContext";
 import { PanelProvider } from "@/context/PanelContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "sonner";
@@ -39,7 +39,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="ChatFly" />
+        <meta name="apple-mobile-web-app-title" content="Nexion" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-TileColor" content="#0f172a" />
         <meta name="msapplication-tap-highlight" content="no" />
@@ -57,7 +57,9 @@ export default function RootLayout({
           <AuthProvider>
             <SocketProvider>
               <PanelProvider>
-                <LeftPanelDataProvider>{children}</LeftPanelDataProvider>
+                <ChatDataProvider>
+                  {children}
+                </ChatDataProvider>
               </PanelProvider>
             </SocketProvider>
           </AuthProvider>

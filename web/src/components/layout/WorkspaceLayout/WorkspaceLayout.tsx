@@ -21,7 +21,7 @@ export default function WorkspaceLayout() {
   const pathname = usePathname();
 
   // Custom contexts
-  const { activeChat, activeProfile, activeClassroom, activeBot } = usePanel();
+  const { selectedConversation, activeProfile, activeClassroom, activeBot } = usePanel();
   const { isAuthenticated, isLoading } = useAuth();
 
   // Responsive hook (to detect desktop/mobile)
@@ -29,7 +29,7 @@ export default function WorkspaceLayout() {
 
   // Check if any panel (chat/classroom/profile/bot) is active
   const isAnyPanelActive =
-    activeChat || activeProfile || activeClassroom || activeBot;
+    selectedConversation || activeProfile || activeClassroom || activeBot;
 
   // Redirect unauthenticated users to login page
   useEffect(() => {

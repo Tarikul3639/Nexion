@@ -44,12 +44,15 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
                       }
                     : null;
                 
+                let convName = conv.name;
+                let convAvatar = conv.avatar;
+                
                 // Final result mapping (using intersection type for the extra partner fields)
                 const result: ISearchResult | null = {
                     id: conv._id.toString(),
-                    name: conv.name,
+                    name: convName,
                     type: conv.type,
-                    avatar: conv.avatar,
+                    avatar: convAvatar,
                     isPinned: conv.isPinned ?? false,
                     updatedAt: conv.updatedAt,
                     unreadCount: unreadCount,
@@ -63,6 +66,15 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
                     );
 
                     if (partner) {
+                        // NOTE: Partner name and avatar for direct chat
+                        if(!convName) {
+                            result.name = partner.name || "Unknown User";
+                        }
+                        if(!convAvatar) {
+                            result.avatar = partner.avatar || getAvatarUrl('unknown_user');
+                        }
+
+                        //NOTE: Privacy Logic Application
                         // Status 'online' | 'offline' | 'away' | 'busy' | string
                         const partnerStatus = partner.tracking?.status;
                         // Privacy Settings status 'true' or 'false'

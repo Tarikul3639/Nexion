@@ -14,7 +14,7 @@ import { useInitialConversations } from "./hooks/useInitialConversations";
 
 export default function ChatList() {
   // State for search
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
   // Hooks to fetch data
@@ -36,7 +36,7 @@ export default function ChatList() {
   // Separate unpinned chats
   const unpinnedChats = displayItems?.filter((chat) => !chat.isPinned);
 
-  // Loading state
+  //Loading state
   if (isLoading) {
     return <ChatListSkeleton />;
   }
@@ -61,8 +61,8 @@ export default function ChatList() {
               <Pin size={12} /> PINNED CHATS
             </h2>
             <div className="space-y-1">
-              {pinnedChats?.map((chat) => (
-                <ChatItem key={chat.id.toString()} chat={chat} />
+              {pinnedChats?.map((conversation) => (
+                <ChatItem key={conversation.id} conversation={conversation} />
               ))}
             </div>
           </div>
@@ -75,8 +75,8 @@ export default function ChatList() {
               ALL CONVERSATIONS
             </h2>
             <div className="space-y-1">
-              {unpinnedChats?.map((chat) => (
-                <ChatItem key={chat.id.toString()} chat={chat} />
+              {unpinnedChats?.map((conversation) => (
+                <ChatItem key={conversation.id} conversation={conversation} />
               ))}
             </div>
           </div>

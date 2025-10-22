@@ -75,9 +75,8 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { _id: user._id.toString(), email: user.email },
       key,
-      { expiresIn: "7d" }
+      { expiresIn: "30m" }
     );
-
 
     // --- 6. 🔥 Update Tracking & Session Data (Using new tracking path) ---
     

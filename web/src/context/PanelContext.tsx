@@ -5,18 +5,14 @@ import { TabKey, TAB_KEYS } from "@/components/sidebar/navigationItems";
 import { ProfileSection } from "@/components/profile/types";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
-
-interface IConversation {
-  id: string;
-  type: "conversation" | "user";
-}
+import type { ISelectedChatHeader } from "@/types/message/types";
 
 interface PanelContextProps {
   activeTab: TabKey;
   setActiveTab: (tab: TabKey) => void;
   // State for active chat by its ID
-  selectedConversation: IConversation | null;
-  setSelectedConversation: (chat: IConversation | null) => void;
+  selectedConversation: ISelectedChatHeader | null;
+  setSelectedConversation: (chat: ISelectedChatHeader | null) => void;
   // State for active search result profile, classroom, or bot
   activeProfile: ProfileSection | null;
   setActiveProfile: (profile: ProfileSection | null) => void;
@@ -41,7 +37,7 @@ export function PanelProvider({ children }: { children: React.ReactNode }) {
   const [activeBot, setActiveBot] = useState<Bot | null>(null);
 
   // State for active chat by its ID
-  const [selectedConversation, setSelectedConversation] = useState<IConversation | null>(null);
+  const [selectedConversation, setSelectedConversation] = useState<ISelectedChatHeader | null>(null);
 
   return (
     <PanelContext.Provider

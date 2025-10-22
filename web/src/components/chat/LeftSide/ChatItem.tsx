@@ -1,30 +1,36 @@
-"use client"
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import LastMessagePreview from "./LastMessagePreview"
-import type { ISearchResult, IPartnerDetails } from "./types"
-import { usePartnerDetails } from "./hooks/usePartnerDetails"
-import { usePanel } from "@/context/PanelContext"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LastMessagePreview from "./LastMessagePreview";
+import type {
+  ISearchResult,
+  ILastMessage,
+  ISelectedChatHeader,
+} from "@/types/message/types";
+import { usePanel } from "@/context/PanelContext";
 
-export default function ChatItem({ chat }: { chat: ISearchResult }) {
+export default function ChatItem({
+  conversation,
+}: {
+  conversation: ISearchResult;
+}) {
+  // IMPORTANT: Access the current selected conversation and setter from context
   const { selectedConversation, setSelectedConversation } = usePanel();
-  const lastMsg = chat.lastMessage;
 
-  // 1. Get the partner's display details if it's a direct conversation (and exists)
-  // 🚨 Note: You must implement a proper `usePartnerDetails` in your app.
-  const partnerDetails: IPartnerDetails | null = usePartnerDetails(chat);
+  // INFO: Basic display properties for this chat item
+  const status = conversation.status;
+  const name = conversation.name as string;
+  const avatar = conversation.avatar as string;
+  const unread = conversation.unreadCount;
 
-  // 2. Determine the final display name and avatar
-  const displayName = partnerDetails?.name || chat.name;
-  const displayAvatar = partnerDetails?.avatar || chat.avatar;
-  
-  // 3. Determine the status. For direct chats (conversations), 
-  // we want the partner's status. For 'user' results, chat.status is already the user's status.
-  // For group chats, there is no single "status," so status will likely be undefined.
-  const displayStatus = partnerDetails?.status || chat.status;
+  // INFO: Last message preview
+  const lastMessage: ILastMessage | null = conversation.lastMessage;
 
-  // 4. Check if this chat is the active one
-  const isActive = selectedConversation?.id === chat.id;
+  // IMPORTANT: Check if this item is a 'user' type (for New badge)
+  const isUser = conversation.displayType === "user";
+
+  // INFO: Determine if this conversation is currently active/selected
+  const isActive = selectedConversation?.id === conversation.id;
 
   return (
     <div
@@ -37,52 +43,63 @@ export default function ChatItem({ chat }: { chat: ISearchResult }) {
             : "hover:bg-zinc-800/60 border border-transparent hover:border-neutral-700/50"
         }
       `}
-      onClick={() => setSelectedConversation({id:chat.id, type:chat.displayType})}
+      onClick={() =>
+        setSelectedConversation({
+          id: conversation.id,
+          type: conversation.displayType,
+          name: name,
+          avatar: avatar,
+          status: status,
+          lastActiveAt: conversation.lastActiveAt,
+        } as ISelectedChatHeader)
+      }
     >
-      {/* Avatar with enhanced styling */}
+      {/* Avatar Section */}
       <div className="relative flex-shrink-0">
+        {/* Avatar scaling animation */}
         <div
-          className={`
-          transition-transform duration-200
-          ${isActive ? "scale-105" : "group-hover:scale-105"}
-        `}
+          className={`transition-transform duration-200 ${
+            isActive ? "scale-105" : "group-hover:scale-105"
+          }`}
         >
           <Avatar className="w-12 h-12 rounded-lg transition-colors">
-            <AvatarImage src={displayAvatar || "/placeholder.svg"} alt={displayName} />
+            <AvatarImage src={avatar} alt={name} />
             <AvatarFallback className="rounded-lg bg-gradient-to-br from-blue-600 to-purple-800">
-              <span className="font-semibold text-white text-sm">{displayName?.slice(0, 2).toUpperCase() ?? "NA"}</span>
+              <span className="font-semibold text-white text-sm">
+                {name?.slice(0, 2).toUpperCase() ?? "NA"}
+              </span>
             </AvatarFallback>
           </Avatar>
         </div>
 
-        {/* Online status indicator */}
-          <div
-            className={`
+        {/* Online/Status Indicator */}
+        <div
+          className={`
             absolute -bottom-0.5 -right-0.5 flex items-center justify-center
             h-3.5 w-3.5 border-1 rounded-full shadow-md transition-all duration-200
             ${
-              displayStatus === "online"
+              status === "online"
                 ? "bg-green-500 shadow-green-500/40 border-green-900"
-                : displayStatus === "away"
-                  ? "bg-amber-500 shadow-amber-500/40 border-amber-900"
-                  : displayStatus === "busy"
-                    ? "bg-rose-500 shadow-rose-500/40 border-rose-900"
-                    : "bg-neutral-500 shadow-neutral-500/40 border-neutral-900"
+                : status === "away"
+                ? "bg-amber-500 shadow-amber-500/40 border-amber-900"
+                : status === "busy"
+                ? "bg-rose-500 shadow-rose-500/40 border-rose-900"
+                : "bg-neutral-500 shadow-neutral-500/40 border-neutral-900"
             }
           `}
-          />
+        />
       </div>
 
-      {/* Chat info section */}
+      {/* Chat Information Section */}
       <div className="flex-1 min-w-0">
-        {/* Header with name and time */}
+        {/* Header: Name + Last Message Time */}
         <div className="flex items-center justify-between gap-2 mb-1">
           <h3 className="font-semibold text-base text-neutral-100 truncate capitalize group-hover:text-white transition-colors">
-            {displayName}
+            {name}
           </h3>
           <span className="text-xs text-neutral-500 flex-shrink-0 group-hover:text-neutral-400 transition-colors font-medium">
-            {lastMsg
-              ? new Date(lastMsg.createdAt).toLocaleTimeString([], {
+            {lastMessage
+              ? new Date(lastMessage.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: true,
@@ -91,20 +108,20 @@ export default function ChatItem({ chat }: { chat: ISearchResult }) {
           </span>
         </div>
 
-        {/* Message preview */}
+        {/* Last message preview / Typing indicator */}
         <p className="text-xs text-neutral-400 truncate group-hover:text-neutral-300 transition-colors">
-          {chat.isTyping ? (
+          {conversation.isTyping ? (
             <span className="text-emerald-400 font-medium">{"Typing..."}</span>
           ) : (
-            <LastMessagePreview message={lastMsg} />
+            <LastMessagePreview message={lastMessage} />
           )}
         </p>
       </div>
 
-      {/* Right side badges */}
+      {/* Right Side Badges */}
       <div className="flex items-center gap-2 flex-shrink-0">
-        {/* New badge */}
-        {chat.displayType === "user" && (
+        {/* New badge for 'user' type conversations */}
+        {isUser && (
           <div className="animate-pulse">
             <span
               className="
@@ -119,22 +136,22 @@ export default function ChatItem({ chat }: { chat: ISearchResult }) {
           </div>
         )}
 
-        {/* Unread count badge */}
-        {(chat.unreadCount ?? 0) > 0 && (
+        {/* Unread messages badge */}
+        {(unread ?? 0) > 0 && (
           <div className="flex-shrink-0">
             <div
               className="
-              w-6 h-6 bg-gradient-to-br from-purple-600 to-purple-700
-              rounded-full flex items-center justify-center
-              shadow-lg shadow-purple-600/50 font-semibold text-white text-xs
-              group-hover:shadow-purple-600/70 transition-shadow
-            "
+                w-6 h-6 bg-gradient-to-br from-purple-600 to-purple-700
+                rounded-full flex items-center justify-center
+                shadow-lg shadow-purple-600/50 font-semibold text-white text-xs
+                group-hover:shadow-purple-600/70 transition-shadow
+              "
             >
-              {chat.unreadCount > 99 ? "99+" : chat.unreadCount}
+              {unread > 99 ? "99+" : unread}
             </div>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

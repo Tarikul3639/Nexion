@@ -8,25 +8,25 @@ import { ArrowLeft } from "lucide-react";
 export default function BackButton() {
   const {
     activeBot,
-    activeChat,
+    selectedConversation,
+    setSelectedConversation,
     activeClassroom,
     activeProfile,
     setActiveBot,
-    setActiveChat,
     setActiveClassroom,
     setActiveProfile,
   } = usePanel();
 
   const isAnyPanelActive =
-    activeBot || activeChat || activeClassroom || activeProfile;
+    activeBot || selectedConversation || activeClassroom || activeProfile;
 
   // Helper: Close all active panels
   const closeAllPanels = useCallback(() => {
     setActiveBot(null);
-    setActiveChat(null);
+    setSelectedConversation(null);
     setActiveClassroom(null);
     setActiveProfile(null);
-  }, [setActiveBot, setActiveChat, setActiveClassroom, setActiveProfile]);
+  }, [setActiveBot, setSelectedConversation, setActiveClassroom, setActiveProfile]);
 
   useEffect(() => {
     if (isAnyPanelActive) history.pushState({ panelOpen: true }, "");

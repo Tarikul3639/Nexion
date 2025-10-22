@@ -50,6 +50,16 @@ export function PreferencesSection() {
           </div>
           <Switch defaultChecked className={SWITCH_CLASSES} />
         </div>
+
+        <div className="flex items-center justify-between">
+          <div className="space-y-0.5">
+            <Label className="text-white capitalize">Show Last Active</Label>
+            <p className="text-sm text-zinc-400">
+              Show your last active status to friends
+            </p>
+          </div>
+          <Switch defaultChecked className={SWITCH_CLASSES} />
+        </div>
       </Card>
 
       <Card className="p-6 bg-neutral-900 border-neutral-800 space-y-0.5">

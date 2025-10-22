@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePanel } from "@/context/PanelContext";
-import { ISearchResult } from "@/components/chat/LeftSide/types";
+import { ISearchResult } from "@/types/message/types";
 import { Classroom } from "@/types/classroom";
 import { Bot } from "@/types/bot";
 import { useSocket } from "@/context/SocketContext";
@@ -73,17 +73,17 @@ export const LeftPanelDataProvider = ({
 
     setLoading(true);
 
-    // --- Chats ---
-    socket.emit("getChatList");
+    // // --- Chats ---
+    // socket.emit("getChatList");
 
-    socket.on("chatList", (chats: ISearchResult[]) => {
-      setAllChats(chats);
-      setLoading(false);
+    // socket.on("chatList", (chats: ISearchResult[]) => {
+    //   setAllChats(chats);
+    //   setLoading(false);
       
-      // 💡 LOGIC INTEGRATION: Extract all unique user IDs from direct chats
-      // and load their profiles into allUsers (if not already there).
-      // For this solution, we assume necessary user stubs are available in allUsers.
-    });
+    //   // 💡 LOGIC INTEGRATION: Extract all unique user IDs from direct chats
+    //   // and load their profiles into allUsers (if not already there).
+    //   // For this solution, we assume necessary user stubs are available in allUsers.
+    // });
     
     socket.on("chatListUpdate", (update) => {
       // Notification logic (kept as is)
@@ -163,7 +163,6 @@ export const LeftPanelDataProvider = ({
 
     return () => {
       // Clean up socket listeners
-      socket.off("chatList");
       socket.off("chatListUpdate");
       socket.off("userStatusUpdate");
       socket.off("searchResults");
@@ -172,7 +171,7 @@ export const LeftPanelDataProvider = ({
       socket.off("initialBots");
       socket.off("updateBots");
     };
-  }, [socket, activeTab, user?.id]);
+  }, [socket, activeTab, user]);
 
   // Request Notification permission on mount (kept as is)
   useEffect(() => {

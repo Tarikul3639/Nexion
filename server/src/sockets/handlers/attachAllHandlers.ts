@@ -4,10 +4,8 @@ import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat";
 
 //Handlers Import
-import { getInitialConversations } from "../chat/LeftPanel/initialConversation/getInitialConversations";
+// import { getInitialConversations } from "../chat/LeftPanel/initialConversation/getInitialConversations";
 import { searchUsersAndConversations } from "../chat/LeftPanel/search/searchUsersAndConversations";
-import { fetchPartnerDetailsHandler } from "../chat/LeftPanel/hook/fetchPartnerDetailsHandler";
-import { chatPartnerInfoHandler } from "../chat/RightPanel/useChatPartnerInfo";
 import { messageHandler } from "../chat/RightPanel";
 
 /**
@@ -22,9 +20,7 @@ export const attachAllHandlers = (
   // ------------------------------------
   // 🔹 1. Chat Handlers 
   // ------------------------------------
-  getInitialConversations(io, socket);
+  // getInitialConversations(io, socket);
   searchUsersAndConversations(io, socket);
   messageHandler(io, socket, userSockets);
-  fetchPartnerDetailsHandler(io, socket);
-  chatPartnerInfoHandler(io, socket);
 };

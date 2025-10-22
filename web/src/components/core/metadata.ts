@@ -2,8 +2,8 @@
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "ChatFly",
-  description: "ChatFly - Your AI Chat Companion",
+  title: "Nexion",
+  description: "Nexion - Your AI Chat Companion",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -14,18 +14,18 @@ export const metadata: Metadata = {
     apple: "/icons/icon-192x192.svg",
   },
   appleWebApp: {
-    title: "ChatFly",
+    title: "Nexion",
     capable: true,
     statusBarStyle: "default",
   },
   openGraph: {
-    title: "ChatFly",
-    description: "ChatFly - Your AI Chat Companion",
+    title: "Nexion",
+    description: "Nexion - Your AI Chat Companion",
     type: "website",
   },
   twitter: {
-    title: "ChatFly",
-    description: "ChatFly - Your AI Chat Companion",
+    title: "Nexion",
+    description: "Nexion - Your AI Chat Companion",
     card: "summary",
   },
 };

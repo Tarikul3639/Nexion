@@ -1,4 +1,4 @@
-import type { ILastMessage } from "./types"
+import type { ILastMessage } from "../../../types/message/types"
 
 interface LastMessagePreviewProps {
   message: ILastMessage | null | undefined

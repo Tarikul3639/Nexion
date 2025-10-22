@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import SearchBar from "../../ui/SearchBar";
 import { User, Settings, Sliders, Shield, Bell, Puzzle } from "lucide-react";
@@ -13,6 +13,10 @@ export function ProfileLeftPanel({
   activeSection: ProfileSection | undefined;
   onSectionChange: (section: ProfileSection) => void;
 }) {
+  // State for search
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  
   const sections = [
     {
       id: "general" as ProfileSection,
@@ -56,7 +60,11 @@ export function ProfileLeftPanel({
     <div className="flex flex-col">
       {/* Search */}
       <div className="px-2 md:px-4 pt-4">
-        <SearchBar />
+        <SearchBar
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          setIsSearching={setIsSearching}
+        />
       </div>
 
       <div className="mt-4 px-4 text-xs font-medium text-[#67676D] tracking-wide mb-3 uppercase">

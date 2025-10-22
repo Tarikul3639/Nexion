@@ -1,36 +1,22 @@
+// useInitialConversations.ts (SIMPLIFIED HOOK)
+
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSocket } from '@/context/SocketContext';
-import { IConversationResult } from '../types';
+// Note: Now it imports from useConversationData
+import { useConversationData } from '@/context/ChatContext/ChatDataProvider'; 
+import { ISearchResult } from '@/types/message/types';
 
-interface UseInitialConversationsResult {
-  data: IConversationResult[];
-  loading: boolean;
+interface UseInitialConversationsResult {   
+  data: ISearchResult[];
+  loading: boolean;
 }
 
 export const useInitialConversations = (): UseInitialConversationsResult => {
-  const { socket } = useSocket();
-  const [data, setData] = useState<IConversationResult[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleInitialConversations = (results: IConversationResult[]) => {
-      setData(results);
-      setLoading(false);
-    };
-
-    // Start loading
-    setLoading(true);
-    socket.emit('get_initial_conversations');
-    socket.on('initial_conversations_results', handleInitialConversations);
-
-    return () => {
-      socket.off('initial_conversations_results', handleInitialConversations);
-    };
-  }, [socket]);
-
-  return { data, loading };
+  // Fetch data directly from the global context
+  const { conversations, isConversationsLoading } = useConversationData(); 
+  
+  return { 
+    data: conversations, 
+    loading: isConversationsLoading 
+  };
 };

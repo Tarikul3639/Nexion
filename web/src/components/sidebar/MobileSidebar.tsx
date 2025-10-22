@@ -7,10 +7,10 @@ import { User } from "lucide-react";
 
 export function MobileSidebar() {
   const Items = [ ...NavigationItems, { id: "profile", icon: User, label: "Profile" } ];
-  const { activeTab, setActiveTab, activeChat, activeProfile, activeClassroom, activeBot } = usePanel();
+  const { activeTab, setActiveTab, selectedConversation, activeProfile, activeClassroom, activeBot } = usePanel();
   const { isDesktop } = useResponsive();
   // Check if any panel is active
-  const isAnyPanelActive = activeChat || activeProfile || activeClassroom || activeBot;
+  const isAnyPanelActive = selectedConversation || activeProfile || activeClassroom || activeBot;
   // Hide mobile sidebar if an item is selected
   if (!isDesktop && isAnyPanelActive) return null;
 

@@ -1,3 +1,5 @@
+// SendButton.tsx
+
 "use client";
 
 import React from "react";
@@ -40,7 +42,27 @@ export default function SendButton() {
   const { selectedConversation } = usePanel();
   const { user } = useAuth();
 
+  // Move the conditional return outside of the JSX render logic
+  // This prevents the React.Children.only error by ensuring we don't conditionally
+  // render content inside the TooltipTrigger component
   if (!draftMessage?.text && !draftMessage?.attachments?.length) return null;
+
+  // Helper function to determine message type based on content
+  const getMessageType = (text: string | undefined, attachments: MessageAttachment[] | undefined): MessageItem['type'] => {
+    if (attachments && attachments.length > 0) {
+      // If multiple types of attachments, default to 'file'. Otherwise, use the first attachment's type.
+      if (attachments.length > 1 || attachments.some(a => a.type === 'file')) {
+        return 'file';
+      }
+      // Extract base type (e.g., 'image' from 'image/jpeg' or 'audio' from 'audio/webm')
+      const firstType = attachments[0].type.split('/')[0]; 
+      // Ensure it matches a valid MessageItem type or default to 'file' if ambiguous
+      if (['image', 'video', 'file', 'audio', 'text', 'system', 'notification'].includes(firstType)) {
+          return firstType as MessageItem['type'];
+      }
+    }
+    return 'text';
+  };
 
   // ---------------- Upload single attachment ----------------
   const uploadAttachment = (att: MessageAttachment) => {
@@ -51,6 +73,7 @@ export default function SendButton() {
       formData.append("file", att.file);
 
       const xhr = new XMLHttpRequest();
+      // NOTE: The API endpoint path should be confirmed
       xhr.open("POST", `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`);
 
       xhr.upload.onprogress = (event) => {
@@ -79,10 +102,12 @@ export default function SendButton() {
     if (!socket || !selectedConversation || !user || !draftMessage) return;
 
     const tempId = uuid();
+    const messageType = getMessageType(draftMessage.text, draftMessage.attachments); // 💡 New: Get message type
 
     // ---------- 1. Optimistic message ----------
     const optimisticMessage: MessageItem = {
       id: tempId,
+      conversationId: selectedConversation.id, // Add conversationId for consistency
       senderId: user.id,
       senderName: user.username || user.name || "Unknown",
       senderAvatar: user.avatar || "",
@@ -93,10 +118,12 @@ export default function SendButton() {
           previewUrl: att.file ? URL.createObjectURL(att.file) : att.url,
         })),
       },
+      type: messageType, // 💡 New: Set message type
       updatedAt: new Date().toISOString(),
       status: "uploading",
       isMe: true,
       replyToId: replyToId || undefined,
+      isEdited: false, // Default is false for new message
     };
 
     setAllMessages((prev) => [...prev, optimisticMessage]);
@@ -107,7 +134,7 @@ export default function SendButton() {
       uploadedAttachments = await Promise.all(draftMessage.attachments.map(uploadAttachment));
     }
 
-    // ---------- 3. Update optimistic message ----------
+    // ---------- 3. Update optimistic message (status and attachments) ----------
     setAllMessages((prev) =>
       prev.map((msg) =>
         msg.id === tempId
@@ -122,6 +149,9 @@ export default function SendButton() {
       partner: selectedConversation.type === "user" ? selectedConversation.id : undefined,
       sender: user.id,
       content: { ...draftMessage, attachments: uploadedAttachments },
+      type: messageType, // 💡 New: Pass message type to server
+      senderName: user.username || user.name, // 💡 New: Pass sender name
+      senderAvatar: user.avatar, // 💡 New: Pass sender avatar
       replyTo: replyToId,
       tempId,
     });
@@ -140,11 +170,7 @@ export default function SendButton() {
             id="send-btn"
             size="icon"
             onClick={handleMessageSend}
-            className={`rounded-sm flex items-center justify-center transition-all duration-200 focus:outline-none ${
-              draftMessage?.text || draftMessage?.attachments?.length
-                ? "bg-blue-600 hover:bg-blue-700 active:scale-95"
-                : "bg-gray-600 hover:bg-gray-700 hidden"
-            }`}
+            className="rounded-sm flex items-center justify-center transition-all duration-200 focus:outline-none bg-blue-600 hover:bg-blue-700 active:scale-95"
           >
             <Send className="w-5 h-4" />
           </Button>
