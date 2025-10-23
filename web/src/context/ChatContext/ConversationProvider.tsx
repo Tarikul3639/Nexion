@@ -4,14 +4,8 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { ISearchResult } from "@/types/message/types";
 import { useConversationApi } from "./hooks/useFetchConversations"; 
 import { useAuth } from "@/context/AuthContext";
-import { useSocket } from "@/context/SocketContext"; //
-
-
-interface ChatListUpdate { // সার্ভার থেকে আসা আপডেটের জন্য নতুন টাইপ
-    conversationId: string;
-    unreadCount: number;
-    // lastMessage (optional) এবং অন্যান্য ফিল্ড থাকতে পারে, কিন্তু আমরা আপাতত unreadCount-এর জন্য ফোকাস করছি
-}
+import { useChatListUpdate } from "./hooks/useChatListUpdate";
+import { useUserStatusUpdate } from "./hooks/useUserStatusUpdate";
 
 interface ConversationContextType {
   conversations: ISearchResult[];
@@ -31,7 +25,6 @@ export const useConversation = () => {
 
 export const ConversationProvider = ({ children }: { children: React.ReactNode }) => {
   const { token } = useAuth();
-  const { socket } = useSocket();
   const { fetchInitialConversations, isConversationsLoading, conversationError } = useConversationApi();
   const [conversations, setConversations] = useState<ISearchResult[]>([]);
 
@@ -48,41 +41,11 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
     loadConversations();
   }, [token, fetchInitialConversations]);
 
-
-
-  // 2. ✅ Socket.IO ইভেন্ট হ্যান্ডলিং (unreadCount আপডেট)
-    const handleConversationUpdate = useCallback((update: ChatListUpdate) => {
-        console.log("Received conversation:update", update);
-
-        setConversations(prev => {
-            const index = prev.findIndex(c => c.id === update.conversationId);
-
-            if (index !== -1) {
-                // কনভারসেশনটি খুঁজে পাওয়া গেলে, শুধুমাত্র unreadCount আপডেট করা হবে
-                const updatedList = [...prev];
-                updatedList[index] = {
-                    ...updatedList[index],
-                    unreadCount: update.unreadCount, // 💡 আনরিড কাউন্ট 0 হবে
-                    // 🔑 অপশনাল: মেসেজ পাওয়ার পর আপডেট ডেটাবেস অনুযায়ী অন্য ডেটা আপডেট
-                };
-                return updatedList;
-            }
-            // যদি কনভারসেশনটি না পাওয়া যায়, তবে এটি নতুন মেসেজ এবং সম্পূর্ণ কনভারসেশন ডেটা না আসা পর্যন্ত অপেক্ষা করবে।
-            return prev; 
-        });
-    }, []);
-
-  useEffect(() => {
-        if (!socket) return;
-        
-        // 'conversation:update' ইভেন্ট লিসেনার যোগ করা
-        socket.on("conversation:update", handleConversationUpdate);
-
-        return () => {
-            // কম্পোনেন্ট আনমাউন্ট হলে বা socket পরিবর্তন হলে লিসেনার মুছে ফেলা
-            socket.off("conversation:update", handleConversationUpdate);
-        };
-    }, [socket, handleConversationUpdate]);
+  //Use the custom hook to handle real-time conversation updates
+  useChatListUpdate(setConversations);
+  
+  // Use the custom hook to handle real-time user status updates
+  useUserStatusUpdate(setConversations);
 
   return (
     <ConversationContext.Provider

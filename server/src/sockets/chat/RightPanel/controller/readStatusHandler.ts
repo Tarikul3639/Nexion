@@ -4,42 +4,71 @@ import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat";
 import Conversation from "@/models/Conversation";
 
-export const handleReadStatus = (io: Server, socket: AuthenticatedSocket, userSockets: Map<string, Set<string>>) => {
-    // 🔑 ইভেন্টের নাম: 'conversation:read' (অথবা 'mark_as_read')
-    socket.on("conversation:read", async ({ conversationId }: { conversationId: string }) => {
-        try {
-            if (!socket.user || !conversationId) return;
+/**
+ * Socket.IO handler for managing read status in conversations.
+ * Listens for 'conversation:read' events and updates the database accordingly.
+ *
+ * @param io - The main Socket.IO server instance.
+ * @param socket - The currently connected authenticated socket.
+ * @param userSockets - A map that tracks user IDs and their active socket IDs.
+ */
+export const handleReadStatus = (
+  io: Server,
+  socket: AuthenticatedSocket,
+  userSockets: Map<string, Set<string>>
+) => {
+  /**
+   * EVENT NAME: 'conversation:read'
+   * This event is triggered when a user views a conversation (marks it as read).
+   */
+  socket.on(
+    "conversation:read",
+    async ({ conversationId }: { conversationId: string }) => {
+      try {
+        // Validate user authentication and input
+        if (!socket.user || !conversationId) return;
 
-            const currentUserId = socket.user._id;
-            console.log("Read status update ID: ", currentUserId, "Name: ",socket.user.name);
-            const now = new Date();
+        const currentUserId = socket.user._id;
+        const now = new Date();
 
-            // 1. ডেটাবেস আপডেট: ইউজারের lastViewed আপডেট করা
-            await Conversation.updateOne(
-                { 
-                    _id: conversationId,
-                    'participants.user': currentUserId // নিশ্চিত করে যে ইউজারটি অংশগ্রহণকারী
-                },
-                { 
-                    // $set: array filtering ব্যবহার করে শুধুমাত্র বর্তমান ইউজারের lastViewed আপডেট
-                    $set: { 
-                        'participants.$.lastViewed': now,
-                    }
-                }
-            );
+        console.log(
+          "Read status update -> ID:",
+          currentUserId,
+          "| Name:",
+          socket.user.name
+        );
 
-            // 2. অপশনাল ব্রডকাস্ট: চ্যাটের বাকি অংশগ্রহণকারীদের জানানো
-            // এটি দরকার যদি আপনি রিয়েল-টাইমে "Seen by..." স্ট্যাটাস দেখাতে চান।
-            socket.to(conversationId).emit("conversation:marked_read", { 
-                conversationId, 
-                readerId: currentUserId,
-                readAt: now.toISOString()
-            });
+        /**
+         * STEP 1: Update Database
+         * Update the user's 'lastViewed' timestamp for the specific conversation.
+         * Ensures only the participant's own record is modified.
+         */
+        await Conversation.updateOne(
+          {
+            _id: conversationId,
+            "participants.user": currentUserId, // Ensures user is a participant
+          },
+          {
+            // Use array filter to update only the matching participant entry
+            $set: {
+              "participants.$.lastViewed": now,
+            },
+          }
+        );
 
-        } catch (error) {
-            console.error("Error updating lastViewed:", error);
-        }
-    });
+        /**
+         * STEP 2: Optional Broadcast
+         * Notify other participants in the conversation that this user has read the chat.
+         * Useful for showing "Seen by..." or "Read at..." in real-time.
+         */
+        socket.to(conversationId).emit("conversation:marked_read", {
+          conversationId,
+          readerId: currentUserId,
+          readAt: now.toISOString(),
+        });
+      } catch (error) {
+        console.error("Error updating lastViewed:", error);
+      }
+    }
+  );
 };
-
-// আপনার attachAllHandlers-এ এটিকে যুক্ত করুন।

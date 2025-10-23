@@ -12,7 +12,7 @@ interface PanelContextProps {
   setActiveTab: (tab: TabKey) => void;
   // State for active chat by its ID
   selectedConversation: ISelectedChatHeader | null;
-  setSelectedConversation: (chat: ISelectedChatHeader | null) => void;
+  setSelectedConversation: React.Dispatch<React.SetStateAction<ISelectedChatHeader | null>>;
   // State for active search result profile, classroom, or bot
   activeProfile: ProfileSection | null;
   setActiveProfile: (profile: ProfileSection | null) => void;

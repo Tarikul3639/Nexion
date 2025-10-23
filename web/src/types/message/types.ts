@@ -64,7 +64,7 @@ export interface ISearchResult {
 
   lastMessage: ILastMessage | null;
   unreadCount: number;
-  updatedAt: Date;
+  updatedAt: string;
   isPinned: boolean;
   isTyping?: boolean;
 }

@@ -6,7 +6,7 @@ import User from "@/models/User"; // Mongoose model import
 import { attachAllHandlers } from "./attachAllHandlers";
 
 // 🔥 Suggested Event Name
-const USER_STATUS_EVENT = "user:status_update"; 
+const USER_STATUS_EVENT = "user:online"; 
 
 /**
  * 🤝 Socket Connection Handler

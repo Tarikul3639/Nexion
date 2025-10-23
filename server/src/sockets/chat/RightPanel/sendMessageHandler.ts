@@ -147,6 +147,7 @@ export const sendMessageHandler = (
         const chatListUpdate = {
           conversationId,
           unreadCount,
+          updatedAt: baseMsgObj.updatedAt,
           lastMessage: {
             id: baseMsgObj.id,
             content: baseMsgObj.content,

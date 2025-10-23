@@ -1,10 +1,12 @@
-import type { ILastMessage } from "../../../types/message/types"
+import type { ILastMessage } from "@/types/message/types"
 
 interface LastMessagePreviewProps {
   message: ILastMessage | null | undefined
+  unread: number
 }
 
-export default function LastMessagePreview({ message }: LastMessagePreviewProps) {
+export default function LastMessagePreview({ message, unread }: LastMessagePreviewProps) {
+  // console.log("Last Message: ", message, "Unread Count: ", unread);
   if (!message) {
     return <span className="text-slate-500">No messages yet</span>
   }
@@ -30,10 +32,10 @@ export default function LastMessagePreview({ message }: LastMessagePreviewProps)
   if (content.text) {
     return (
       <span>
-        <strong className="text-slate-300">{sender?.name || "Deleted User"}:</strong> {content.text}
+        <strong className={`${unread > 0 ? "text-slate-300 font-medium" : "text-neutral-400 font-semibold"}`}>{sender?.name || "Deleted User"}:</strong> {content.text}
       </span>
     )
   }
 
-  return <span className="text-slate-500">Message</span>
+  return <span className={`${unread > 0 ? "text-slate-300 font-medium" : "text-neutral-400 font-semibold"}`}>Message</span>
 }

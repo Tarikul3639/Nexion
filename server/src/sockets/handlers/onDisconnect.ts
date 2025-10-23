@@ -2,14 +2,14 @@ import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat";
 import User from "@/models/User";
 
-// 🔥 Must match the event name used in onConnection.ts
-const USER_STATUS_EVENT = "user:status_update"; 
+// Must match the event name used in onConnection.ts
+const USER_STATUS_EVENT = "user:offline"; 
 
 /**
  * ❌ Socket Disconnect Handler
  * If user disconnects, then status update and cleanup are performed.
  */
-export const onDisconnect = async ( // 👈 Note: Made it async to use await
+export const onDisconnect = async ( // Note: Made it async to use await
   io: Server,
   socket: AuthenticatedSocket,
   userSockets: Map<string, Set<string>>

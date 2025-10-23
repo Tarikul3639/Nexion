@@ -8,6 +8,7 @@ import type {
   ISelectedChatHeader,
 } from "@/types/message/types";
 import { usePanel } from "@/context/PanelContext";
+import { useSocket } from "@/context/SocketContext";
 
 export default function ChatItem({
   conversation,
@@ -16,6 +17,7 @@ export default function ChatItem({
 }) {
   // IMPORTANT: Access the current selected conversation and setter from context
   const { selectedConversation, setSelectedConversation } = usePanel();
+  const { socket } = useSocket();
 
   // INFO: Basic display properties for this chat item
   const status = conversation.status;
@@ -32,6 +34,26 @@ export default function ChatItem({
   // INFO: Determine if this conversation is currently active/selected
   const isActive = selectedConversation?.id === conversation.id;
 
+  // Handler for clicking on this chat item
+  const handleChatClick = () => {
+    // Set this conversation as the selected one in context
+    setSelectedConversation({
+      id: conversation.id,
+      type: conversation.displayType,
+      name: name,
+      avatar: avatar,
+      status: status,
+      lastActiveAt: conversation.lastActiveAt,
+    } as ISelectedChatHeader);
+
+    // NOTE: Emit 'conversation:read' event if there are unread messages
+    if (socket && conversation.unreadCount > 0) {
+      console.log(`Sending conversation:read for ${conversation.id}`);
+      conversation.unreadCount = 0; // Optimistically update unread count
+      socket.emit("conversation:read", { conversationId: conversation.id });
+    }
+  };
+
   return (
     <div
       className={`
@@ -43,16 +65,7 @@ export default function ChatItem({
             : "hover:bg-zinc-800/60 border border-transparent hover:border-neutral-700/50"
         }
       `}
-      onClick={() =>
-        setSelectedConversation({
-          id: conversation.id,
-          type: conversation.displayType,
-          name: name,
-          avatar: avatar,
-          status: status,
-          lastActiveAt: conversation.lastActiveAt,
-        } as ISelectedChatHeader)
-      }
+      onClick={handleChatClick}
     >
       {/* Avatar Section */}
       <div className="relative flex-shrink-0">
@@ -97,7 +110,7 @@ export default function ChatItem({
           <h3 className="font-semibold text-base text-neutral-100 truncate capitalize group-hover:text-white transition-colors">
             {name}
           </h3>
-          <span className="text-xs text-neutral-500 flex-shrink-0 group-hover:text-neutral-400 transition-colors font-medium">
+          <span className="text-xs text-neutral-500 flex-shrink-0 group-hover:text-neutral-400 transition-colors font-medium uppercase">
             {lastMessage
               ? new Date(lastMessage.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
@@ -109,11 +122,11 @@ export default function ChatItem({
         </div>
 
         {/* Last message preview / Typing indicator */}
-        <p className="text-xs text-neutral-400 truncate group-hover:text-neutral-300 transition-colors">
+        <p className={`text-xs ${unread > 0 ? "text-slate-300" : "text-neutral-400"} transition-colors`}>
           {conversation.isTyping ? (
             <span className="text-emerald-400 font-medium">{"Typing..."}</span>
           ) : (
-            <LastMessagePreview message={lastMessage} />
+            <LastMessagePreview message={lastMessage} unread={unread} />
           )}
         </p>
       </div>
