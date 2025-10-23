@@ -9,8 +9,8 @@ import SearchBar from "@/components/ui/SearchBar";
 import ChatItem from "./ChatItem";
 
 // Hooks
-import { useSearchUserAndConversations } from "./hooks/SearchUserAndConversations";
-import { useInitialConversations } from "./hooks/useInitialConversations";
+import { useSearchUserAndConversations } from "../Hooks/SearchUserAndConversations";
+import { useInitialConversations } from "../Hooks/useInitialConversations";
 
 export default function ChatList() {
   // State for search

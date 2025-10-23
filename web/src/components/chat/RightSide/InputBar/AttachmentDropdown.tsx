@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 
 // Attachment types for messages
 export type AttachmentType = "image" | "video" | "file" | "audio";

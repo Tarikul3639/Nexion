@@ -16,7 +16,7 @@ export const searchConversations = async (
     skip: number  // <--- NEW
 ): Promise<FlattenMaps<IConversation>[]> => {
     
-    const conversations: FlattenMaps<IConversation>[] = await Conversation.find({ participants: userId })
+    const conversations: FlattenMaps<IConversation>[] = await Conversation.find({ "participants.user": userId })
         // ... (rest of the .populate() calls remain the same)
         .populate({
             path: "lastMessage",
@@ -24,12 +24,10 @@ export const searchConversations = async (
             populate: { path: "senderId", select: "name username avatar" },
         })
         .populate({
-            path: "participants",
+            path: "participants.user",
             select: "name username avatar tracking.status tracking.lastActiveAt privacy.showStatus privacy.showLastSeen", 
         })
         .sort({ updatedAt: -1 })
-        
-        // 🚨 IMPORTANT: Apply Pagination/Limit/Skip
         .skip(skip) // <--- Offset
         .limit(limit) // <--- Limit per page
         

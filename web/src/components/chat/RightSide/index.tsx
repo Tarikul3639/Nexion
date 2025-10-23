@@ -1,5 +1,5 @@
 import ChatHeader from "./ChatTopBar";
-import { ChatProvider } from "@/context/ChatContext";
+import { ChatProvider } from "@/context/ChatContext/ChatProvider";
 import InputBar from "./InputBar/index";
 import MessageList from "./MessageList";
 import ReplyPreview from "./ReplayPreview";

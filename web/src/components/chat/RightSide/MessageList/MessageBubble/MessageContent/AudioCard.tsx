@@ -37,7 +37,10 @@ const waveformBars = [
 ];
 
 export default function AudioCard({ msg }: { msg: DraftMessage }) {
-  const audio = msg.attachments?.find(att => att.type === "audio/webm");
+  // Use type assertion to accommodate both message formats
+  const audio = msg.attachments?.find(att => 
+    (att.type as string) === "audio/webm" || (att.type as string) === "audio"
+  );
   // Initialize hooks unconditionally
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
@@ -152,7 +155,7 @@ export default function AudioCard({ msg }: { msg: DraftMessage }) {
               const isPlayed = barXPercentage < progressPercentage;
               return (
                 <rect
-                  key={index}
+                  key={`waveform-bar-${index}`}
                   x={bar.x}
                   y={bar.y}
                   width="3"

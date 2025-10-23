@@ -1,4 +1,4 @@
-import Message,{ IMessage} from "@/models/Message/Message";
+import Message from "@/models/Message/Message";
 import { IConversation } from "@/models/Conversation";
 import { ISearchResult, ILastMessage } from "../types";
 import { FlattenMaps } from "mongoose";
@@ -12,15 +12,25 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
     return Promise.all(
         conversationResults.map(
             async (conv: FlattenMaps<IConversation>): Promise<ISearchResult> => {
-                // Count document where self id not exists in readBy array
+
+                // 1. Get current user's settings (for lastViewed and isPinned)
+                const currentUserSetting = (conv.participants as any[]).find(
+                    (p: any) => p.user._id.toString() === currentUserId // Access nested 'user' ID
+                );
+
+                const lastViewed = currentUserSetting?.lastViewed || new Date(0);
+                const isPinned = currentUserSetting?.isPinned ?? false;
+
+                // 2. ✅ EFFICIENT UNREAD COUNT: Count messages created AFTER lastViewed
                 const unreadCount = await Message.countDocuments({
-                    conversation: conv._id,
-                    readBy: { $ne: currentUserId },
+                    conversationId: conv._id, // Use correct field name: conversationId
+                    createdAt: { $gt: lastViewed }, // Key optimization!
+                    senderId: { $ne: currentUserId } // Exclude messages sent by self
                 });
 
                 const populatedLastMessage = conv.lastMessage as any;
                 
-                // Last Message Mapping (Handles nested populate or falls back to cache)
+                // ... (Last Message Mapping - This block looks okay)
                 const lastMessage: ILastMessage | null = populatedLastMessage
                     ? {
                         _id: populatedLastMessage._id.toString(),
@@ -34,10 +44,8 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
                                 avatar: populatedLastMessage.senderId.avatar,
                             }
                             : {
-                                // 2. Fallback to Cached Data (for Soft-Deleted/Missing Users)
-                                // We use a safe placeholder ID ('deleted' or 'unknown') instead of senderIdBackup
-                                // to prevent client access to the deleted user's actual ID.
-                                 _id: 'Nexion_' + populatedLastMessage._id.toString(), // Use a unique placeholder ID
+                                // Fallback to Cached Data
+                                _id: 'Nexion_' + populatedLastMessage._id.toString(),
                                 name: populatedLastMessage.senderName || 'Nexion User',
                                 avatar: populatedLastMessage.senderAvatar || getAvatarUrl('nexion_user'),
                             },
@@ -47,13 +55,12 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
                 let convName = conv.name;
                 let convAvatar = conv.avatar;
                 
-                // Final result mapping (using intersection type for the extra partner fields)
-                const result: ISearchResult | null = {
+                const result: ISearchResult = {
                     id: conv._id.toString(),
                     name: convName,
                     type: conv.type,
                     avatar: convAvatar,
-                    isPinned: conv.isPinned ?? false,
+                    isPinned: isPinned, // Use isPinned from user settings
                     updatedAt: conv.updatedAt,
                     unreadCount: unreadCount,
                     lastMessage: lastMessage,
@@ -61,12 +68,17 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
                 };
 
                 if (conv.type === "direct") {
-                    const partner = (conv.participants as any[]).find(
-                        (p: any) => p._id.toString() !== currentUserId
+                    // ✅ FIX: Find the partner *setting* object, then access the nested *user* object
+                    const partnerSetting = (conv.participants as any[]).find(
+                        (p: any) => p.user._id.toString() !== currentUserId
                     );
 
+                    const partner = partnerSetting?.user; // This is the populated User object
+
                     if (partner) {
-                        // NOTE: Partner name and avatar for direct chat
+                        // ... (Rest of the direct chat logic for name, avatar, privacy, and status)
+                        // All partner property accesses must be through the 'partner' object.
+                        
                         if(!convName) {
                             result.name = partner.name || "Unknown User";
                         }
@@ -74,21 +86,15 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
                             result.avatar = partner.avatar || getAvatarUrl('unknown_user');
                         }
 
-                        //NOTE: Privacy Logic Application
-                        // Status 'online' | 'offline' | 'away' | 'busy' | string
+                        // NOTE: Privacy Logic Application
                         const partnerStatus = partner.tracking?.status;
-                        // Privacy Settings status 'true' or 'false'
                         const partnerShowStatus = partner.privacy?.showStatus;
-                        // Privacy Settings Last Seen 'true' or 'false'
                         const partnerShowLastSeen = partner.privacy?.showLastSeen;
-                        // Last Active Timestamp
                         const partnerLastActiveAt = partner.tracking?.lastActiveAt;
 
-                        // 1. Apply Status Privacy: 'hidden' if status is not to be shown
                         const effectiveStatus = 
                             (partnerShowStatus === false) ? 'hidden' : partnerStatus;
 
-                        // 2. Apply Last Seen Privacy: Show Last Active ONLY if allowed AND not currently online
                         let effectiveLastActiveAt = null;
 
                         if (partnerShowLastSeen === true && effectiveStatus !== 'online') {
@@ -99,8 +105,8 @@ export const mapConversations = async (conversationResults: FlattenMaps<IConvers
                         result.status = effectiveStatus;
                         result.lastActiveAt = effectiveLastActiveAt; 
                     }
-
                 } 
+                
                 return result;
             }
         )

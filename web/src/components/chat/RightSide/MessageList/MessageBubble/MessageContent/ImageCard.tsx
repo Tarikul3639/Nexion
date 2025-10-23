@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import Image from "next/image";
 import { DraftMessage } from "@/types/message/indexs";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 
 // Define the attachment type based on what's used in the code
 type ImageAttachment = {
@@ -155,7 +155,7 @@ export default function ImageCard({ msg }: { msg: DraftMessage }) {
 
           return (
             <div
-              key={index}
+              key={`image-${img.name || img.file?.name || index}`}
               className="relative group w-full overflow-hidden rounded-lg aspect-square"
             >
               {/* Download overlay */}

@@ -1,7 +1,8 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import MessageBubble from "./MessageBubble";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
+import type { IMessage } from "@/types/message/indexs";
 
 export default function MessageList() {
   const context = useChat();
@@ -22,28 +23,32 @@ export default function MessageList() {
   };
 
   // Expose scrollToMessage to the context
-  useEffect(() => {
-    context.scrollToMessage = scrollToMessage;
-  }, [context]);
+  // useEffect(() => {
+  //   context.scrollToMessage = scrollToMessage;
+  // }, [context]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [allMessages]);
+  }, [allMessages]);  
 
   return (
     <div className="flex-1 overflow-auto p-3 md:p-4 space-y-4">
-      {allMessages.map((msg) => (
-        <MessageBubble
-          key={msg.id}
-          message={msg}
-          highlighted={highlightedMessageId === msg.id}
-          scrollToMessage={scrollToMessage}
-          ref={(el: HTMLDivElement) => {
-            if (el) messageRefs.current[msg.id] = el;
-          }}
-        />
-      ))}
+      {allMessages.map((msg, index) => {
+        // Ensure we have a unique key, using index as fallback only when id is missing
+        const uniqueKey = msg.id ? msg.id : `message-${index}`;
+        return (
+          <MessageBubble
+            key={uniqueKey}
+            message={msg}
+            highlighted={highlightedMessageId === msg.id}
+            scrollToMessage={scrollToMessage}
+            ref={(el: HTMLDivElement) => {
+              if (el && msg.id) messageRefs.current[msg.id] = el;
+            }}
+          />
+        );
+      })}
       <div ref={messagesEndRef} />
     </div>
   );

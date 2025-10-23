@@ -1,10 +1,10 @@
-import { MessageItem } from "@/types/message/indexs";
+import { IMessage } from "@/types/message/indexs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function MessageSeenStatus({
   message,
 }: {
-  message: MessageItem;
+  message: IMessage;
 }) {
   const readBy = message.readBy?.filter((user) => user.id !== message.senderId);
   if (!readBy || readBy.length === 0) return null;
@@ -16,9 +16,9 @@ export default function MessageSeenStatus({
     >
       {readBy.map((user) => (
         <Avatar key={user.id} className="w-4 h-4 rounded-sm text-xs font-semibold flex-shrink-0 inline-block align-middle mr-1">
-          <AvatarImage src={user.avatar} alt={user.name || user.username} />
+          <AvatarImage src={user.avatar} alt={user.name} />
           <AvatarFallback className="rounded-sm bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-[9px] font-bold">
-            {user.name.slice(0, 2).toUpperCase() || user.username.slice(0, 2).toUpperCase()}
+            {/* {user.name.slice(0, 2).toUpperCase()} */}
           </AvatarFallback>
         </Avatar>
       ))}

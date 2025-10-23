@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import ImageCard from "./ImageCard";
 import AudioCard from "./AudioCard";
 import TextCard from "./TextCard";

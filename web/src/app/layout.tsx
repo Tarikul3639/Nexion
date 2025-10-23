@@ -4,7 +4,7 @@ import { metadata, viewport } from "@/components/core/metadata";
 // import AppProtection from "@/components/core/AppProtection";
 // import RouteGuard from "@/components/core/RouteGuard";
 import { SocketProvider } from "@/context/SocketContext";
-import { ChatDataProvider } from "@/context/ChatContext/ChatDataProvider";
+import { ConversationProvider } from "@/context/ChatContext/ConversationProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { PanelProvider } from "@/context/PanelContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -57,9 +57,9 @@ export default function RootLayout({
           <AuthProvider>
             <SocketProvider>
               <PanelProvider>
-                <ChatDataProvider>
+                <ConversationProvider>
                   {children}
-                </ChatDataProvider>
+                </ConversationProvider>
               </PanelProvider>
             </SocketProvider>
           </AuthProvider>

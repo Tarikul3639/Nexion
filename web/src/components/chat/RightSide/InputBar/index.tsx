@@ -4,7 +4,7 @@ import AISuggestionsToggleButton from "./AISuggestionsToggleButton";
 import SendButton from "./SendButton";
 import AISuggestions from "./AISuggestion";
 import VoiceButton from "./VoiceRecorder";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 
 export default function InputBar() {
   const { isRecordingActive } = useChat();

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Mic, X } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 
 interface RecordButtonProps {
   handleCancel: () => void;

@@ -5,7 +5,10 @@ import { IUser } from "@/models/User";
 import { getAvatarUrl } from "@/hooks/useAvatar";
 import { ISearchResult, ILastMessage } from "../types"; // Assuming types/chat includes ILastMessage and ISearchResult
 import { FlattenMaps, Types } from "mongoose";
-import { IConversation } from "@/models/Conversation";
+import { IConversation, IParticipantSettings } from "@/models/Conversation";
+
+// Helper type for populated participant (from searchConversations)
+type PopulatedParticipant = IParticipantSettings & { user: IUser };
 
 /**
  * Transforms raw conversation data into the frontend-friendly ISearchResult format.
@@ -21,10 +24,24 @@ export const mapConversations = async (
     const AllConversations: ISearchResult[] = await Promise.all(
         conversations.map(async (conv) => {
 
-            // --- Count unread messages for the user ---
+            // Ensure participants is an array of populated user objects
+            const participants = conv.participants as PopulatedParticipant[];
+
+            // FIX 1: Get the current user's specific settings from the participants array
+            const currentUserSettings = participants.find(
+                (p) => p.user._id.toString() === userId // Use p.user._id if populated
+            );
+
+            // Safety check for user's settings
+            const lastViewed = currentUserSettings?.lastViewed || new Date(0);
+            const isPinned = currentUserSettings?.isPinned ?? false;
+
+            // FIX 2: Efficient Unread Count (Count messages created AFTER lastViewed)
+            // 2. ✅ EFFICIENT UNREAD COUNT: Count messages created AFTER lastViewed
             const unreadCount = await Message.countDocuments({
-                conversation: conv._id,
-                readBy: { $ne: userId },
+                conversationId: conv._id, // Use correct field name: conversationId
+                createdAt: { $gt: lastViewed }, // Key optimization!
+                senderId: { $ne: userId } // Exclude messages sent by self
             });
 
             const populatedLastMessage = conv.lastMessage as any;
@@ -63,7 +80,7 @@ export const mapConversations = async (
                 name: convName,
                 type: conv.type,
                 avatar: convAvatar,
-                isPinned: conv.isPinned ?? false,
+                isPinned: isPinned,
                 updatedAt: conv.updatedAt,
                 unreadCount,
                 lastMessage,
@@ -71,14 +88,17 @@ export const mapConversations = async (
 
             // 🔹 IMPORTANT: Handle direct chat (1-to-1) conversation logic
             if (conv.type === "direct") {
-                const partner = conv.participants.find(
-                    (p) => p._id.toString() !== userId
-                ) as (IUser & { tracking: any; privacy: any }) | undefined;
+                // FIX 4: Find partner from the nested 'user' field
+                const partnerSetting = participants.find(
+                    (p) => p.user._id.toString() !== userId
+                );
+
+                const partner = partnerSetting?.user;
 
                 if (partner) {
                     // --- Override name and avatar with partner info ---
                     result.name = partner.name || "Nexion User";
-                    result.avatar = partner.avatar || getAvatarUrl("user");
+                    result.avatar = partner.avatar || getAvatarUrl("nexion_user");
 
                     // Extract privacy & tracking information
                     const partnerStatus = partner.tracking?.status;
@@ -103,19 +123,19 @@ export const mapConversations = async (
                     result.lastActiveAt = effectiveLastActiveAt;
 
                 } else {
-                    // 🔹 IMPORTANT: Handle deleted or missing user
+                    // IMPORTANT: Handle deleted or missing user
                     result.name = "Nexion User";
                     result.avatar = getAvatarUrl("nexion-user");
                 }
             }
-            // 🔹 Handle group/classroom conversation logic
+            // Handle group/classroom conversation logic
             else {
                 // --- Use participant names as fallback group name ---
                 if (!result.name) {
-                    result.name = conv.participants
-                        .filter((p) => p._id.toString() !== userId)
-                        //INFO: If 'p' contains a 'name' field (meaning it has been populated), then we will use its name
-                        .map((p) => "name" in p ? p.name : "Nexion User")
+                    result.name = participants
+                        .filter((p) => p.user._id.toString() !== userId)
+                        // 🔑 FIX 5: Use the nested 'user' object's name
+                        .map((p) => p.user.name || "Nexion User")
                         .join(", ");
                 }
 

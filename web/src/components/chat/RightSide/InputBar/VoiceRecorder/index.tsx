@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import { useState, useRef, useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";

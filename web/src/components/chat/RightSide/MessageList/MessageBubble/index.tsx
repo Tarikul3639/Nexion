@@ -8,13 +8,13 @@ import MessageAvatar from "./MessageAvatar";
 import MessageHeader from "../MessageHeader";
 import MessageContent from "./MessageContent";
 import MessageStatus from "./MessageStatus";
-import type { MessageItem } from "@/types/message/indexs";
-import { useChat } from "@/context/ChatContext";
+import type { IMessage } from "@/types/message/indexs";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import { useSocket } from "@/context/SocketContext";
 import { useAuth } from "@/context/AuthContext";
 
 interface Props {
-  message: MessageItem;
+  message: IMessage;
   highlighted?: boolean;
   scrollToMessage?: (id: string) => void;
 }
@@ -42,7 +42,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
     useEffect(() => {
       if (inView && !message.isMe && socket && user) {
         socket.emit("messageRead", {
-          messageId: message.id.toString(),
+          messageId: message.id,
           userId: user.id,
         });
       }
@@ -102,7 +102,7 @@ const MessageBubble = forwardRef<HTMLDivElement, Props>(
           <div>
             <MessageHeader message={message} />
             <MessageContent message={message} />
-            {message.isMe && <MessageStatus status={message.status} />}
+            {message.isMe && <MessageStatus status={message.deliveryStatus} />}
           </div>
         </motion.div>
       </div>

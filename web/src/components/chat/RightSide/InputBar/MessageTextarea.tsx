@@ -1,5 +1,5 @@
 import { Textarea } from "@/components/ui/textarea";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import { useRef, useEffect } from "react";
 
 export default function MessageTextarea() {

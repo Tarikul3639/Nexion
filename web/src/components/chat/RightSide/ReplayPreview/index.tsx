@@ -8,7 +8,7 @@ import {
   Paperclip,
   AudioLines,
 } from "lucide-react";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import { DraftMessage } from "@/types/message/indexs";
 
 export default function ReplyPreview() {

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 export default function AISuggestionsToggleButton() {

@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { Sparkles, ThumbsUp, ThumbsDown } from "lucide-react";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
 export default function AISuggestions() {

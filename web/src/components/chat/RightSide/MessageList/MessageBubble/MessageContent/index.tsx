@@ -1,5 +1,5 @@
 import React from "react";
-import { MessageItem } from "@/types/message/indexs";
+import { IMessage } from "@/types/message/indexs";
 import MessageDropdown from "./MessageDropdown";
 import ImageCard from "./ImageCard";
 import AudioCard from "./AudioCard";
@@ -9,7 +9,7 @@ import FileCard from "./FileCard";
 import MessageSeenStatus from "./MessageSeenStatus";
 
 interface MessageContentProps {
-  message: MessageItem;
+  message: IMessage;
 }
 
 export default function MessageContent({
@@ -31,16 +31,19 @@ export default function MessageContent({
     <div className={containerClasses} data-message-id={id}>
       <div className={bubbleClasses}>
         {/* Replying to another message */}
-        {replyToId && <ReplyView replyToId={replyToId} />}
+        {replyToId && <ReplyView key="reply-view" replyToId={replyToId} />}
 
         {/* Text message */}
-        {content.text && <TextCard msg={content} />}
+        {content.text && <TextCard key="text-card" msg={content as any} />}
 
-        {/* Media attachments */}
-        <ImageCard msg={content} />
-        <AudioCard msg={content} />
-        <FileCard msg={content} />
-        <MessageSeenStatus message={message} />
+        {/* Media attachments with proper keys */}
+        {/* Type checking is handled inside each component */}
+        <ImageCard key="image-card" msg={content as any} />
+        <AudioCard key="audio-card" msg={content as any} />
+        <FileCard key="file-card" msg={content as any} />
+        
+        {/* Message seen status */}
+        {/* <MessageSeenStatus key="seen-status" message={message} /> */}
       </div>
       {/* Dropdown for message actions */}
       <MessageDropdown msgId={id} />

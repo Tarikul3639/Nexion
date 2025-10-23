@@ -1,8 +1,8 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { MessageItem } from "@/types/message/indexs";
+import { IMessage } from "@/types/message/indexs";
 
-export default function MessageHeader({ message }: { message: MessageItem }) {
+export default function MessageHeader({ message }: { message: IMessage }) {
   // console.log(message);
   const formattedTime = new Date(message.updatedAt).toLocaleTimeString([], {
     hour: "2-digit",
@@ -20,7 +20,7 @@ export default function MessageHeader({ message }: { message: MessageItem }) {
         {message.senderName}
       </span>
 
-      {message.role === "teacher" && (
+      {/* {message.role === "teacher" && (
         <Badge
           variant="secondary"
           className="text-xs bg-purple-100 text-purple-600"
@@ -43,7 +43,7 @@ export default function MessageHeader({ message }: { message: MessageItem }) {
         >
           Admin
         </Badge>
-      )}
+      )} */}
 
       <span className="text-sm font-normal text-gray-400 uppercase">
         {formattedTime}

@@ -2,8 +2,8 @@
 
 'use client';
 
-// Note: Now it imports from useConversationData
-import { useConversationData } from '@/context/ChatContext/ChatDataProvider'; 
+// Note: Now it imports from useConversation
+import { useConversation } from '@/context/ChatContext/ConversationProvider'; 
 import { ISearchResult } from '@/types/message/types';
 
 interface UseInitialConversationsResult {   
@@ -13,7 +13,7 @@ interface UseInitialConversationsResult {
 
 export const useInitialConversations = (): UseInitialConversationsResult => {
   // Fetch data directly from the global context
-  const { conversations, isConversationsLoading } = useConversationData(); 
+  const { conversations, isConversationsLoading } = useConversation(); 
   
   return { 
     data: conversations, 

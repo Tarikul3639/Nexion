@@ -4,7 +4,7 @@ import type React from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useChat } from "@/context/ChatContext";
+import { useChat } from "@/context/ChatContext/ChatProvider";
 import { useMemo } from "react";
 
 const ImagePreview: React.FC = () => {

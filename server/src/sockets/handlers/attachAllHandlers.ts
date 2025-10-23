@@ -4,8 +4,8 @@ import { Server } from "socket.io";
 import { AuthenticatedSocket } from "@/types/chat";
 
 //Handlers Import
-// import { getInitialConversations } from "../chat/LeftPanel/initialConversation/getInitialConversations";
 import { searchUsersAndConversations } from "../chat/LeftPanel/search/searchUsersAndConversations";
+import { handleReadStatus } from "../chat/RightPanel/controller/readStatusHandler";
 import { messageHandler } from "../chat/RightPanel";
 
 /**
@@ -20,7 +20,7 @@ export const attachAllHandlers = (
   // ------------------------------------
   // 🔹 1. Chat Handlers 
   // ------------------------------------
-  // getInitialConversations(io, socket);
   searchUsersAndConversations(io, socket);
   messageHandler(io, socket, userSockets);
+  handleReadStatus(io, socket, userSockets);
 };
