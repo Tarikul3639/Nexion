@@ -39,6 +39,7 @@ export default function ChatItem({
     // Set this conversation as the selected one in context
     setSelectedConversation({
       id: conversation.id,
+      partnerId: conversation.partnerId,
       type: conversation.displayType,
       name: name,
       avatar: avatar,

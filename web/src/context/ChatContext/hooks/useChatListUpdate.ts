@@ -4,6 +4,7 @@
 import { useCallback, useEffect } from "react";
 import { useSocket } from "@/context/SocketContext";
 import { ILastMessage, ISearchResult } from "@/types/message/types";
+import { usePanel } from "@/context/PanelContext";
 
 interface ChatListUpdate {
   conversationId: string;
@@ -23,6 +24,7 @@ export const useChatListUpdate = (
   setConversations: React.Dispatch<React.SetStateAction<ISearchResult[]>>
 ) => {
   const { socket } = useSocket();
+  const { selectedConversation } = usePanel();
 
   /**
    * IMPORTANT:
@@ -42,7 +44,12 @@ export const useChatListUpdate = (
           let updatedConv = { ...updatedList[index] };
           
           // Update unread count
+          if(selectedConversation?.id === update.conversationId) {
+            // If the updated conversation is currently selected, reset unread count to 0
+            socket?.emit("conversation:read", { conversationId: update.conversationId });
+          } else {
           updatedConv.unreadCount = update.unreadCount;
+          }
           
           // Update last message and timestamp if provided
           if (update.lastMessage) {
@@ -66,7 +73,7 @@ export const useChatListUpdate = (
         return prev;
       });
     },
-    [setConversations]
+    [setConversations , selectedConversation]
   );
 
   /**

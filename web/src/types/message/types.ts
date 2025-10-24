@@ -81,5 +81,6 @@ export interface ISelectedChatHeader {
     name: string;
     avatar: string;
     status?: string;
+    partnerId?: string;
     lastActiveAt?: Date | null;
 }

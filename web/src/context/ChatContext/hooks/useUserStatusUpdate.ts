@@ -65,7 +65,7 @@ export const useUserStatusUpdate = (
 
       //NOTE: When user goes offline, we update For right Panel
       setSelectedConversation((prev) => {
-        if (prev) {
+        if (prev && prev.partnerId === update.userId) {
           return {
             ...prev,
             status: "offline",
@@ -77,7 +77,7 @@ export const useUserStatusUpdate = (
         return prev;
       });
     },
-    [setConversations]
+    [setConversations, setSelectedConversation]
   );
 
   const handleUserOnline = useCallback(
@@ -105,7 +105,7 @@ export const useUserStatusUpdate = (
 
       //NOTE: When user comes online, we do not update For right Panel
       setSelectedConversation((prev) => {
-        if (prev) {
+        if (prev && prev.partnerId === update.userId) {
           return {
             ...prev,
             status: "online",
@@ -114,7 +114,7 @@ export const useUserStatusUpdate = (
         return prev;
       });
     },
-    [setConversations]
+    [setConversations, setSelectedConversation]
   );
 
   /**
