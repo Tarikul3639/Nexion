@@ -7,6 +7,7 @@ import { useChatDraft } from "./hooks/useChatDraft";
 import { useChatUpload } from "./hooks/useChatUpload";
 import { useNewMessage } from "./hooks/useNewMessage";
 import { useMessageConfirm } from "./hooks/useMessageConfirm";
+import { useMessageDelivery } from "./hooks/useMessageDelivery";
 
 interface ChatContextType {
   allMessages: IMessage[];
@@ -33,6 +34,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   useNewMessage(setAllMessages);
   // Message confirmation management
   useMessageConfirm(setAllMessages);
+  // Message Delivery status management
+  useMessageDelivery(setAllMessages);
 
   const { aiSuggestions, showAISuggestions, onAISuggestion } = useChatAI();
   const { draftMessage, setDraftMessage, replyToId, setReplyToId } = useChatDraft();

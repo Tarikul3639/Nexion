@@ -37,9 +37,9 @@ export const useUserStatusUpdate = (
    */
   const handleUserOffline = useCallback(
     (update: UserStatusUpdate) => {
-      console.log(
-        `Received user:status update (Hook) for ${update.userId}: ${update.status}`
-      );
+      // console.log(
+      //   `Received user:status update (Hook) for ${update.userId}: ${update.status}`
+      // );
 
       setConversations((prev) => {
         return prev.map((conv) => {
@@ -82,9 +82,9 @@ export const useUserStatusUpdate = (
 
   const handleUserOnline = useCallback(
     (update: UserStatusUpdate) => {
-      console.log(
-        `Received user:status update (Hook) for ${update.userId}: ${update.status}`
-      );
+      // console.log(
+      //   `Received user:status update (Hook) for ${update.userId}: ${update.status}`
+      // );
 
       setConversations((prev) => {
         return prev.map((conv) => {

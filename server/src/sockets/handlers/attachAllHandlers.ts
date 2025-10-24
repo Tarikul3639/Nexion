@@ -6,6 +6,7 @@ import { AuthenticatedSocket } from "@/types/chat";
 //Handlers Import
 import { searchUsersAndConversations } from "../chat/LeftPanel/search/searchUsersAndConversations";
 import { handleReadStatus } from "../chat/RightPanel/controller/readStatusHandler";
+import { deliveryStatusHandler } from "../chat/RightPanel/controller/deliveryStatusHandler";
 import { messageHandler } from "../chat/RightPanel";
 
 /**
@@ -23,4 +24,5 @@ export const attachAllHandlers = (
   searchUsersAndConversations(io, socket);
   messageHandler(io, socket, userSockets);
   handleReadStatus(io, socket, userSockets);
+  deliveryStatusHandler(io, socket, userSockets);
 };

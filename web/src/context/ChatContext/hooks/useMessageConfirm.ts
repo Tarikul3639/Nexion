@@ -20,7 +20,7 @@ export const useMessageConfirm = (
 
     const handleMessageConfirm = useCallback(
         (confirmedMessage: MessageConfirmPayload) => {
-            console.log("Received message:confirm:", confirmedMessage);
+            // console.log("Received message:confirm:", confirmedMessage);
 
             setAllMessages(prevMessages => {
                 return prevMessages.map(msg => {

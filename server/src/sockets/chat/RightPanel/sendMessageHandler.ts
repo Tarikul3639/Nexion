@@ -25,7 +25,7 @@ export const sendMessageHandler = (
   userSockets: Map<string, Set<string>>
 ) => {
   socket.on("message:send", async (data: ISendMessageData) => {
-    console.log("Received message: ", data);
+    // console.log("Received message: ", data);
 
     try {
       let conversationId = data.conversation;

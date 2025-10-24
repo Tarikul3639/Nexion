@@ -32,7 +32,7 @@ export const ConversationProvider = ({ children }: { children: React.ReactNode }
     if (!token) return;
 
     const loadConversations = async () => {
-      console.log("🚀 Initial conversation fetch (via custom hook)...");
+      // console.log("🚀 Initial conversation fetch (via custom hook)...");
       const result = await fetchInitialConversations();
       console.log(result?.conversations);
       if (result?.conversations) setConversations(result.conversations);

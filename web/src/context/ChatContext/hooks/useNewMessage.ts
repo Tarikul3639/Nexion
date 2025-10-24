@@ -4,7 +4,7 @@ import { useSocket } from "@/context/SocketContext";
 import { usePanel } from "@/context/PanelContext";
 import { IMessage } from "@/types/message/indexs";
 
-interface NewMessagePayload extends IMessage {}
+interface NewMessagePayload extends IMessage { }
 
 /**
  * Custom hook to listen for the 'message:new' socket event 
@@ -21,6 +21,11 @@ export const useNewMessage = (
         (message: NewMessagePayload) => {
             console.log("Received new message via useNewMessage:", message);
 
+            socket?.emit("message:deliver", {
+                messageId: message.id,
+                conversationId: message.conversationId
+            });
+
             // CRITICAL FIX: Only update the list if the message belongs to the active conversation
             if (message.conversationId !== selectedConversation?.id) {
                 console.log(
@@ -28,9 +33,9 @@ export const useNewMessage = (
                 );
                 // If the message is for another chat, we DO NOT add it to the chat window's message list.
                 // The chat list update (conversation:update) handles the notification/badge.
-                return; 
+                return;
             }
-            
+
             setAllMessages(prevMessages => {
                 // Check for duplicates
                 const exists = prevMessages.some(m => m.id === message.id);
@@ -43,7 +48,7 @@ export const useNewMessage = (
                 return [...prevMessages, message];
             });
         },
-        [setAllMessages, selectedConversation] // selectedConversation must be a dependency
+        [setAllMessages, selectedConversation, socket] // selectedConversation must be a dependency
     );
 
     useEffect(() => {

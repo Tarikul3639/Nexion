@@ -33,7 +33,7 @@ export const useChatListUpdate = (
    */
   const handleConversationUpdate = useCallback(
     (update: ChatListUpdate) => {
-      console.log("Received conversation:update (Hook):", update);
+      // console.log("Received conversation:update (Hook):", update);
 
       setConversations((prev) => {
         const index = prev.findIndex((c) => c.id === update.conversationId);
@@ -64,7 +64,6 @@ export const useChatListUpdate = (
             (a, b) =>
               new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
           );
-          console.log(sortedList);
 
           return sortedList;
         }

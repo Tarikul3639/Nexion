@@ -4,6 +4,7 @@ import { metadata, viewport } from "@/components/core/metadata";
 // import AppProtection from "@/components/core/AppProtection";
 // import RouteGuard from "@/components/core/RouteGuard";
 import { SocketProvider } from "@/context/SocketContext";
+import { ChatProvider } from "@/context/ChatContext/ChatProvider";
 import { ConversationProvider } from "@/context/ChatContext/ConversationProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { PanelProvider } from "@/context/PanelContext";
@@ -58,7 +59,9 @@ export default function RootLayout({
             <SocketProvider>
               <PanelProvider>
                 <ConversationProvider>
-                  {children}
+                  <ChatProvider>
+                    {children}
+                  </ChatProvider>
                 </ConversationProvider>
               </PanelProvider>
             </SocketProvider>

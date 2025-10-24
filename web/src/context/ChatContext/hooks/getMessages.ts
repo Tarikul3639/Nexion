@@ -44,7 +44,7 @@ export function getMessages() {
             );
 
             const data = response.data;
-            console.log("Message: ",data);
+            // console.log("Message: ",data);
             if (data.success) {
                 // Assuming backend returns { success: true, messages: IMessage[], hasMore: boolean }
                 return {
